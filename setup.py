@@ -42,14 +42,10 @@ base_packages = [
 ]
 
 dev_packages = base_packages + [
-    "graphviz>=0.10.1",
-    "matplotlib>=3.0.2",
     "mypy>=0.761",
     "pre-commit>=2.9.2",
     "pytest>=4.5.0",
     "pytest-cov>=2.6.1",
-    "scikit-learn>=0.22.1",
-    "sqlalchemy>=1.4",
 ]
 
 docs_packages = [
