@@ -1,0 +1,5 @@
+./.ipynb_checkpoints
+.idea
+__pycache__
+./TSInterpret/data/Multivariate/*
+./TSInterpret/ClassificationModels/models/*

@@ -1,0 +1,84 @@
+@startuml
+
+abstract TSInterpret {
+}
+interface base_model {
+    model
+    mode    
+    model_path 
+    backend
+    init(model,mode, model_path, backend)
+    <<abstract>> predict(input_instance)
+    <<abstract>> load_model()
+}
+note left: Interface for different model types. Subclasses implement concrete wrapper for the different libraries,
+
+interface InterpretabilityBase {
+    model
+    init(model)
+    <<abstract>> explain()
+    <<abstract>> plot()
+}
+
+
+class PyTorchModel {
+
+    predict(item)
+
+}
+
+class SklearnModel {
+
+    predict(item)
+}
+class TensorflowModel {
+
+    predict(item)
+}
+class Attribution {
+     plot()
+}
+class Gradient {
+    
+}
+class Pertubation {
+
+}
+class Surrogate {
+
+}
+class Instance {
+  plot()
+}
+
+class Counterfactual {
+
+}
+class CEM {
+
+}
+class Anchor {
+
+}
+
+class Rule {
+  
+  plot()
+}
+
+TSInterpret --> base_model
+TSInterpret --> InterpretabilityBase
+base_model --> PyTorchModel
+base_model --> SklearnModel
+base_model --> TensorflowModel
+InterpretabilityBase --> Attribution
+InterpretabilityBase --> Instance
+InterpretabilityBase --> Rule 
+Attribution --> Gradient
+Attribution --> Pertubation
+Attribution --> Surrogate
+Instance --> Counterfactual 
+Instance -->  CEM
+Instance --> Anchor
+
+@enduml
