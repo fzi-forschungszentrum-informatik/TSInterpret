@@ -78,7 +78,6 @@ base_packages = [
     "pyparsing==2.4.7",
     "python-dateutil==2.8.2",
     "python-slugify==5.0.2",
-    "pyts @ file:///media/jacqueline/Data/InterpretabiltyTimeSeries/pyts",
     "pytz==2021.3",
     "PyWavelets==1.1.1",
     "PyYAML==6.0",
