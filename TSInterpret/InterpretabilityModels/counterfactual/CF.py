@@ -2,7 +2,7 @@
 #Karlsson, I., Rebane, J., Papapetrou, P. et al. Locally and globally explainable time series tweaking. Knowl Inf Syst 62, 1671–1700 (2020)
 #Only works with Shaplet Forest classifier, KNearestNeighbour Classifier 
 
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 import matplotlib.pyplot as plt
 import seaborn as sns
 from abc import abstractmethod

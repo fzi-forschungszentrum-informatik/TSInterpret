@@ -1,1 +1,9 @@
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+from .timeseries import utils_timeseries, transform_function, segmantator
+
+__all__ = [
+"utils_timeseries", 
+"transform_function", 
+"segmantator", 
+"learning_process"
+
+]

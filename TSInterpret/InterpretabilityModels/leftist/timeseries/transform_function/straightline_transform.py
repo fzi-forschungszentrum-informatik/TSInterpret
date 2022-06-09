@@ -1,6 +1,6 @@
 import numpy as np
 
-from InterpretabilityModels.leftist.transform import Transform
+from TSInterpret.InterpretabilityModels.leftist.transform import Transform
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 

@@ -43,4 +43,3 @@ class GradCam1D(GradCAM):
         raise ValueError(
             "Model does not seem to contain 4D layer. Grad CAM cannot be applied."
         )
-    

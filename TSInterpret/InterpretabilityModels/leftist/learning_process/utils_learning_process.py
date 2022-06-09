@@ -1,7 +1,7 @@
 import numpy as np
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
-from InterpretabilityModels.utils import tensorflow_wrapper, torch_wrapper,sklearn_wrapper
+from TSInterpret.InterpretabilityModels.utils import tensorflow_wrapper, torch_wrapper,sklearn_wrapper
 
 def predict_proba(neighbors, model_to_explain,backend, mode):
     """

@@ -1,1 +1,1 @@
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+from .neighbors_generator import neighbore_generator, LIME_neighbors_generator, SHAP_neighbors_generator

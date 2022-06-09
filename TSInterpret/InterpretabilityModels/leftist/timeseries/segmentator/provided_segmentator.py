@@ -1,4 +1,4 @@
-from leftist.timeseries.segmentator.segmentator import Segmentator
+from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.segmentator import Segmentator
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 

@@ -36,9 +36,21 @@ base_packages = [
     "Shapely==1.7.1",
     "sktime==0.8.0",
     "tensorflow==2.6.0",
+    "keras==2.6",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
+    "tslearn",
+    "torch",
+    "seaborn",
+    "scikit_optimize",
+    "mlrose",
+    "torchcam",
+    "tf_explain",
+    "opencv-python",
+    "captum",
+    "pyts",
+    "deprecated"
 ]
 
 dev_packages = base_packages + [

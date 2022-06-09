@@ -1,6 +1,7 @@
-"""
-.. automodule:: prediction_explainer.neighbors_generator
-   :members:
-"""
+from . import Leftist, neighbors, transform
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__all__ = [
+   "Leftist", 
+   "neighbors", 
+   "transform"
+   ]

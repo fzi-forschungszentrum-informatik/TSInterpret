@@ -1,5 +1,5 @@
 import pickle
-from constants import BackEndTypes
+from TSInterpret.constants import BackEndTypes
 #TODO Data Transformer 
 class BaseModel:
 

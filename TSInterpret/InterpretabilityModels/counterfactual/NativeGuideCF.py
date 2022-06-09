@@ -2,7 +2,7 @@
 '''Implementation after Delaney et al . https://github.com/e-delaney/Instance-Based_CFE_TSC'''
 from cProfile import label
 import imp
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 from itertools import count
 from operator import sub
 from tslearn.neighbors import KNeighborsTimeSeries
@@ -15,7 +15,7 @@ from pathlib import Path
 import platform
 import os 
 import pandas as pd
-from InterpretabilityModels.GradCam.GradCam_1D import grad_cam, GradCam1D
+from TSInterpret.InterpretabilityModels.GradCam.GradCam_1D import grad_cam, GradCam1D
 import numpy as np
 import numpy as np
 import pickle
@@ -29,10 +29,10 @@ warnings.filterwarnings('ignore')
 warnings.simplefilter('ignore')
 from tslearn.barycenters import dtw_barycenter_averaging
 #from InterpretabilityModels.utils import torch_wrapper, tensorflow_wrapper
-from Models.PyTorchModel import PyTorchModel
-from Models.TensorflowModel import TensorFlowModel
-from Models.SklearnModel import SklearnModel
-from InterpretabilityModels.counterfactual.CF import CF
+from TSInterpret.Models.PyTorchModel import PyTorchModel
+from TSInterpret.Models.TensorflowModel import TensorFlowModel
+from TSInterpret.Models.SklearnModel import SklearnModel
+from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 
 class NativeGuideCF(CF):
     '''

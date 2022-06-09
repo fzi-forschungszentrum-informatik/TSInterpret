@@ -16,10 +16,10 @@ import numpy as np
 from  sklearn import preprocessing
 import torch
 from torch.autograd import Variable 
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from InterpretabilityModels.FeatureAttribution import FeatureAttribution
+from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
 class Saliency_PT(FeatureAttribution):
     '''
     '''

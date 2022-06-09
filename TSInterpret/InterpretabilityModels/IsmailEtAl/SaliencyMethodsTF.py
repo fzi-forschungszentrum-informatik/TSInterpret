@@ -7,10 +7,10 @@ from tf_explain.core.smoothgrad import SmoothGrad
 from  sklearn import preprocessing
 import numpy as np 
 import tensorflow as tf
-from InterpretabilityModels import utils
+from TSInterpret.InterpretabilityModels import utils
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from InterpretabilityModels.FeatureAttribution import FeatureAttribution
+from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
 import shap
 class Saliency_TF(FeatureAttribution):
     '''

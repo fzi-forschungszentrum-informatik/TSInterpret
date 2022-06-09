@@ -1,5 +1,5 @@
 import numpy as np
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 import matplotlib.pyplot as plt
 import seaborn as sns 
 from abc import ABC, abstractmethod

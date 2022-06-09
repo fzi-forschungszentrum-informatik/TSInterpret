@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow import keras
 
-from Models.base_model import BaseModel
+from TSInterpret.Models.base_model import BaseModel
 
 
 class TensorFlowModel(BaseModel):

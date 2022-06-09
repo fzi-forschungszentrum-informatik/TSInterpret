@@ -31,12 +31,12 @@ import six
 import sys
 sys.modules['sklearn.externals.six'] = six
 import mlrose
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
-from InterpretabilityModels.counterfactual.CF import CF
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 #from InterpretabilityModels.utils import torch_wrapper, tensorflow_wrapper,sklearn_wrapper
-from Models.PyTorchModel import PyTorchModel
-from Models.TensorflowModel import TensorFlowModel
-from Models.SklearnModel import SklearnModel
+from TSInterpret.Models.PyTorchModel import PyTorchModel
+from TSInterpret.Models.TensorflowModel import TensorFlowModel
+from TSInterpret.Models.SklearnModel import SklearnModel
 
 
 class BaseExplanation:

@@ -2,7 +2,7 @@
 
 import torch
 import numpy as np 
-from Models.base_model import BaseModel
+from TSInterpret.Models.base_model import BaseModel
 
 
 class PyTorchModel(BaseModel):

@@ -2,8 +2,8 @@ import numpy as np
 
 from sklearn.linear_model import LassoLarsIC, lars_path
 
-from InterpretabilityModels.leftist.learning_process.learning_process import LearningProcess
-from InterpretabilityModels.leftist.learning_process.neighbors_generator.SHAP_neighbors_generator import SHAPNeighborsGenerator
+from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import LearningProcess
+from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.SHAP_neighbors_generator import SHAPNeighborsGenerator
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 
