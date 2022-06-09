@@ -42,7 +42,7 @@ base_packages = [
     "google-auth-oauthlib==0.4.6",
     "google-pasta==0.2.0",
     "grpcio==1.41.0",
-    "h5py==3.1.0",
+    "h5py",
     "HeapDict==1.0.1",
     "idna==3.2",
     "imageio==2.9.0",
