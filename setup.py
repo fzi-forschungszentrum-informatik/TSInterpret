@@ -62,7 +62,6 @@ base_packages = [
     "msgpack==1.0.2",
     "networkx==2.5.1",
     "numba==0.53.1",
-    "numpy==1.22.4",
     "oauthlib==3.1.1",
     "opt-einsum==3.3.0",
     "packaging==21.0",
