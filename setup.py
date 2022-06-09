@@ -90,7 +90,6 @@ base_packages = [
     "shap==0.39.0",
     "Shapely==1.7.1",
     "six==1.15.0",
-    "sklearn==0.0",
     "sktime==0.8.0",
     "slicer==0.0.7",
     "sortedcontainers==2.4.0",
