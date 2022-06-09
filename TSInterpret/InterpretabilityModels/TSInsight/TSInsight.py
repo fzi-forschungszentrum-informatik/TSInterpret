@@ -1,5 +1,5 @@
 from zmq import device
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 import matplotlib.pyplot as plt 
 import seaborn as sns 
 import numpy as np 

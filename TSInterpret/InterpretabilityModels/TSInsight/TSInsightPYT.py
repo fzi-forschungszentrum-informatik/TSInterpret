@@ -1,6 +1,6 @@
 from zmq import device
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
-from InterpretabilityModels.TSInsight.TSInsight import TSInsight
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.TSInsight.TSInsight import TSInsight
 import torch.nn.functional as F
 import torch 
 import torch.nn as nn

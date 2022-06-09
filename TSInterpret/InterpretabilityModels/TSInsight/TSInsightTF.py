@@ -1,7 +1,7 @@
 from telnetlib import RCP
 from zmq import device
-from InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
-from InterpretabilityModels.TSInsight.TSInsight import TSInsight
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.TSInsight.TSInsight import TSInsight
 from tensorflow.keras import layers, losses
 from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.models import Model
