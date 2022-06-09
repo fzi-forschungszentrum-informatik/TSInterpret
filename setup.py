@@ -47,7 +47,6 @@ base_packages = [
     "idna==3.2",
     "imageio==2.9.0",
     "importlib-metadata==4.8.1",
-    "Jinja2==3.0.2",
     "joblib==1.0.1",
     "kaggle==1.5.12",
     "keras==2.6.0",
