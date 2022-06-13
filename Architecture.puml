@@ -8,7 +8,7 @@ interface base_model {
     model_path: str  
     backend: Enum
     init(model,change, model_path, backend)
-    <<abstract>> predict(input_instance)
+    <<abstract>> predict(item)
     <<abstract>> load_model(model_path)
 }
 

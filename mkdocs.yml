@@ -10,13 +10,16 @@ plugins:
 - search
 - autorefs
 - mkdocstrings
-
-#- mkdocs-jupyter
+- mkdocs-jupyter
 
 nav:
   - Home: index.md
   - Interpretability: InterpretabilityMethods.md
-  - Models: Model_Interface.md
+  - Usage: 
+    - Counterfactuals:
+      -  Ates: ./Notebooks/Ates_torch.ipynb
+  - API References: 
+    - Models: Model_Interface.md
 #  - Installation: installation.md
 #  - Code Reference:
 #      - Classification: classification.md

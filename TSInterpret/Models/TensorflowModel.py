@@ -24,6 +24,8 @@ class TensorFlowModel(BaseModel):
             item=item.reshape(item.shape[0],item.shape[2],item.shape[1])
         out=self.model.predict(item)
         return out
+    def load_model(self, path):
+        return super().load_model(path)
 
     def get_num_output_nodes(self, inp_size):
         temp_input = tf.convert_to_tensor([tf.random.uniform([inp_size])], dtype=tf.float32)

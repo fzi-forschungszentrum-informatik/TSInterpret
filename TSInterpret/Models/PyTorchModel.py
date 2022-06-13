@@ -30,6 +30,8 @@ class PyTorchModel(BaseModel):
         out=self.model(item.float())
         y_pred = torch.nn.functional.softmax(out).detach().numpy()
         return y_pred
+    def load_model(self, path):
+        return super().load_model(path)
 
 
     

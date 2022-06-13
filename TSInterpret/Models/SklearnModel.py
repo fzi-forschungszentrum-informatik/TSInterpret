@@ -24,3 +24,5 @@ class SklearnModel(BaseModel):
             item=item.reshape(item.shape[0],item.shape[2],item.shape[1])
         out=self.model.predict_proba(item)
         return out
+    def load_model(self, path):
+        return super().load_model(path)
