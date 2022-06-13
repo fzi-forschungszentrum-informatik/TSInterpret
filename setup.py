@@ -34,7 +34,7 @@ base_packages = [
     "scikit-learn==0.24.2",
     "shap==0.39.0",
     "sktime==0.8.0",
-    "tensorflow==2.6.0",
+    "tensorflow",#TODO used to be 2.6.0.
     "keras==2.6",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
