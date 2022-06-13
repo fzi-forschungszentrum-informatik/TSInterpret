@@ -3,3 +3,4 @@
 __pycache__
 ./TSInterpret/data/Multivariate/*
 ./TSInterpret/ClassificationModels/models/*
+./build
