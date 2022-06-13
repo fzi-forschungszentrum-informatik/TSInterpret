@@ -33,6 +33,7 @@ base_packages = [
     "pytz==2021.3",
     "scikit-learn==0.24.2",
     "shap==0.39.0",
+    "geos",
     "Shapely==1.7.1",
     "sktime==0.8.0",
     "tensorflow==2.6.0",
@@ -51,7 +52,7 @@ base_packages = [
     "captum",
     "pyts",
     "deprecated",
-    "geos"
+    
 ]
 
 dev_packages = base_packages + [
