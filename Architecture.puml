@@ -4,14 +4,13 @@ abstract TSInterpret {
 }
 interface base_model {
     model
-    mode    
-    model_path 
-    backend
-    init(model,mode, model_path, backend)
+    change:bool    
+    model_path: str  
+    backend: Enum
+    init(model,change, model_path, backend)
     <<abstract>> predict(input_instance)
-    <<abstract>> load_model()
+    <<abstract>> load_model(model_path)
 }
-note left: Interface for different model types. Subclasses implement concrete wrapper for the different libraries,
 
 interface InterpretabilityBase {
     model
@@ -39,12 +38,15 @@ class Attribution {
      plot()
 }
 class Gradient {
+explain()
     
 }
 class Pertubation {
+explain()
 
 }
 class Surrogate {
+explain()
 
 }
 class Instance {
@@ -52,18 +54,15 @@ class Instance {
 }
 
 class Counterfactual {
+explain()
 
 }
 class CEM {
+explain()
 
 }
 class Anchor {
-
-}
-
-class Rule {
-  
-  plot()
+explain()
 }
 
 TSInterpret --> base_model
@@ -73,7 +72,6 @@ base_model --> SklearnModel
 base_model --> TensorflowModel
 InterpretabilityBase --> Attribution
 InterpretabilityBase --> Instance
-InterpretabilityBase --> Rule 
 Attribution --> Gradient
 Attribution --> Pertubation
 Attribution --> Surrogate

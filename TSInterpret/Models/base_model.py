@@ -1,52 +1,40 @@
 import pickle
 from TSInterpret.constants import BackEndTypes
-#TODO Data Transformer 
-class BaseModel:
+from abc import ABC, abstractmethod
+import numpy as np 
+from typing import List
+class BaseModel(ABC):
 
-    def __init__(self, model=None, change= False,model_path='', backend='Func', func=None, kw_args=None):
-        """Init method
-        :param model: trained ML Model.
-        :param mode: if time is second dimension 'time', if feature is the seconf dimension 'feat'.
-        :param model_path: path to trained model.
-        :param backend: ML framework. For frameworks other than TensorFlow or PyTorch,
-                        or for implementations other than standard DiCE
-                        (https://arxiv.org/pdf/1905.07697.pdf),
-                        provide both the module and class names as module_name.class_name.
-                        For instance, if there is a model interface class "SklearnModel"
-                        in module "sklearn_model.py" inside the subpackage dice_ml.model_interfaces,
-                        then backend parameter should be "sklearn_model.SklearnModel".
-        :param func: function transformation required for ML model. If func is None, then func will be the identity function.
-        :param kw_args: Dictionary of additional keyword arguments to pass to func. DiCE's data_interface is appended to the
-                        dictionary of kw_args, by default.
+    def __init__(self, model=None, change= False,model_path='', backend='Func') -> None:
+        """Initialize Base Model. 
+        Arguments:
+            model: trained ML Model, either the model or the direct function call for returning the probability distribution.
+            change bool:  True if dimension change is necessary.
+            model_path str: path to trained model.
+            backend str: ML framework. For frameworks other than TensorFlow (TF), Sklearn (SK) or PyTorch (PYT),
+                        provide 'Func'.
         """
         self.model = model
-        self.change=change
+        self.change = change
         self.model_path = model_path
         self.backend = backend
-        # calls FunctionTransformer of scikit-learn internally
-        # (https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.FunctionTransformer.html)
-        #self.transformer = DataTransfomer(func, kw_args)
 
-    def load_model(self):
-        if self.model_path != '':
-            with open(self.model_path, 'rb') as filehandle:
-                self.model = pickle.load(filehandle)
-
-    def predict(self, input_instance):
-        """returns prediction probabilities for a classifier and the predicted output for a regressor.
-        :returns: an array of output scores for a classifier, and a singleton
-        array of predicted value for a regressor.
+    @abstractmethod
+    def load_model(self,path):
+        """Loads the model provided at the given path.
+        Arguments:
+            path str: Path to the trained model- 
+         Returns:
+            loaded model.
+        
         """
-        #input_instance = self.transformer.transform(input_instance)
-        #if model_score:
-        if self.backend == BackEndTypes.Sklearn:
-            return self.model.predict_proba(input_instance)
-        elif self.backend == BackEndTypes.Func:
-            return self.model(input_instance)
-        else:
-            return self.model.predict(input_instance)
-        #else:
-        #    return self.model.predict(input_instance)
-
-    #def get_gradient(self):
-    #    raise NotImplementedError
+        pass
+    @abstractmethod
+    def predict(self, item)-> List:
+        """ Unified prediction function.
+        Arguments:
+            item np.array: item to be classified 
+         Returns:
+            an array of output scores for a classifier, and a singleton array of predicted value for a regressor.
+        """
+        pass

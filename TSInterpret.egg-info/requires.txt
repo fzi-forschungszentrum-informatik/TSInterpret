@@ -9,10 +9,9 @@ partd==1.2.0
 pytz==2021.3
 scikit-learn==0.24.2
 shap==0.39.0
-Shapely==1.7.1
 sktime==0.8.0
-tensorflow==2.6.0
-keras==2.6
+tensorflow
+keras
 tqdm==4.62.3
 tsfresh==0.18.0
 wildboar==1.0.10
@@ -28,7 +27,7 @@ captum
 pyts
 deprecated
 
-[:python_version == '3.6']
+[:python_version == '3.7']
 dataclasses
 
 [all]
@@ -43,10 +42,9 @@ partd==1.2.0
 pytz==2021.3
 scikit-learn==0.24.2
 shap==0.39.0
-Shapely==1.7.1
 sktime==0.8.0
-tensorflow==2.6.0
-keras==2.6
+tensorflow
+keras
 tqdm==4.62.3
 tsfresh==0.18.0
 wildboar==1.0.10
@@ -78,10 +76,9 @@ partd==1.2.0
 pytz==2021.3
 scikit-learn==0.24.2
 shap==0.39.0
-Shapely==1.7.1
 sktime==0.8.0
-tensorflow==2.6.0
-keras==2.6
+tensorflow
+keras
 tqdm==4.62.3
 tsfresh==0.18.0
 wildboar==1.0.10
@@ -109,6 +106,8 @@ mkdocs==1.2.3
 mkdocs-awesome-pages-plugin==2.7.0
 mkdocs-material==8.1.11
 mkdocstrings==0.18.0
+mkdocs-material-extensions
+mkdocs-autorefs
 ipython_genutils==0.1.0
 mkdocs-jupyter==0.20.0
 nbconvert==6.4.2
@@ -128,10 +127,9 @@ partd==1.2.0
 pytz==2021.3
 scikit-learn==0.24.2
 shap==0.39.0
-Shapely==1.7.1
 sktime==0.8.0
-tensorflow==2.6.0
-keras==2.6
+tensorflow
+keras
 tqdm==4.62.3
 tsfresh==0.18.0
 wildboar==1.0.10

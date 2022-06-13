@@ -18,7 +18,7 @@ LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://ipe-wim-gitlab.fzi.de/hoellig/interpretabilitytimeseries"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.7.0"
 
 # Package requirements.
 base_packages = [
@@ -35,7 +35,7 @@ base_packages = [
     "shap==0.39.0",
     "sktime==0.8.0",
     "tensorflow",#TODO used to be 2.6.0.
-    "keras==2.6",
+    "keras",#TODO used to be 2.6
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
@@ -49,7 +49,7 @@ base_packages = [
     "opencv-python",
     "captum",
     "pyts",
-    "deprecated",
+    "deprecated"
     
 ]
 
@@ -68,6 +68,8 @@ docs_packages = [
     "mkdocs-awesome-pages-plugin==2.7.0",
     "mkdocs-material==8.1.11",
     "mkdocstrings==0.18.0",
+    "mkdocs-material-extensions",
+    "mkdocs-autorefs",
     "ipython_genutils==0.1.0",
     "mkdocs-jupyter==0.20.0",
     "nbconvert==6.4.2",
@@ -105,7 +107,7 @@ setuptools.setup(
         "test": dev_packages,
         "docs": docs_packages,
         "all": dev_packages,# + docs_packages,
-        ":python_version == '3.6'": ["dataclasses"],
+        ":python_version == '3.7'": ["dataclasses"],
     },
     include_package_data=True,
     license="BSD-3",
@@ -115,7 +117,6 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",

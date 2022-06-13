@@ -1,7 +1,7 @@
 #Project Information
-site_name: TSExplain
-site_description: TSExplain is a Python library for interpretable time series classification.
-site_author: Cedric Kulbach
+site_name: TSInterpret
+site_description: TSInterpret is a Python library for interpretable time series classification.
+site_author: Jacqueline Höllig
 
 theme:
   name: "material"
