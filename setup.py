@@ -50,7 +50,8 @@ base_packages = [
     "opencv-python",
     "captum",
     "pyts",
-    "deprecated"
+    "deprecated",
+    "geos"
 ]
 
 dev_packages = base_packages + [
