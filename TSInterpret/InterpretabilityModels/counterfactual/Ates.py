@@ -14,6 +14,7 @@ Energy’s National Nuclear Security Administration under Contract DENA0003525.
 
 from cProfile import label
 import logging
+from operator import mod
 import random
 import torch
 import numbers
@@ -63,56 +64,6 @@ class BaseExplanation:
 
     def explain(self, x_test, **kwargs):
         raise NotImplementedError("Please don't use the base class directly")
-
-    #def _get_feature_names(self, clf, timeseries):
-    #    if hasattr(self.clf.steps[1][1], 'transform'):
-    #        return self.clf.steps[2][1].column_names
-    #    else:
-    #        window_size = len(timeseries.loc[
-    #            [timeseries.index.get_level_values('node_id')[0]], :, :])
-    #        names = []
-    #        for c in timeseries.columns:
-    #            for i in range(window_size):
-    #                names.append(c + '_' + str(i) + 's')
-    #       return names
-
-    #def _transform_data(self, data, sample=None):
-    #    if hasattr(self.clf.steps[1][1], 'transform'):
-    #        transformed = self.clf.steps[1][1].transform(data)
-    #        if sample:
-    #            transformed = transformed.sample(sample)
-    #        return self.clf.steps[3][1].transform(transformed)
-    #    else:
-            # autoencoder
-    #        train_set = []
-    #        for node_id in data.index.get_level_values('node_id').unique():
-    #            train_set.append(data.loc[[node_id], :, :].values.T.flatten())
-    #        result = np.stack(train_set)
-    #        if sample:
-    #            idx = np.random.randint(len(result), size=sample)
-    #            result = result[idx, :]
-    #        return result
-
-    def _plot_changed(self, metric, original, distractor, savefig=False):
-        fig = plt.figure(figsize=(6,3))
-        ax = fig.gca()
-        #print(distractor.shape)
-        #print(original.shape)
-        plt.plot(range(distractor.shape[-1]),
-                 original[metric], label='x$_{test}$',
-                 figure=fig,
-                 )
-        plt.plot(range(distractor.shape[-1]),
-                 distractor[0][metric], label='Distractor',
-                 figure=fig)
-        ax.set_ylabel(metric)
-        ax.set_xlabel('Time (s)')
-        ax.legend()
-        if savefig:
-            filename = "{}.pdf".format(uuid.uuid4())
-            fig.savefig(filename, bbox_inches='tight')
-            logging.info("Saved the figure to %s", filename)
-        fig.show()
 
     def construct_per_class_trees(self):
         """Used to choose distractors"""
@@ -425,6 +376,12 @@ class BruteForceSearch(BaseExplanation):
                 modified[0][best_column] = dist[0][best_column]
                 explanation.append(best_column)
 
+        other =modified
+        target = np.argmax(self.clf(other),axis=1)
+        print('Target', target)
+        #TODO Change explanation to best and change plot func !
+        return other, target
+
         if not return_dist:
             return explanation,modified
         else:
@@ -655,15 +612,25 @@ class OptimizedSearch(BaseExplanation):
         if return_dist == False: #or len(best_explanation) == 0:
             return best_explanation,best_modified
         else:
-            return best_explanation, best_dist,
+            return best_explanation, best_dist
 
 
 class AtesCF(CF):
-    def __init__(self,mlmodel, ref, backend, mode) -> None:
-        #super().__init__()
-        super().__init__(mlmodel,mode)
-        #self.model_to_explain = mlmodel
-        #self.mode = mode 
+    """Calculates and Visualizes Counterfactuals for Multivariate Time Series in accordance to the paper [1].
+     
+     [1] Ates, Emre, et al. "Counterfactual Explanations for Multivariate Time Series." 2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
+     
+    """
+    def __init__(self,model, ref, backend, mode) -> None:
+        """
+        Arguments:
+            model : Model to be interpreted.
+            ref Tuple: Reference Dataset as Tuple (x,y).
+            backend: desired Model Backend ('PYT', 'TF', 'SK').
+            mode: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
+
+        """
+        super().__init__(model,mode) 
         self.backend=backend
         test_x,test_y=ref
         shape=test_x.shape
@@ -678,24 +645,25 @@ class AtesCF(CF):
 
         if backend=='PYT':
             
-            self.predict=PyTorchModel(mlmodel,change).predict
+            self.predict=PyTorchModel(model,change).predict
         elif backend == 'TF':
-            self.predict=TensorFlowModel(mlmodel,change).predict
+            self.predict=TensorFlowModel(model,change).predict
 
         elif backend == 'SK':
-            self.predict=SklearnModel(mlmodel,change).predict
+            self.predict=SklearnModel(model,change).predict
         self.referenceset=(test_x,test_y)
          
 
     def explain(self, x: np.ndarray, target: int, method= 'opt')-> Tuple[np.array, int]:
         '''
-        Counterfactual according to Ates.
-        Args:
+        Calculates the Counterfactual according to Ates.
+        Arguments:
             x (np.array): The instance to explain.
             target (np.array): target class.
+            method str : 'opt' if optimized calculation, 'brute' for Brute Force.
             
         Returns:
-            [np.array], int: Tuple of Counterfactual and Label
+            ([np.array], int): Tuple of Counterfactual and Label
     
         '''
         if self.mode != 'feat':
@@ -713,7 +681,16 @@ class AtesCF(CF):
             return opt.explain(x,to_maximize=target,savefig=False)
         
 
-    def plot(self,item,org_label,exp,cf_label,figsize=(15,15)):
+    def plot(self,item,org_label,exp,cf_label,figsize=(15,15), save_fig=None):
+        """Plot Function for Ates et al. 
+        Arguments:
+            item np.array: original instance.
+            org_label int: originally predicted label. 
+            exp np.array: returned explanation. 
+            cf_label int: lebel of returned instance. 
+            figsize Tuple: Size of Figure (x,y).
+            save_fig str: Path to Save the figure.
+        """
         if self.mode == 'time':
             item = item.reshape(item.shape[0],item.shape[2],item.shape[1]) 
 
@@ -755,6 +732,8 @@ class AtesCF(CF):
             plt.xlabel('Time', fontweight = 'bold', fontsize='large')
             plt.ylabel('Value', fontweight = 'bold', fontsize='large')
             i=i+1
-        #plt.savefig('../Images/Initial_Example_Neon.pdf')
-        plt.show()
+        if save_fig is None: 
+            plt.show()
+        else:
+            plt.savefig(save_fig)
 
