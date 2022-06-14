@@ -22,9 +22,31 @@ from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 
 class Saliency_PTY(Saliency):
     '''
+    PyTorch Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library captum [2].
+    For PyTorch the following saliency methods are available: 
+        + Gradients (GRAD)
+        + Integrated Gradients (IG)
+        + Gradient Shap (GS)
+        + DeepLift (DL)
+        + DeepLiftShap (DLS)
+        + SmoothGrad (SG)
+        + Shapley Value Sampling(SVS)
+        + Feature Permutation (FP)
+        + Feature Sampling (FS)
+        + Occlusion (FO)
+
+    [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
+    [2] Kokhlikyan, Narine, et al. "Captum: A unified and generic model interpretability library for pytorch." arXiv preprint arXiv:2009.07896 (2020).
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='GRAD',mode='time',backend= 'torch',device='cpu') -> None:
-        '''
+        ''' Initialization
+        Attrubutes:
+            model: model to be explained
+            NumTimeStep int : Number of Time Step 
+            NumFetaures int : Number Features
+            method str: Saliency Methode to be used
+            mode str: Second dimension 'time' or 'feat'
+            backend str: 'PYT'  
         '''
         super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
         self.method = method
@@ -53,6 +75,15 @@ class Saliency_PTY(Saliency):
             self.device='cpu'
 
     def explain(self,item,labels, TSR = True):
+        '''Method to explain the model based on the item. 
+        Attrributes: 
+            item np.array: item to get feature attribution for
+            labels np.array: labels 
+            TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
+        Returns: 
+            List: feature attributiin weights
+        
+        '''
         #TODO differntiat between CNN and LSTM 
         mask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)
         featureMask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)

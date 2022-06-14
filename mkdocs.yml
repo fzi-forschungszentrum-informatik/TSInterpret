@@ -15,7 +15,7 @@ plugins:
 nav:
   - Home: index.md
   - Interpretability: InterpretabilityMethods.md
-  - Usage: 
+  - Usage:
     - Counterfactuals:
       -  Ates: ./Notebooks/Ates_torch.ipynb
       -  Nun-CF: ./Notebooks/NunCF_torch.ipynb
@@ -23,6 +23,7 @@ nav:
     - Models: Model_Interface.md
     - InterpretabilityMethods: 
       - Counterfactual: ./Methods/CF.md
+      - Saliency: ./Methods/Saliency.md
 #  - Installation: installation.md
 #  - Code Reference:
 #      - Classification: classification.md
