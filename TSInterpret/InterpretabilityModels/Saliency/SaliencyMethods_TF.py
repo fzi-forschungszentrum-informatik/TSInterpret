@@ -10,20 +10,17 @@ import tensorflow as tf
 from TSInterpret.InterpretabilityModels import utils
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
 import shap
-class Saliency_TF(FeatureAttribution):
+from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
+class Saliency_TF(Saliency):
     '''
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='saliency',mode='time',device='cpu') -> None:
         '''
         '''
         #tf explain does not provide baseline !
-        super().__init__(model,mode)
-        self.NumTimeSteps=NumTimeSteps
-        print('NumTImeSteps',self.NumTimeSteps)
-        self.NumFeatures=NumFeatures
-        print('NumFeatures', self.NumFeatures)
+        super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
+        print('Mode in TF Saliency', self.mode)
         self.method = method
         if method == 'GRAD':
             self.Grad = VanillaGradients()

@@ -16,17 +16,17 @@ import numpy as np
 from  sklearn import preprocessing
 import torch
 from torch.autograd import Variable 
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
-class Saliency_PT(FeatureAttribution):
+from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
+
+class Saliency_PTY(Saliency):
     '''
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='GRAD',mode='time',backend= 'torch',device='cpu') -> None:
         '''
         '''
-        super().__init__(model,mode)
+        super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
         self.method = method
         if method == 'GRAD':
             self.Grad = Saliency(model)
@@ -51,9 +51,6 @@ class Saliency_PT(FeatureAttribution):
             self.Grad = Occlusion(model)
         if backend == 'torch':
             self.device='cpu'
-        #TODO extract this 
-        self.NumTimeSteps=NumTimeSteps
-        self.NumFeatures=NumFeatures 
 
     def explain(self,item,labels, TSR = True):
         #TODO differntiat between CNN and LSTM 

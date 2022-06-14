@@ -1,4 +1,4 @@
-from . import utils, InterpretabilityBase, InstanceBase, FeatureAttribution, counterfactual, IsmailEtAl, lefitist, lime,Shap, TsInsight, GradCam
+from . import utils, InterpretabilityBase, InstanceBase, FeatureAttribution, counterfactual, Saliency, lefitist, lime,Shap, TsInsight, GradCam
 
 __all__ = [
 
@@ -7,7 +7,7 @@ __all__ = [
 "InstanceBase", 
 "FeatureAttribution", 
 "counterfactual", 
-"IsmailEtAl", 
+"Saliency", 
 "lefitist", 
 "lime",
 "Shap", 
