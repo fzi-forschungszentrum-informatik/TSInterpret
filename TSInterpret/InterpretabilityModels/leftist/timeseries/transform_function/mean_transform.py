@@ -55,6 +55,7 @@ class MeanTransform(Transform):
         # get interval of consecutive segment where neighbor mask equal 0
         zeroes_interval = np.array([(i,i) for i in np.where(neighbor_mask==0)[0]])
         neighbor_values = self.explained_instance.copy().astype(float)
+        neighbor_values = neighbor_values.reshape(-1)
         neighbor_values = self._compute_segment(zeroes_interval,neighbor_values)
         return neighbor_values
 

@@ -1,6 +1,5 @@
 from email import header
 from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import LearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.utils_learning_process import predict_proba
 from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
 from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.mean_transform import MeanTransform
@@ -44,7 +43,6 @@ class LEFTIST(FeatureAttribution):
         if mode == 'feat':
             self.change=True 
             self.test_x=self.test_x.reshape (-1,self.test_x.shape[-1], self.test_x.shape[-2])
-            print('test_x.shape ' ,self.test_x.shape)
 
         if backend == 'PYT':
             self.predict=PyTorchModel(self.model, self.change).predict
@@ -78,7 +76,6 @@ class LEFTIST(FeatureAttribution):
         Returns:
             List: Attribution weight
         """
-        print('Instance', instance.shape)
         self.transform = transform_name
         self.transform_name=transform_name
         self.learning_process_name = learning_process_name
@@ -95,19 +92,21 @@ class LEFTIST(FeatureAttribution):
             self.transform = RandBackgroundTransform(instance)
             self.transform.set_background_dataset(self.test_x)
         if self.learning_process_name == 'SHAP':
-            self.learning_process = SHAPLearningProcess(instance,self.model_to_explain,external_dataset=self.test_x)
+            self.learning_process = SHAPLearningProcess(instance,self.predict,external_dataset=self.test_x)
         else:
             self.learning_process = LIMELearningProcess(random_state)
         # get the number of features of the simplified representation
         nb_interpretable_features, segments_interval = self.segmentator.segment(instance)
 
         self.transform.segments_interval = segments_interval
-
+        
         # generate the neighbors around the instance to explain
         self.neighbors = self.learning_process.neighbors_generator.generate(nb_interpretable_features, nb_neighbors,self.transform)
-
+        self.neighbors.values=np.array(self.neighbors.values).reshape(-1,instance.shape[0],1)
         # classify the neighbors
-        self.neighbors = predict_proba(self.neighbors, self.model,self.backend,self.mode)
+        self.neighbors.proba_labels =self.predict(self.neighbors.values)
+        if len(self.neighbors.proba_labels[0]) == 1:
+            self.neighbors.proba_labels = np.array([np.array([el[0],1-el[0]]) for el in self.neighbors.proba_labels])
 
         # build the explanation from the neighbors
         if idx_label is None:
@@ -116,12 +115,6 @@ class LEFTIST(FeatureAttribution):
                 explanations.append(self.learning_process.solve(self.neighbors, label, explanation_size=explanation_size))
         else:
             explanations = [self.learning_process.solve(self.neighbors, idx_label, explanation_size=explanation_size)]
-        
-        print(np.array(explanations).shape)
-        #TODO reform the explanation ! 
-        #values_per_slice=len(instance.reshape(-1))/10
-        #exp= instance.copy()
-        #for a in range(0,nb_interpretable_feature):
         explanations = self._shape_explanations(explanations,instance)
 
         return explanations

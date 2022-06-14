@@ -53,12 +53,9 @@ class LIMENeighborsGenerator(NeighborsGenerator):
         """
         # initialize the neighbors
         neighbors = Neighbors()
-        print('nb_features',nb_features)
-        print('nb_neighbors',nb_neighbors)
         # neighbors masks generation (simplified representation of the neighbors in the interpretable binary space)
         neighbors.masks = self.random_state.randint(0, 2, nb_neighbors * nb_features) \
             .reshape((nb_neighbors, nb_features))
-        print('NM',neighbors.masks)
         # set the first neighbor mask as the simplified representation of the instance to explain
         neighbors.masks[0,:] = 1
 
@@ -67,13 +64,10 @@ class LIMENeighborsGenerator(NeighborsGenerator):
         #print('!!!!!!!!!!!!!!!!!!')
         #print(type(neighbors.masks))
         neighbors.values = reconstruct(neighbors, transform)
-        print('NV',neighbors.values)
         # compute the distances between the neighbors mask
         distances = self._compute_distances(neighbors)
-        print('dis',distances)
         # compute the kernel weight of each neighbor
         neighbors = self._compute_kernel_weights(neighbors,distances)
-        print('neigh11', neighbors)
         return neighbors
 
     def _compute_distances(self,neighbors):
