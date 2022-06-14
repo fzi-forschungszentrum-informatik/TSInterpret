@@ -5,3 +5,4 @@ __pycache__
 ./TSInterpret/ClassificationModels/models/*
 ./build
 ./TSInterpret.egg-info
+./build/*
