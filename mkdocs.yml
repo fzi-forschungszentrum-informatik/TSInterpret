@@ -18,6 +18,7 @@ nav:
   - Usage: 
     - Counterfactuals:
       -  Ates: ./Notebooks/Ates_torch.ipynb
+      -  Nun-CF: ./Notebooks/NunCF_torch.ipynb
   - API References: 
     - Models: Model_Interface.md
     - InterpretabilityMethods: 

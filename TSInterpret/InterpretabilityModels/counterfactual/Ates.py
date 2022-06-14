@@ -63,7 +63,6 @@ class BaseExplanation:
         raise NotImplementedError("Please don't use the base class directly")
 
     def construct_per_class_trees(self):
-        """Used to choose distractors"""
         if self.per_class_trees is not None:
             return
         self.per_class_trees = {}
@@ -123,23 +122,6 @@ class BaseExplanation:
             self, x, optim='gp', eps=None, bound_type='box', clip=True,
             n_calls=100, njobs=-1, verbose=False, exp_kwargs=None,
             n_neighbors=None):
-        """Compute one-sided lipschitz estimate for explainer.
-        Adequate for local Lipschitz, for global must have
-        the two sided version. This computes:
-            max_z || f(x) - f(z)|| / || x - z||
-        Instead of:
-            max_z1,z2 || f(z1) - f(z2)|| / || z1 - z2||
-        If n_neighbors is provided, does a local search on n closest neighbors
-        If eps provided, does local lipzshitz in:
-            - box of width 2*eps along each dimension if bound_type = 'box'
-            - box of width 2*eps*va, along each dimension if bound_type =
-                'box_norm' (i.e. normalize so that deviation is
-                eps % in each dim )
-            - box of width 2*eps*std along each dimension if bound_type =
-                'box_std'
-        max_z || f(x) - f(z)|| / || x - z||   , with f = theta
-        clip: clip bounds to within (min, max) of dataset
-        """
         np_x = x.T.flatten()
         if n_neighbors is not None and self.tree is None:
             self.construct_tree()
@@ -342,13 +324,7 @@ class BruteForceSearch(BaseExplanation):
 
         other =modified
         target = np.argmax(self.clf(other),axis=1)
-        #TODO Change explanation to best and change plot func !
         return other, target
-
-        #if not return_dist:
-        #    return explanation,modified
-        #else:
-        #    return explanation, best_dist,modified
 
 
 class LossDiscreteState:
@@ -393,8 +369,6 @@ class LossDiscreteState:
         return -loss_pred if self.maximize else loss_pred
 
     def get_prob_type(self):
-        """ Return the problem type."""
-
         return self.prob_type
 
 
@@ -479,13 +453,8 @@ class OptimizedSearch(BaseExplanation):
             print('Run Brute Force as Backup.')
             explanation = self.backup.explain(x_test, num_features=num_features,
                                        to_maximize=to_maximize, return_dist=return_dist, savefig=savefig)
-        #TODO other way around for opt 
         best, other = explanation
-        print('Best',best.shape)
-        print('Other', other.shape)
         target = np.argmax(self.clf(best),axis=1)
-        print('Target', target)
-        #TODO Change explanation to best and change plot func !
         return best, target
 
     def _get_explanation(self, x_test, to_maximize, num_features, return_dist=False, savefig=False):
@@ -672,13 +641,6 @@ class AtesCF(CF):
             plt.xlabel('Time', fontweight = 'bold', fontsize='large')
             plt.ylabel('Value', fontweight = 'bold', fontsize='large')
             i=i+1
-        #lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
-        #lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-        #fig.legend(lines, labels)
-        #plt.legend()
-        #fig.legend( lines, labels, loc = (0.5, 0), ncol=5 )
-        #handles, labels = ax.get_legend_handles_labels()
-        #fig.legend(handles, labels, loc='upper center')
         if save_fig is None: 
             plt.show()
         else:
