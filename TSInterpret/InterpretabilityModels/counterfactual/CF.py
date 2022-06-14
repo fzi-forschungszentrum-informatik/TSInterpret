@@ -3,6 +3,7 @@
 #Only works with Shaplet Forest classifier, KNearestNeighbour Classifier 
 
 from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InstanceBase import InstanceBase
 import matplotlib.pyplot as plt
 import seaborn as sns
 from abc import abstractmethod
@@ -10,42 +11,34 @@ import numpy as np
 import pandas as pd
 from typing import Tuple
 
-class CF(InterpretabilityBase):
+class CF(InstanceBase):
     """
     Abstract class to implement Coutnterfactual Methods for time series data 
-    model: Machine Learning Model to be explained.
-    mode : Second dimension is feature --> 'feat', is time --> 'time'
     """
 
     def __init__(self, mlmodel,mode) -> None:
-        super().__init__(mlmodel)
+        """Initialization of CF. 
+        Arguments:
+            model: Machine Learning Model to be explained.
+            mode str : Second dimension is feature --> 'feat', is time --> 'time'
+        """
+        
+        super().__init__(mlmodel,mode)
         #self.model_to_explain = mlmodel
-        self.mode=mode
+        #self.mode=mode
 
     def explain(self) -> Tuple[np.array, int]:
         """
         Explains instance or model. 
-        Parameters
-        ----------
-        instance: np.array
-            Not encoded and not normalised factual examples in two-dimensional shape (m, n).
-        Returns
-        -------
-        Tuple(cf, label)
         """
-        raise NotImplementedError("Please don't use the base class directly")
+        pass
 
-    def plot (self, original,org_label, exp,exp_label, vis_change= True,all_in_one=False, save=None):
+    def plot (self, original,org_label, exp,exp_label, vis_change= True,all_in_one=False, save_fig=None):
         """
+        #TODO Move to instance Base Methods
         Basic Plot Function for visualizing Coutnerfactuals.
-        Parameters
-        ----------
-        instance: np.array
-            Not encoded and not normalised factual examples in two-dimensional shape (m, n).
-        Returns
-        -------
-        pd.DataFrame
-            Encoded and normalised counterfactual examples.
+        Arguments:
+            instance: np.array            Not encoded and not normalised factual examples in two-dimensional shape (m, n)
         """
         
         if all_in_one:
@@ -82,22 +75,16 @@ class CF(InterpretabilityBase):
 
             p=sns.lineplot(x=range(0,len(original.reshape(-1))), y=exp.flatten(), color='white', ax=ax032,label=f"{exp_label}")
             p.set_ylabel(f"Counterfactual")
-        if save == None: 
+        if save_fig == None: 
             plt.show()
         else:
-            plt.savefig(save)
+            plt.savefig(save_fig)
     
-    def plot_in_one(self,item,org_label,exp,cf_label):
+    def plot_in_one(self,item,org_label,exp,cf_label, save_fig= None):
         """
         Basic Plot Function for Visualizing Coutnerfactuals.
-        Parameters
-        ----------
-        instance: np.array
-            Not encoded and not normalised factual examples in two-dimensional shape (m, n).
-        Returns
-        -------
-        pd.DataFrame
-            Encoded and normalised counterfactual examples.
+        Arguments:
+            instance np.array: Not encoded and not normalised factual examples in two-dimensional shape (m, n).
         """
         
         plt.style.use("classic")
@@ -127,5 +114,7 @@ class CF(InterpretabilityBase):
         ax.grid(color='#2A3459')
         plt.xlabel('Time', fontweight = 'bold', fontsize='large')
         plt.ylabel('Value', fontweight = 'bold', fontsize='large')
-        #plt.savefig('../Images/Initial_Example_Neon.pdf')
-        plt.show()
+        if save_fig is None: 
+            plt.show()
+        else:
+            plt.savefig(save_fig)

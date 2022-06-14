@@ -47,13 +47,10 @@ class BaseExplanation:
         self.clf = clf
         self.timeseries = timeseries
         self.labels = pd.DataFrame(labels, columns=['label'])
-        #print(self.labels)
         self.silent = silent
         self.num_distractors = num_distractors
-        #self.metrics = self.clf.steps[0][1].column_names
         self.dont_stop = dont_stop
-        self.window_size =timeseries.shape[-1] #len(timeseries.loc[
-            #timeseries.index.get_level_values('node_id')[0]])
+        self.window_size =timeseries.shape[-1] 
         self.channels=timeseries.shape[-2]
         self.ts_min = np.repeat(timeseries.min(), self.window_size)
         self.ts_max = np.repeat(timeseries.max(), self.window_size)
@@ -71,41 +68,27 @@ class BaseExplanation:
             return
         self.per_class_trees = {}
         self.per_class_node_indices = {c: [] for c in np.unique(self.labels)}
-        #todo predict
-        #print('timeseries',self.timeseries.shape)
+
         input_ = self.timeseries.reshape(-1,self.channels,self.window_size)
-        #print('input',input_.shape)
+
         preds = np.argmax(self.clf(input_),axis=1)
-        #print(preds)
-        #print(self.labels)
-        #preds = self.clf.predict(self.timeseries)
         true_positive_node_ids = {c: [] for c in np.unique(self.labels)}
-        #print(type(true_positive_node_ids))
-        #print('Index')
         for pred, (idx, row) in zip(preds, self.labels.iterrows()):
             
             if row['label'] == pred:
-                #print(idx)
                 true_positive_node_ids[pred].append(idx)
-        #print(true_positive_node_ids)
         for c in  np.unique(self.labels):
             dataset = []
-            #print('c',c)
             for node_id in true_positive_node_ids[c]:
-                #print('NodeID',node_id)
                 dataset.append(self.timeseries[
                     [node_id], :, :].T.flatten())
-                #print('timeseries',self.timeseries[node_id])
                 self.per_class_node_indices[c].append(node_id)
-            #print(np.array(dataset).shape)
             if len(dataset)!=0:
                 self.per_class_trees[c] = KDTree(np.stack(dataset))
             else: 
                 self.per_class_trees[c]=[]
                 logging.warning(f'Due to lack of true postitives for class {c} no kd-tree could be build.')
 
-        if not self.silent:
-            logging.info("Finished constructing per class kdtree")
 
     def construct_tree(self):
         if self.tree is not None:
@@ -118,8 +101,6 @@ class BaseExplanation:
                 [node_id], :, :].T.flatten())
             self.node_indices.append(node_id)
         self.tree = KDTree(np.stack(train_set))
-        if not self.silent:
-            logging.info("Finished constructing the kdtree")
 
     def _get_distractors(self, x_test, to_maximize, n_distractors=2):
         self.construct_per_class_trees()
@@ -135,10 +116,7 @@ class BaseExplanation:
                 k=n_distractors)[1].flatten():
             distractors.append(self.timeseries[
                 [self.per_class_node_indices[to_maximize][idx]], :, :])
-        if not self.silent:
-            logging.info("Returning distractors %s", [
-                x#.index.get_level_values('node_id').unique().values[0]
-                for x in distractors])
+
         return distractors
 
     def local_lipschitz_estimate(
@@ -265,9 +243,7 @@ class BaseExplanation:
 
         if len(worst_case) != len(consts):
             np.put_along_axis(consts, variable_indices, worst_case, axis=0)
-        if verbose:
-            logging.info("Best ratio: %f, norm: %f", min_ratio,
-                         np.linalg.norm(np_x - consts))
+
         return min_ratio, consts
 
 
@@ -298,12 +274,9 @@ class BruteForceSearch(BaseExplanation):
         DISTRACTOR = distractor
         input_ = x_test.reshape(1,-1,self.window_size)
         best_case= self.clf(input_)[0][label_idx]
-        #best_case = self.clf.predict_proba(x_test)[0][label_idx]
         best_column = None
         tuples = []
         for c in range(0, self.channels):
-            #print(distractor.shape)
-            #print(x_test.shape)
             if np.any(distractor[0][c]!= x_test[0][c]):
                 tuples.append((c, label_idx))
         if self.threads == 1:
@@ -325,35 +298,27 @@ class BruteForceSearch(BaseExplanation):
         return best_column, best_case
 
     def explain(self, x_test, to_maximize=None, num_features=10,return_dist=False, savefig=False):
-        #orig_preds = self.clf.predict_proba(x_test)
-        input_ = x_test.reshape(1,-1,self.window_size)    
-        orig_preds= self.clf(input_)[0][to_maximize]
-        orig_label = np.argmax(orig_preds)
+        input_ = x_test.reshape(1,-1,self.window_size)
+        orig_preds= self.clf(input_)
         if to_maximize is None:
-            to_maximize = np.argmin(orig_preds)
+            to_maximize = np.argmin(orig_preds)    
+        orig_preds= orig_preds[0][to_maximize]
+        orig_label = np.argmax(self.clf(input_))
         if orig_label == to_maximize:
-            return []
-        if not self.silent:
-            logging.info("Working on turning label from %s to %s",
-                         orig_label, to_maximize)
+            print('Original and Target Label are identical !')
+            return None, None
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors)
         best_explanation = set()
         best_explanation_score = 0
         for count, dist in enumerate(distractors):
-            if not self.silent:
-                logging.info("Trying distractor %d / %d",
-                             count + 1, self.num_distractors)
             explanation = []
             modified = x_test.copy()
             prev_best = 0
-            best_dist = dist #TODO: Only supports one distractor
+            #best_dist = dist 
             while True:
                 input_ = modified.reshape(1,-1,self.window_size)
                 probas= self.clf(input_)[0][to_maximize]
-                #probas = self.clf.predict_proba(modified)
-                if not self.silent:
-                    logging.info("Current probas: %s", probas)
                 if np.argmax(probas) == to_maximize:
                     current_best = np.max(probas)
                     if current_best > best_explanation_score:
@@ -371,21 +336,19 @@ class BruteForceSearch(BaseExplanation):
                 best_column, _ = self._find_best(modified, dist, to_maximize)
                 if best_column is None:
                     break
-                #if not self.silent:
-                #    self._plot_changed(best_column, modified, dist, savefig=savefig)
+
                 modified[0][best_column] = dist[0][best_column]
                 explanation.append(best_column)
 
         other =modified
         target = np.argmax(self.clf(other),axis=1)
-        print('Target', target)
         #TODO Change explanation to best and change plot func !
         return other, target
 
-        if not return_dist:
-            return explanation,modified
-        else:
-            return explanation, best_dist,modified
+        #if not return_dist:
+        #    return explanation,modified
+        #else:
+        #    return explanation, best_dist,modified
 
 
 class LossDiscreteState:
@@ -412,23 +375,16 @@ class LossDiscreteState:
         new_case = self.x_test.copy()
         assert len(self.cols_swap) == len(feature_matrix)
 
-        # If the value is one, replace from distractor
+    
         for col_replace, a in zip(self.cols_swap, feature_matrix):
             if a == 1:
-                #print(new_case.shape)
-                #print(self.distractor.shape)
                 new_case[0][col_replace] = self.distractor[0][col_replace]
 
         replaced_feature_count = np.sum(feature_matrix)
 
-        # if replaced_feature_count > self.max_features:
-        #     feature_loss = 1
-        #     loss_pred = 1
-        # else:
-        # Will return the prob of the other class
+
         input_ = new_case.reshape(1,self.channels,self.window_size)
         result = self.clf(input_)[0][self.target]
-        #result = self.clf.predict_proba(new_case)[0][self.target]
         feature_loss = self.reg * np.maximum(0, replaced_feature_count - self.max_features)
         loss_pred = np.square(np.maximum(0, 0.95 - result))
 
@@ -483,15 +439,12 @@ class OptimizedSearch(BaseExplanation):
                 modified[0][c] = dist[0][c]
             input_ = modified.reshape(1,-1,self.window_size)
             prev_proba = self.clf(input_)[0][to_maximize]
-            #prev_proba = self.clf.predict_proba(modified)[0][to_maximize]
             best_col = None
             best_diff = 0
             for c in explanation:
                 tmp = modified.copy()
-                #print('temp',tmp[0].shape)
-                #print('dist',dist.shape)
+
                 tmp[0][c] = dist[0][c]
-                #cur_proba = self.clf.predict_proba(tmp)[0][to_maximize]
 
                 input_ = tmp.reshape(1,self.channels,self.window_size)
                 cur_proba = self.clf(input_)[0][to_maximize]
@@ -505,39 +458,35 @@ class OptimizedSearch(BaseExplanation):
         return short_explanation
 
     def explain(self, x_test, num_features=None, to_maximize=None, return_dist = False, savefig=False)-> Tuple[np.array, int]:
-        # num_feature is maximum number of features
-        #orig_preds = self.clf.predict_proba(x_test)
         
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds = self.clf(input_)
-        #idx = output.argmax()
+ 
         orig_label = np.argmax(orig_preds)
-        #print(orig_label)
-        #print(to_maximize)
-        #binary classification
+
         if to_maximize is None:
             to_maximize = np.argmin(orig_preds)
 
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
-            return []
-        #if not self.silent:
-        #    logging.info("Working on turning label from %s to %s",
-        #                 self.clf.classes_[orig_label],
-        #                 self.clf.classes_[to_maximize])
+            return None, None
+
 
         explanation = self._get_explanation(
             x_test, to_maximize, num_features, return_dist, savefig=savefig)
-        if not explanation:
-            #logging.info("Used greedy search for %s",
-            #             x_test.index.get_level_values('node_id')[0])
+        tr,_=explanation
+        if tr==None:
+            print('Run Brute Force as Backup.')
             explanation = self.backup.explain(x_test, num_features=num_features,
-                                              to_maximize=to_maximize, return_dist=return_dist, savefig=savefig)
+                                       to_maximize=to_maximize, return_dist=return_dist, savefig=savefig)
+        #TODO other way around for opt 
         best, other = explanation
-        target = np.argmax(self.clf(other),axis=1)
+        print('Best',best.shape)
+        print('Other', other.shape)
+        target = np.argmax(self.clf(best),axis=1)
         print('Target', target)
         #TODO Change explanation to best and change plot func !
-        return other, target
+        return best, target
 
     def _get_explanation(self, x_test, to_maximize, num_features, return_dist=False, savefig=False):
         distractors = self._get_distractors(
@@ -551,12 +500,6 @@ class OptimizedSearch(BaseExplanation):
         best_explanation_score = 0
 
         for count, dist in enumerate(distractors):
-
-            if not self.silent:
-                logging.info("Trying distractor %d / %d",
-                             count + 1, self.num_distractors)
-            #print(dist)
-            #print(dist.shape)
             columns = [
                 c for c in range(0,self.channels)
                 if np.any(dist[0][c] != x_test[0][c])
@@ -590,7 +533,6 @@ class OptimizedSearch(BaseExplanation):
                     modified[0][c] = dist[0][c]
             input_ = modified.reshape(1,-1,self.window_size)
             probas = self.clf(input_)
-            #probas = self.clf.predict_proba(modified)
 
             if not self.silent:
                 logging.info("Current probas: %s", probas)
@@ -602,14 +544,9 @@ class OptimizedSearch(BaseExplanation):
                     best_explanation_score = current_best
                     best_modified = modified
                     best_dist = dist
-        #print(best_explanation)
-        #print(best_modified)
-        #if not self.silent and len(best_explanation) != 0:
-        #    for metric in best_explanation:
-        #        self._plot_changed(metric, x_test, best_dist, savefig=savefig)
         if len(best_explanation) == 0:
-            return None
-        if return_dist == False: #or len(best_explanation) == 0:
+            return None, None
+        if return_dist == False: 
             return best_explanation,best_modified
         else:
             return best_explanation, best_dist
@@ -654,12 +591,12 @@ class AtesCF(CF):
         self.referenceset=(test_x,test_y)
          
 
-    def explain(self, x: np.ndarray, target: int, method= 'opt')-> Tuple[np.array, int]:
+    def explain(self, x: np.ndarray,orig_class:int=None, target: int=None, method= 'opt')-> Tuple[np.array, int]:
         '''
         Calculates the Counterfactual according to Ates.
         Arguments:
             x (np.array): The instance to explain.
-            target (np.array): target class.
+            target (np.array): target class. If no target class is given, the class with the secon heighest classification probability is selected.
             method str : 'opt' if optimized calculation, 'brute' for Brute Force.
             
         Returns:
@@ -668,7 +605,6 @@ class AtesCF(CF):
         '''
         if self.mode != 'feat':
             x=x.reshape(-1, x.shape[-1], x.shape[-2])
-            
         train_x,train_y=self.referenceset
         if len(train_y.shape)>1:
              train_y= np.argmax(train_y,axis=1)
@@ -677,7 +613,8 @@ class AtesCF(CF):
             opt=OptimizedSearch(self.predict, train_x, train_y, silent=False, threads=1,num_distractors=2)
             return opt.explain(x,to_maximize=target,savefig=False)
         elif method =='brute':
-            opt=BruteForceSearch(self.predict, train_x,train_y)
+            #TODO Currently not Threadable as TF Model does not support
+            opt=BruteForceSearch(self.predict, train_x,train_y, threads=1)
             return opt.explain(x,to_maximize=target,savefig=False)
         
 
@@ -705,6 +642,9 @@ class AtesCF(CF):
         #index= np.where(np.any(item))
         res = (item != exp).any(-1)
         ind=np.where(res[0])
+        if len(ind[0]) == 0:
+            print('Items are identical')
+            return
         i=0
         #Draw changed channels
         fig, ax = plt.subplots(len(ind[0]),1,figsize=figsize)
@@ -732,6 +672,13 @@ class AtesCF(CF):
             plt.xlabel('Time', fontweight = 'bold', fontsize='large')
             plt.ylabel('Value', fontweight = 'bold', fontsize='large')
             i=i+1
+        #lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
+        #lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
+        #fig.legend(lines, labels)
+        #plt.legend()
+        #fig.legend( lines, labels, loc = (0.5, 0), ncol=5 )
+        #handles, labels = ax.get_legend_handles_labels()
+        #fig.legend(handles, labels, loc='upper center')
         if save_fig is None: 
             plt.show()
         else:

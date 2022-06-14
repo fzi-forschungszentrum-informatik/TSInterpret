@@ -36,21 +36,22 @@ from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 
 class NativeGuideCF(CF):
     '''
-    NUN_CF according to 
-    Delaney, E., Greene, D., Keane, M.T.: Instance-Based Counterfactual Explanations
-    for Time Series Classification. In: S ́anchez-Ruiz, A.A., Floyd, M.W. (eds.) Case-
-    Based Reasoning Research and Development, vol. 12877, pp. 32–47. Springer
-    International Publishing, Cham (2021), series Title: Lecture Notes in Computer
-    Science     for both torch and tensorflow. 
+    NUN_CF according to [1] for both torch and tensorflow. 
+    [1] Delaney, E., Greene, D., Keane, M.T.: Instance-Based Counterfactual Explanations
+        for Time Series Classification. In: Sanchez-Ruiz, A.A., Floyd, M.W. (eds.) Case-
+        Based Reasoning Research and Development, vol. 12877, pp. 32–47. Springer
+        International Publishing, Cham (2021), series Title: Lecture Notes in Computer
+        Science. 
     '''
     def __init__(self, model,shape, reference_set, backend='torch', mode ='feat') -> None:
         '''
         In this case differentiation between time & feat not necessary as implicitly given by CNN. Only works for CNNs due to the attribution methods.
-        Args:
+        Arguments:
             model: classification model to explain
-            shape: input shape
-            reference set: reference set as tuple
-            mode: model type either torch or tensorflow
+            shape Tuple: input shape
+            reference set Tuple: reference set as tuple (x,y)
+            backend str: 'PYT' or  'TF'
+            mode str: model either 'time' or 'feat'
         '''
         super().__init__(model,mode)
         #self.model=model
@@ -58,6 +59,7 @@ class NativeGuideCF(CF):
         test_x,test_y=reference_set
         test_x=np.array(test_x,dtype=np.float32)
         self.mode=mode
+
         if mode == 'time':
             #Parse test data into (1, feat, time):
             self.ts_length= shape[-2]
@@ -68,11 +70,9 @@ class NativeGuideCF(CF):
         if backend == 'PYT':
             
             try:
-                #self.cam_extractor =SmoothGradCAMpp(self.model,input_shape=(shape[1],shape[2]) )
                 self.cam_extractor =CAM(self.model,input_shape=(shape[1],shape[2]) )
             except:
                 print('GradCam Hook already registered')
-            #out=self.model(torch.from_numpy(test_x.reshape(-1,1,test_x.shape[-1])))
             change=False
             if self.mode =='time':
                 change= True
@@ -82,19 +82,17 @@ class NativeGuideCF(CF):
         elif backend== 'TF':
             self.cam_extractor =GradCam1D() #VanillaGradients()#GradCam1D()
             y_pred = np.argmax(self.model.predict(test_x.reshape(-1,self.ts_length,1)), axis=1)
-            self.predict=TensorFlowModel(self.model,change=True).predict
-            #Parse test data into torch format : 
-            
+            self.predict=TensorFlowModel(self.model,change=True).predict            
         else: 
             print('Only Compatible with Tensorflow (TF) or Pytorch (PYT)!')
 
         self.reference_set=(test_x,y_pred)
         #Manipulate reference set replace original y with predicted y 
         
-    def native_guide_retrieval(self,query, predicted_label, distance, n_neighbors):
+    def _native_guide_retrieval(self,query, predicted_label, distance, n_neighbors):
         '''
         This gets the nearest unlike neighbors.
-        Args:
+        Arguments:
             query (np.array): The instance to explain.
             predicted_label (np.array): Label of instance.
             reference_set (np.array): Set of addtional labeled data (could be training or test set)
@@ -117,7 +115,13 @@ class NativeGuideCF(CF):
         x_train.reshape(-1,1,ts_length)
         return dist[0],x_train[np.where(y != predicted_label)][ind[0]]
 
-    def findSubarray(self, a, k): #used to find the maximum contigious subarray of length k in the explanation weight vector
+    def _native_guide_wrapper(self,query, predicted_label, distance, n_neighbors):
+        _,nun= self._native_guide_retrieval(query, predicted_label, distance, n_neighbors)
+        individual = np.array(nun.tolist(), dtype=np.float64)
+        out=self.predict(individual)
+        return nun,np.argmax(out)
+
+    def _findSubarray(self, a, k): #used to find the maximum contigious subarray of length k in the explanation weight vector
     
         n = len(a)
     
@@ -140,9 +144,9 @@ class NativeGuideCF(CF):
 
         return (vec[np.argmax(sum_arr)])
 
-    def counterfactual_generator_swap(self,instance, label,subarray_length=1,max_iter=500):
+    def _counterfactual_generator_swap(self,instance, label,subarray_length=1,max_iter=500):
         print(label)
-        _,nun=self.native_guide_retrieval(instance, label, 'euclidean', 1)
+        _,nun=self._native_guide_retrieval(instance, label, 'euclidean', 1)
         if np.count_nonzero(nun.reshape(-1)-instance.reshape(-1))==0:
             print('Starting and nun are Identical !')
 
@@ -168,7 +172,7 @@ class NativeGuideCF(CF):
         #out = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
 
 
-        most_influencial_array=self.findSubarray((training_weights), subarray_length)
+        most_influencial_array=self._findSubarray((training_weights), subarray_length)
     
         starting_point = np.where(training_weights==most_influencial_array[0])[0][0]
         print('Starting Points', starting_point)
@@ -191,7 +195,7 @@ class NativeGuideCF(CF):
         while prob_target > 0.5 and counter <max_iter:
         
             subarray_length +=1        
-            most_influencial_array=self.findSubarray((training_weights), subarray_length)
+            most_influencial_array=self._findSubarray((training_weights), subarray_length)
             starting_point = np.where(training_weights==most_influencial_array[0])[0][0]
             print('starting',starting_point)
             print(subarray_length)
@@ -212,9 +216,9 @@ class NativeGuideCF(CF):
         
         return X_example,np.argmax(out,axis=1)[0]
 
-    def instance_based_cf(self,query,label,target=None, distance='dtw', max_iter=500):
+    def _instance_based_cf(self,query,label,target=None, distance='dtw', max_iter=500):
     
-        d,nan=self.native_guide_retrieval(query, label, distance, 1)
+        d,nan=self._native_guide_retrieval(query, label, distance, 1)
         beta = 0
         #TODO reshape
         insample_cf = nan.reshape(1,1,-1)
@@ -253,23 +257,30 @@ class NativeGuideCF(CF):
     
         return generated_cf, target
 
-    #TODO Output type 
     def explain(self, x: np.ndarray,  y: int, method = 'NUN_CF', distance_measure='dtw',n_neighbors=1,max_iter=500)-> Tuple[np.array, int]:
         ''''
-        Explains a specific instance x 
+        Explains a specific instance x.
+        Arguments:
+            x np.array : instance to be explained.
+            y int: predicted label for instance x. 
+            method str: 'Nun_CF', 'dtw_bary_center' or 'native_guide'.
+            distance_measure str: sklearn appreviation for distance of knn.
+            n_neighbore int: # neighbors to select from.
+            max_iter int : max number of runs
+        Returns:
+            Tuple: (counterfactual, counterfactual label)
         
         '''
         if self.mode =='time':
             x=x.reshape(x.shape[0], x.shape[2],x.shape[1])
             print(x.shape)
         if method=='NUN_CF':
-            dis, item= self.native_guide_retrieval(x, y, distance_measure, n_neighbors)
-            return item
+            return self._native_guide_wrapper(x, y, distance_measure, n_neighbors)
         elif method=='dtw_bary_center':
-            return self.instance_based_cf(x,y,distance_measure)
+            return self._instance_based_cf(x,y,distance_measure)
         elif method=='native_guide':
             distance_measure='euclidean'
-            return  self.counterfactual_generator_swap(x, y,max_iter=max_iter)
+            return  self._counterfactual_generator_swap(x, y,max_iter=max_iter)
         else: 
             print('Unknown Method selected.')
 
