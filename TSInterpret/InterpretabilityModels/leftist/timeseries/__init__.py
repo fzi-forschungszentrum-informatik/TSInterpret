@@ -1,9 +1,9 @@
-from .timeseries import utils_timeseries, transform_function, segmantator
+from . import utils_timeseries, transform_function, segmentator
 
 __all__ = [
 "utils_timeseries", 
 "transform_function", 
-"segmantator", 
+"segmentator", 
 "learning_process"
 
 ]

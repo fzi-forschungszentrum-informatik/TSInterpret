@@ -1,3 +1,4 @@
+from email import header
 from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import LearningProcess
 from TSInterpret.InterpretabilityModels.leftist.learning_process.utils_learning_process import predict_proba
 from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
@@ -12,22 +13,17 @@ import matplotlib.pyplot as plt
 from TSInterpret.Models.PyTorchModel import PyTorchModel
 from TSInterpret.Models.TensorflowModel import TensorFlowModel
 from TSInterpret.Models.SklearnModel import SklearnModel
-
+import numpy as np 
 
 class LEFTIST(FeatureAttribution):
     """
-    Local explainer for time series classification.
+    Local explainer for time series classification. Wrapper for LEFTIST from [1].
 
-    Attributes:
-        transform (python function): the function to generate neighbors representation from interpretable features.
-        segmenetator (python function): the function to get the interpretable features.
-        model_to_explain (python function): the model to explain, must returned proba as prediction.
-        learning_process (LearningProcess): the method to learn the explanation model.
-    TODO This section is still to do
+    [1] Guillemé, Maël, et al. "Agnostic local explanation for time series classification." 2019 IEEE 31st International Conference on Tools with Artificial Intelligence (ICTAI). IEEE, 2019.
     """
     def __init__(self,model_to_explain, reference_set = None,mode='time',backend='F'):
-        '''
-         Args:
+        ''' Initization.
+         Arguments:
             model_to_explain: classification model to explain
             reference_set: reference set
             transform_name: name of transformer to be used
@@ -41,19 +37,22 @@ class LEFTIST(FeatureAttribution):
         self.neighbors = None
         # TODO move transform, segmentor and, learning process to EXPLAIN 
  
-        self.test_x=reference_set
+        self.test_x, _=reference_set
         self.backend=backend
         self.mode = mode
+        self.change = False
+        if mode == 'feat':
+            self.change=True 
 
         if backend == 'PYT':
-            self.predict=PyTorchModel(self.model, mode=mode).predict
+            self.predict=PyTorchModel(self.model, self.change).predict
             
         elif backend== 'TF':
-            self.predict=TensorFlowModel(self.model,mode='time').predict
+            self.predict=TensorFlowModel(self.model, self.change).predict
             #Parse test data into torch format : 
             
         elif backend=='SK': 
-            self.predict=SklearnModel(self.model,mode='time').predict
+            self.predict=SklearnModel(self.model,self.change).predict
         else:
             #Assumption this is already a predict Function 
             print('The Predict Function was given directly')
@@ -62,20 +61,20 @@ class LEFTIST(FeatureAttribution):
 
     def explain(self,instance,nb_neighbors, idx_label=None, explanation_size=None,transform_name='straight', segmentator_name='uniform', learning_process_name='Lime',nb_interpretable_feature=10, random_state=0):
         """
-        Compute the explanation model.
+        Compute the explanation.
 
         Parameters:
+            instance np.array: item to be explained
             nb_neighbors (int): number of neighbors to generate.
-            explained_instance (np.ndarray): time series instance to explain
             idx_label (int): index of label to explain. If None, return an explanation for each label.
             explanation_size (int): number of feature to use for the explanations
+            transform_name str: Name of transformer
+            learning_process_name str: 'Lime' or 'Shap' 
+            nb_interpretable_feature int: number of desired features
+            random_state int: fixes seed
 
         Returns:
-            An explanation model for the desired label
-
-        TODO
-            * Careful changed siganture
-
+            List: Attribution weight
         """
         print('Instance', instance.shape)
         self.transform = transform_name
@@ -120,30 +119,21 @@ class LEFTIST(FeatureAttribution):
         #values_per_slice=len(instance.reshape(-1))/10
         #exp= instance.copy()
         #for a in range(0,nb_interpretable_feature):
+        explanations = self._shape_explanations(explanations,instance)
 
         return explanations
-    
-    def plot_on_sample(self,series,exp):
-        '''TODO Visualizations
-                * Include average of the counter class?
-                * does this make sense ?  
-                * save oprions for plot
-        '''
-        values_per_slice=len(series)/len(exp[0][0])
-        step=0
-        plt.Figure()
-        plt.plot(series)
-        print(exp[0][0])
-        for i in range(0,len(exp[0][0])):
-            weight=exp[0][0][i]
-            print(weight)
-            start = i * values_per_slice
-            print(start)
-            end = start + values_per_slice
-            color = 'red' if weight < 0 else 'green'
-            plt.axvspan(start, end, color=color, alpha=abs(weight * 2))
 
-        plt.show()
-    def plot():
-        pass
-
+    def _shape_explanations(self, explanations, series):
+        values_per_slice=int(len(series)/len(explanations[0][0]))
+        heatmaps=[]
+        i=0
+        for i in range(0, len(explanations)):
+            heatmap = np.zeros_like(series).reshape(-1)
+            for value in explanations[i][0]:
+                print(value)
+                heatmap[i:values_per_slice+i]=np.ones_like((values_per_slice))*value
+                i=values_per_slice+i
+                
+            heatmaps.append(heatmap)
+      
+        return heatmaps

@@ -139,6 +139,8 @@ Use where possible preexisting work on time series , mark here if not possible.
   - AUC: Difference Observe output if section with small / large feature importance is taken away
   - Confidence Supression Game: smallest number of time-steos required to supress black-box mpdel by x
   - Minimality: sum of saliency maps 
+  - https://github.com/mlgig/explanation4tsc
+  
 ## Tutorial & Libraries
 - [ ] ts fresh: https://tsfresh.readthedocs.io/en/latest/text/forecasting.html
 - [ ] https://www.machinelearningplus.com/time-series/time-series-analysis-python/

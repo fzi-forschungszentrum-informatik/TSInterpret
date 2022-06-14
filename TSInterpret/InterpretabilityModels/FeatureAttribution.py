@@ -62,13 +62,12 @@ class FeatureAttribution(InterpretabilityBase):
             #Figure out number changed channels
             #index= np.where(np.any(item))
         i=0
-        if self.mode == 'time':
+        if self.mode=='time':
             print('time mode')
-            print(item.shape)
             item =item.reshape(1,item.shape[2],item.shape[1])
-            print(item.shape)
             print(exp.shape)
-            exp =exp.reshape(exp.shape[-1],-1)
+            #TODO Excluded because of LEFTIST
+           # exp =exp.reshape(exp.shape[-1],-1)
             print(exp.shape)
         else: 
             print(self.mode)
@@ -86,6 +85,7 @@ class FeatureAttribution(InterpretabilityBase):
             ax011=[]
             ax012=[]
             for channel in item[0]:
+                #print(item.shape)
                 ax011.append(plt.subplot(len(item[0]),1,i+1))
                 ax012.append(ax011[i].twinx())
                 if normelize_saliency:

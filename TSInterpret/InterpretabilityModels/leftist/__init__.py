@@ -1,7 +1,7 @@
-from . import Leftist, neighbors, transform
+from . import leftist, neighbors, transform
 
 __all__ = [
-   "Leftist", 
+   "leftist", 
    "neighbors", 
    "transform"
    ]
