@@ -20,7 +20,7 @@ class SHAPLearningProcess(LearningProcess):
             self.mean_background_dataset_proba_labels = self._classify_background_dataset(model_to_explain,external_data)
         else:
             self.mean_background_dataset_proba_labels = init_shap_explainer
-        self.explained_instance_proba_labels = self._classify_explained_instance(model_to_explain, explained_instance)
+        self.explained_instance_proba_labels = self._classify_explained_instance(model_to_explain, explained_instance.reshape(1,explained_instance.shape[0],explained_instance.shape[1]))
         self.neighbors_generator = SHAPNeighborsGenerator()
 
     def solve(self,neighbors,idx_label,explanation_size=None):
