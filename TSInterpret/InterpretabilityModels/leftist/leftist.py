@@ -20,14 +20,11 @@ class LEFTIST(FeatureAttribution):
 
     [1] Guillemé, Maël, et al. "Agnostic local explanation for time series classification." 2019 IEEE 31st International Conference on Tools with Artificial Intelligence (ICTAI). IEEE, 2019.
     """
-    def __init__(self,model_to_explain, reference_set = None,mode='time',backend='F'):
+    def __init__(self,model_to_explain, reference_set = None,mode='time',backend='F') -> None:
         ''' Initization.
          Arguments:
             model_to_explain: classification model to explain
             reference_set: reference set
-            transform_name: name of transformer to be used
-            segmentator: name of segmenator to be used
-            learning_process_name: Either Lime or Shap 
             mode: time or Feature
             backend: TF, PYT or SK 
         '''
