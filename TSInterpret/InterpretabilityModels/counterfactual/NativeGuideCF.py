@@ -54,11 +54,9 @@ class NativeGuideCF(CF):
             mode str: model either 'time' or 'feat'
         '''
         super().__init__(model,mode)
-        #self.model=model
         self.backend=backend
         test_x,test_y=reference_set
         test_x=np.array(test_x,dtype=np.float32)
-        self.mode=mode
 
         if mode == 'time':
             #Parse test data into (1, feat, time):
@@ -152,63 +150,40 @@ class NativeGuideCF(CF):
 
         test_x,test_y=self.reference_set
         train_x=test_x
-      
-        #Classify native guide
-        #input_ = torch.from_numpy(np.array(nun)).float().reshape(-1,1,train_x.shape[-1])
-        #out = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
         individual = np.array(nun.tolist(), dtype=np.float64)
         out=self.predict(individual)
-        print('Native Guide', out)
         if self.backend=='PYT': 
             training_weights = self.cam_extractor(out.squeeze(0).argmax().item(), out)[0].detach().numpy()
         elif self.backend=='TF':
             data = (instance.reshape(1,-1,1), None)
-            #label= tf.Tensor([[0,0,0,0,1,0,0,0,0,0]],dtype=tf.int32)
             training_weights =self.cam_extractor.explain(data, self.model,class_index=label[0])# grad_cam(self.model, instance.reshape(1,-1,1))#self.cam_extractor.explain(data, self.model,class_index=label)#instance
         #Classify Original
         individual = np.array(instance.tolist(), dtype=np.float64)
         out=self.predict(individual)
-        #input_ = torch.from_numpy(np.array(instance)).float().reshape(-1,1,train_x.shape[-1]) 
-        #out = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
 
 
         most_influencial_array=self._findSubarray((training_weights), subarray_length)
     
         starting_point = np.where(training_weights==most_influencial_array[0])[0][0]
-        print('Starting Points', starting_point)
     
         X_example = instance.copy().reshape(1,-1)
         
         nun=nun.reshape(1,-1)
-        print('Subarray Length', subarray_length)
         X_example[0,starting_point:subarray_length+starting_point] =nun[0,starting_point:subarray_length+starting_point]
-        #np.concatenate(instance[:starting_point], nun[starting_point:subarray_length+starting_point], instance[subarray_length+starting_point:])
-        #print(np.argmax(label,axis=0))
         individual = np.array(X_example.reshape(-1,1,train_x.shape[-1]).tolist(), dtype=np.float64)
         out=self.predict(individual)
-        #input_ = torch.from_numpy(np.array(X_example)).float().reshape(-1,1,train_x.shape[-1]) 
-        #out = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
         prob_target =  out[0][label] #torch.nn.functional.softmax(model(torch.from_numpy(test_x))).detach().numpy()[0][y_pred[instance]]
-        #print(out)
-        print('Prob_target',prob_target)
         counter= 0
         while prob_target > 0.5 and counter <max_iter:
         
             subarray_length +=1        
             most_influencial_array=self._findSubarray((training_weights), subarray_length)
             starting_point = np.where(training_weights==most_influencial_array[0])[0][0]
-            print('starting',starting_point)
-            print(subarray_length)
             X_example = instance.copy().reshape(1,-1)
             X_example[:,starting_point:subarray_length+starting_point] =nun[:,starting_point:subarray_length+starting_point]
-            print(np.count_nonzero(nun.reshape(-1)-X_example.reshape(-1))==0)
             individual = np.array(X_example.reshape(-1,1,train_x.shape[-1]).tolist(), dtype=np.float64)
             out=self.predict(individual)
-            #input_ = torch.from_numpy(np.array(X_example)).float().reshape(-1,1,train_x.shape[-1]) #TODO nun or instance
-            #out = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
             prob_target = out[0][label]
-            #print(out)
-            print('Prob_target',prob_target)
             counter=counter+1
             if counter==max_iter or subarray_length==self.ts_length:
                 print('No Counterfactual found')
@@ -220,14 +195,11 @@ class NativeGuideCF(CF):
     
         d,nan=self._native_guide_retrieval(query, label, distance, 1)
         beta = 0
-        #TODO reshape
         insample_cf = nan.reshape(1,1,-1)
 
         individual = np.array(query.tolist(), dtype=np.float64)
 
         output=self.predict(individual)
-        #input_ = torch.from_numpy(individual).float().reshape(1,1,-1)
-        #output = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
         pred_treshold = 0.5
         target = np.argsort(output)[0][-2:-1][0] 
         query=query.reshape(-1)
@@ -236,18 +208,13 @@ class NativeGuideCF(CF):
         generated_cf = generated_cf.reshape(1,1,-1)
         individual = np.array(generated_cf.tolist(), dtype=np.float64)
         prob_target=self.predict(individual)[0][target]
-        #input_ = torch.from_numpy(individual).float().reshape(1,1,-1)
-        #prob_target = torch.nn.functional.softmax(self.model(input_)).detach().numpy()[0][target]
         counter=0
 
         while prob_target < pred_treshold and counter<max_iter:
             beta +=0.01 
             generated_cf= dtw_barycenter_averaging([query, insample_cf], weights=np.array([(1-beta), beta]))
             generated_cf = generated_cf.reshape(1,1,-1)
-
             individual = np.array(generated_cf.tolist(), dtype=np.float64)
-            #input_ = torch.from_numpy(individual).float().reshape(1,1,-1)
-            #prob_target = torch.nn.functional.softmax(self.model(input_)).detach().numpy()[0][target]
             prob_target=self.predict(individual)[0][target]
 
             counter=counter+1
@@ -274,11 +241,11 @@ class NativeGuideCF(CF):
         if self.mode =='time':
             x=x.reshape(x.shape[0], x.shape[2],x.shape[1])
             print(x.shape)
-        if method=='NUN_CF':
+        if method=='NG':
             return self._native_guide_wrapper(x, y, distance_measure, n_neighbors)
         elif method=='dtw_bary_center':
             return self._instance_based_cf(x,y,distance_measure)
-        elif method=='native_guide':
+        elif method=='NUN_CF':
             distance_measure='euclidean'
             return  self._counterfactual_generator_swap(x, y,max_iter=max_iter)
         else: 
