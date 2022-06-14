@@ -43,6 +43,8 @@ class LEFTIST(FeatureAttribution):
         self.change = False
         if mode == 'feat':
             self.change=True 
+            self.test_x=self.test_x.reshape (-1,self.test_x.shape[-1], self.test_x.shape[-2])
+            print('test_x.shape ' ,self.test_x.shape)
 
         if backend == 'PYT':
             self.predict=PyTorchModel(self.model, self.change).predict
@@ -115,6 +117,7 @@ class LEFTIST(FeatureAttribution):
         else:
             explanations = [self.learning_process.solve(self.neighbors, idx_label, explanation_size=explanation_size)]
         
+        print(np.array(explanations).shape)
         #TODO reform the explanation ! 
         #values_per_slice=len(instance.reshape(-1))/10
         #exp= instance.copy()
@@ -130,7 +133,6 @@ class LEFTIST(FeatureAttribution):
         for i in range(0, len(explanations)):
             heatmap = np.zeros_like(series).reshape(-1)
             for value in explanations[i][0]:
-                print(value)
                 heatmap[i:values_per_slice+i]=np.ones_like((values_per_slice))*value
                 i=values_per_slice+i
                 

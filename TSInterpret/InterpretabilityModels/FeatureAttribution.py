@@ -88,6 +88,7 @@ class FeatureAttribution(InterpretabilityBase):
                 #print(item.shape)
                 ax011.append(plt.subplot(len(item[0]),1,i+1))
                 ax012.append(ax011[i].twinx())
+                print(i)
                 if normelize_saliency:
                     sns.heatmap(exp[i].reshape(1,-1), fmt="g", cmap='viridis', cbar=False, ax=ax011[i], yticklabels=False, vmin=vmin,vmax=vmax)
                 else: 
