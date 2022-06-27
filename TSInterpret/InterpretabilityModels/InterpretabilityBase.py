@@ -18,8 +18,9 @@ class InterpretabilityBase(ABC):
     None
     """
 
-    def __init__(self, mlmodel):
+    def __init__(self, mlmodel,mode):
         self.model = mlmodel
+        self.mode= mode
 
     @abstractmethod
     def explain(self):

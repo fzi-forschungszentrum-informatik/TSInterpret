@@ -38,15 +38,12 @@ class Attribution {
      plot()
 }
 class Gradient {
-explain()
     
 }
 class Pertubation {
-explain()
 
 }
 class Surrogate {
-explain()
 
 }
 class Instance {
@@ -54,15 +51,12 @@ class Instance {
 }
 
 class Counterfactual {
-explain()
 
 }
 class CEM {
-explain()
 
 }
 class Anchor {
-explain()
 }
 
 TSInterpret --> base_model

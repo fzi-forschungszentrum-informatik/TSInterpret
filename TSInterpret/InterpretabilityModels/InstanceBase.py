@@ -2,8 +2,7 @@ from TSInterpret.InterpretabilityModels.InterpretabilityBase import Interpretabi
 
 class InstanceBase(InterpretabilityBase):
     def __init__(self, mlmodel, mode):
-        super().__init__(mlmodel)
-        self.mode = mode
+        super().__init__(mlmodel,mode)
 
     def explain(self):
         pass

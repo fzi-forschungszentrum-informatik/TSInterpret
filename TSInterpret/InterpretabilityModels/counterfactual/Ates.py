@@ -516,9 +516,11 @@ class OptimizedSearch(BaseExplanation):
         if len(best_explanation) == 0:
             return None, None
         if return_dist == False: 
-            return best_explanation,best_modified
+            #TODO this was turned around!
+            return best_modified,best_explanation
         else:
-            return best_explanation, best_dist
+            #TODO best explanation was changed to best_modified
+            return best_modified, best_dist
 
 
 class AtesCF(CF):

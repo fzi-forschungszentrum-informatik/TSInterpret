@@ -87,8 +87,8 @@ class Saliency_PTY(Saliency):
         #TODO differntiat between CNN and LSTM 
         mask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)
         featureMask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)
-        print('feature mask', featureMask.shape)
-        print('time mask', mask.shape)
+        #print('feature mask', featureMask.shape)
+        #print('time mask', mask.shape)
         for i in  range (self.NumTimeSteps):
             mask[i,:]=i
         rescaledGrad= np.zeros((item.shape))
@@ -152,7 +152,7 @@ class Saliency_PTY(Saliency):
             attributions = self.Grad.attribute(input,  sliding_window_shapes=(1,self.NumFeatures),target=labels,   baselines=baseline_single)
 
         if TSR:
-            print('TSR is set true')
+            #print('TSR is set true')
             #if self.mode =='feat':
             #    help = self.NumFeatures
             #    self.NumFeatures=self.NumTimeSteps
@@ -174,26 +174,26 @@ class Saliency_PTY(Saliency):
         input_size=self.NumFeatures
         assignment=input[0,0,0]
         timeGrad=np.zeros((1,sequence_length))
-        print('sequence length',sequence_length)
+        #print('sequence length',sequence_length)
         inputGrad=np.zeros((input_size,1))
-        print('inpu size',input_size)
+        #print('inpu size',input_size)
         newGrad=np.zeros((input_size, sequence_length))
         if(hasBaseline==None):  
             ActualGrad = self.Grad.attribute(input,target=TestingLabel).data.cpu().numpy()
         else:
             if(hasFeatureMask!=None):
-                print('hasFeatureMask')
+                #print('hasFeatureMask')
                 ActualGrad = self.Grad.attribute(input,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()    
             elif(hasSliding_window_shapes!=None):
-                print('HasSlidingWindow')
+                #print('HasSlidingWindow')
                 ActualGrad = self.Grad.attribute(input,sliding_window_shapes=hasSliding_window_shapes, baselines=hasBaseline, target=TestingLabel).data.cpu().numpy()
             else:
-                print('Else')
+                #print('Else')
                 ActualGrad = self.Grad.attribute(input,baselines=hasBaseline, target=TestingLabel).data.cpu().numpy()
-                print(ActualGrad.shape)
+                #print(ActualGrad.shape)
         for t in range(sequence_length):
             newInput = input.clone()
-            print(newInput.shape)
+            #print(newInput.shape)
             newInput[:,:,t]=assignment
 
             if(hasBaseline==None):  

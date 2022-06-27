@@ -31,7 +31,6 @@ class LEFTIST(FeatureAttribution):
         super().__init__(model_to_explain, mode)
 
         self.neighbors = None
-        # TODO move transform, segmentor and, learning process to EXPLAIN 
  
         self.test_x, _=reference_set
         self.backend=backend
