@@ -1,7 +1,3 @@
-#TODO From WildBoar
-#Karlsson, I., Rebane, J., Papapetrou, P. et al. Locally and globally explainable time series tweaking. Knowl Inf Syst 62, 1671–1700 (2020)
-#Only works with Shaplet Forest classifier, KNearestNeighbour Classifier 
-
 from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 from TSInterpret.InterpretabilityModels.InstanceBase import InstanceBase
 import matplotlib.pyplot as plt
@@ -24,21 +20,25 @@ class CF(InstanceBase):
         """
         
         super().__init__(mlmodel,mode)
-        #self.model_to_explain = mlmodel
-        #self.mode=mode
 
     def explain(self) -> Tuple[np.array, int]:
         """
         Explains instance or model. 
         """
-        pass
+        raise NotImplementedError("Please don't use the base CF class directly")
+
 
     def plot (self, original,org_label, exp,exp_label, vis_change= True,all_in_one=False, save_fig=None):
         """
-        #TODO Move to instance Base Methods
         Basic Plot Function for visualizing Coutnerfactuals.
         Arguments:
-            instance: np.array            Not encoded and not normalised factual examples in two-dimensional shape (m, n)
+            original np.array: Instance to be explained.
+            org_label: Label of instance to be explained. 
+            exp np.array: Explanation.
+            exp_label: Label of Explanation.
+            vis_change bool: Change to be visualized as heatmap. 
+            all_in_one bool: Original and Counterfactual in one plot. 
+            save_fig str: Path to save fig at.
         """
         
         if all_in_one:
@@ -139,7 +139,7 @@ class CF(InstanceBase):
             plt.savefig(save_fig)
     
     def plot_multi(self,item,org_label,exp,cf_label,figsize=(15,15), save_fig=None):
-        """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting.
+        """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting. Also called via plot_in_one. Preferably, do not use directly.
         Arguments:
             item np.array: original instance.
             org_label int: originally predicted label. 
