@@ -27,6 +27,9 @@ class LEFTIST(FeatureAttribution):
             reference_set: reference set
             mode: time or Feature
             backend: TF, PYT or SK 
+            transform_name str: Name of transformer
+            learning_process_name str: 'Lime' or 'Shap' 
+            nb_interpretable_feature int: number of desired features
         '''
         super().__init__(model_to_explain, mode)
 
@@ -63,14 +66,11 @@ class LEFTIST(FeatureAttribution):
         """
         Compute the explanation.
 
-        Parameters:
+        Arguments:
             instance np.array: item to be explained
             nb_neighbors (int): number of neighbors to generate.
             idx_label (int): index of label to explain. If None, return an explanation for each label.
             explanation_size (int): number of feature to use for the explanations
-            transform_name str: Name of transformer
-            learning_process_name str: 'Lime' or 'Shap' 
-            nb_interpretable_feature int: number of desired features
             random_state int: fixes seed
 
         Returns:
