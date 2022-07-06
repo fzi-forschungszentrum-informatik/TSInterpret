@@ -377,13 +377,14 @@ class LossDiscreteState:
 
 class OptimizedSearch(BaseExplanation):
 
-    def __init__(self, clf, timeseries, labels, **kwargs):
+    def __init__(self, clf, timeseries, labels,silent, threads,num_distractors, max_attempts, maxiter, **kwargs):
         super().__init__(clf, timeseries, labels, **kwargs)
         self.discrete_state = False
         self.backup = BruteForceSearch(clf, timeseries, labels, **kwargs)
+        self.max_attemps=max_attempts
+        self.maxiter=maxiter
 
-    def opt_Discrete(self, to_maximize, x_test, dist, columns, init,
-                     max_attempts, maxiter, num_features=None):
+    def opt_Discrete(self, to_maximize, x_test, dist, columns, init, num_features=None):
 
         fitness_fn = LossDiscreteState(
             to_maximize,
@@ -396,8 +397,8 @@ class OptimizedSearch(BaseExplanation):
             maximize=False, max_val=2)
         best_state, best_fitness = mlrose.random_hill_climb(
             problem,
-            max_attempts=max_attempts,
-            max_iters=maxiter,
+            max_attempts=self.max_attemps,
+            max_iters=self.maxiter,
             init_state=init,
             restarts = 5,
         )
@@ -487,8 +488,7 @@ class OptimizedSearch(BaseExplanation):
             init = [0] * len(columns)
 
             result = self.opt_Discrete(
-                to_maximize, x_test, dist, columns, init=init,
-                max_attempts=1000, maxiter=1000, num_features=num_features)
+                to_maximize, x_test, dist, columns, init=init, num_features=num_features)
 
             if not self.discrete_state:
                 explanation = {
@@ -536,7 +536,7 @@ class AtesCF(CF):
      [1] Ates, Emre, et al. "Counterfactual Explanations for Multivariate Time Series." 2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
      
     """
-    def __init__(self,model, ref, backend, mode, method= 'opt', number_distractors=2, silent=False) -> None:
+    def __init__(self,model, ref, backend, mode, method= 'opt', number_distractors=2, max_attempts=1000, max_iter=1000, silent=False) -> None:
         """
         Arguments:
             model : Model to be interpreted.
@@ -573,6 +573,8 @@ class AtesCF(CF):
         self.method=method
         self.silent=silent
         self.number_distractors=number_distractors 
+        self.max_attemps= max_attempts
+        self.max_iter=max_iter
          
 
     def explain(self, x: np.ndarray,orig_class:int=None, target: int=None)-> Tuple[np.array, int]:
@@ -593,7 +595,7 @@ class AtesCF(CF):
         if len(train_y.shape)>1:
              train_y= np.argmax(train_y,axis=1)
         if self.method=='opt':
-            opt=OptimizedSearch(self.predict, train_x, train_y, silent=self.silent, threads=1,num_distractors=self.number_distractors)
+            opt=OptimizedSearch(self.predict, train_x, train_y, silent=self.silent, threads=1,num_distractors=self.number_distractors, max_attempts=self.max_attemps, maxiter=self.max_iter)
             return opt.explain(x,to_maximize=target)
         elif self.method =='brute':
             #TODO Currently not Threadable as TF Model does not support
