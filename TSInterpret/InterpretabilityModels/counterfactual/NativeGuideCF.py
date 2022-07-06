@@ -37,13 +37,14 @@ from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 class NativeGuideCF(CF):
     '''
     NUN_CF according to [1] for both torch and tensorflow. 
+
     [1] Delaney, E., Greene, D., Keane, M.T.: Instance-Based Counterfactual Explanations
         for Time Series Classification. In: Sanchez-Ruiz, A.A., Floyd, M.W. (eds.) Case-
         Based Reasoning Research and Development, vol. 12877, pp. 32–47. Springer
         International Publishing, Cham (2021), series Title: Lecture Notes in Computer
         Science. 
     '''
-    def __init__(self, model,shape, reference_set, backend='torch', mode ='feat') -> None:
+    def __init__(self, model,shape, reference_set, backend='torch', mode ='feat', method= 'NUN-CF',distance_measure='dtw',n_neighbors=1,max_iter=500) -> None:
         '''
         In this case differentiation between time & feat not necessary as implicitly given by CNN. Only works for CNNs due to the attribution methods.
         Arguments:
@@ -52,6 +53,10 @@ class NativeGuideCF(CF):
             reference set Tuple: reference set as tuple (x,y)
             backend str: 'PYT' or  'TF'
             mode str: model either 'time' or 'feat'
+            method str: 'Nun_CF', 'dtw_bary_center' or 'native_guide'.
+            distance_measure str: sklearn appreviation for distance of knn.
+            n_neighbore int: # neighbors to select from.
+            max_iter int : max number of runs
         '''
         super().__init__(model,mode)
         self.backend=backend
@@ -85,6 +90,10 @@ class NativeGuideCF(CF):
             print('Only Compatible with Tensorflow (TF) or Pytorch (PYT)!')
 
         self.reference_set=(test_x,y_pred)
+        self.method = method
+        self.distance_measure=distance_measure
+        self.max_iter=max_iter
+        self.n_neighbors=n_neighbors
         #Manipulate reference set replace original y with predicted y 
         
     def _native_guide_retrieval(self,query, predicted_label, distance, n_neighbors):
@@ -224,16 +233,12 @@ class NativeGuideCF(CF):
     
         return generated_cf, target
 
-    def explain(self, x: np.ndarray,  y: int, method = 'NUN_CF', distance_measure='dtw',n_neighbors=1,max_iter=500)-> Tuple[np.array, int]:
+    def explain(self, x: np.ndarray,  y: int)-> Tuple[np.array, int]:
         ''''
         Explains a specific instance x.
         Arguments:
             x np.array : instance to be explained.
             y int: predicted label for instance x. 
-            method str: 'Nun_CF', 'dtw_bary_center' or 'native_guide'.
-            distance_measure str: sklearn appreviation for distance of knn.
-            n_neighbore int: # neighbors to select from.
-            max_iter int : max number of runs
         Returns:
             Tuple: (counterfactual, counterfactual label)
         
@@ -241,13 +246,13 @@ class NativeGuideCF(CF):
         if self.mode =='time':
             x=x.reshape(x.shape[0], x.shape[2],x.shape[1])
             print(x.shape)
-        if method=='NG':
-            return self._native_guide_wrapper(x, y, distance_measure, n_neighbors)
-        elif method=='dtw_bary_center':
-            return self._instance_based_cf(x,y,distance_measure)
-        elif method=='NUN_CF':
-            distance_measure='euclidean'
-            return  self._counterfactual_generator_swap(x, y,max_iter=max_iter)
+        if self.method=='NG':
+            return self._native_guide_wrapper(x, y, self.distance_measure, self.n_neighbors)
+        elif self.method=='dtw_bary_center':
+            return self._instance_based_cf(x,y,self.distance_measure)
+        elif self.method=='NUN_CF':
+            self.distance_measure='euclidean'
+            return  self._counterfactual_generator_swap(x, y,max_iter=self.max_iter)
         else: 
             print('Unknown Method selected.')
 

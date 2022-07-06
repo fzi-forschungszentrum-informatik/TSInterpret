@@ -1,17 +1,3 @@
-#TODO 
-"""Contains the code for ICAPAI'21 paper "Counterfactual Explanations for Multivariate Time Series"
-Authors:
-    Emre Ates (1), Burak Aksar (1), Vitus J. Leung (2), Ayse K. Coskun (1)
-Affiliations:
-    (1) Department of Electrical and Computer Engineering, Boston University
-    (2) Sandia National Laboratories
-This work has been partially funded by Sandia National Laboratories. Sandia
-National Laboratories is a multimission laboratory managed and operated by
-National Technology and Engineering Solutions of Sandia, LLC., a wholly owned
-subsidiary of Honeywell International, Inc., for the U.S. Department of
-Energy’s National Nuclear Security Administration under Contract DENA0003525.
-"""
-
 from cProfile import label
 import logging
 from operator import mod

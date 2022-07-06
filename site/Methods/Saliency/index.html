@@ -1,0 +1,1885 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="TSInterpret is a Python library for interpretable time series classification.">
+      
+      
+      
+        <meta name="author" content="Jacqueline Höllig">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-5.5.0">
+    
+    
+      
+        <title>Saliency - TSInterpret</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.b5d04df8.min.css">
+      
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="TSInterpret" class="md-header-nav__button md-logo" aria-label="TSInterpret">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            TSInterpret
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Saliency
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="TSInterpret" class="md-nav__button md-logo" aria-label="TSInterpret">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    TSInterpret
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../InterpretabilityMethods/" title="Interpretability" class="md-nav__link">
+      Interpretability
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Usage
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Usage" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Usage
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1" type="checkbox" id="nav-3-1">
+    
+    <label class="md-nav__link" for="nav-3-1">
+      Instance-Based Methods
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Instance-Based Methods" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-1">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Instance-Based Methods
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-1-1" type="checkbox" id="nav-3-1-1">
+    
+    <label class="md-nav__link" for="nav-3-1-1">
+      Counterfactuals
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Counterfactuals" data-md-level="3">
+      <label class="md-nav__title" for="nav-3-1-1">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Counterfactuals
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Notebooks/Ates_torch/" title="Ates" class="md-nav__link">
+      Ates
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Notebooks/NunCF_torch/" title="Nun-CF" class="md-nav__link">
+      Nun-CF
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
+    
+    <label class="md-nav__link" for="nav-3-2">
+      Feature Attribution Methods
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Feature Attribution Methods" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Feature Attribution Methods
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Notebooks/Leftist_torch/" title="Leftist" class="md-nav__link">
+      Leftist
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Notebooks/Ismail_torch/" title="Saliency" class="md-nav__link">
+      Saliency
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      API References
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="API References" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        API References
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Model_Interface/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-2" type="checkbox" id="nav-4-2" checked>
+    
+    <label class="md-nav__link" for="nav-4-2">
+      InterpretabilityMethods
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="InterpretabilityMethods" data-md-level="2">
+      <label class="md-nav__title" for="nav-4-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        InterpretabilityMethods
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../CF/" title="Counterfactual" class="md-nav__link">
+      Counterfactual
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Saliency
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Saliency" class="md-nav__link md-nav__link--active">
+      Saliency
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base" class="md-nav__link">
+    TSInterpret.InterpretabilityModels.Saliency.Saliency_Base
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency" class="md-nav__link">
+    Saliency
+  </a>
+  
+    <nav class="md-nav" aria-label="Saliency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency.explain" class="md-nav__link">
+    explain()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY" class="md-nav__link">
+    TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY" class="md-nav__link">
+    Saliency_PTY
+  </a>
+  
+    <nav class="md-nav" aria-label="Saliency_PTY">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY.explain" class="md-nav__link">
+    explain()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF" class="md-nav__link">
+    TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF" class="md-nav__link">
+    Saliency_TF
+  </a>
+  
+    <nav class="md-nav" aria-label="Saliency_TF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF--todo-svs-from-shap-library-deep-lift" class="md-nav__link">
+    TODO SVS from shap Library  &amp; Deep Lift
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF.explain" class="md-nav__link">
+    explain()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../Leftist/" title="LEFTIST" class="md-nav__link">
+      LEFTIST
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base" class="md-nav__link">
+    TSInterpret.InterpretabilityModels.Saliency.Saliency_Base
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency" class="md-nav__link">
+    Saliency
+  </a>
+  
+    <nav class="md-nav" aria-label="Saliency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency.explain" class="md-nav__link">
+    explain()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY" class="md-nav__link">
+    TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY" class="md-nav__link">
+    Saliency_PTY
+  </a>
+  
+    <nav class="md-nav" aria-label="Saliency_PTY">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY.explain" class="md-nav__link">
+    explain()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF" class="md-nav__link">
+    TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF" class="md-nav__link">
+    Saliency_TF
+  </a>
+  
+    <nav class="md-nav" aria-label="Saliency_TF">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF--todo-svs-from-shap-library-deep-lift" class="md-nav__link">
+    TODO SVS from shap Library  &amp; Deep Lift
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF.explain" class="md-nav__link">
+    explain()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                  <h1>Saliency</h1>
+                
+                <div class="doc doc-object doc-module">
+
+<a id="TSInterpret.InterpretabilityModels.Saliency.Saliency_Base"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency">
+        <code>
+Saliency            (<span title="TSInterpret.InterpretabilityModels.FeatureAttribution.FeatureAttribution">FeatureAttribution</span>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Base Method for Saliency Calculation based on [1]. Please use the designated Subclasses SaliencyMethods_PYT.py for PyTorch explanations and SaliencyMethods_TF.py for Tensforflow explanations.</p>
+<p>[1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/Saliency_Base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Saliency</span><span class="p">(</span><span class="n">FeatureAttribution</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Base Method for Saliency Calculation based on [1]. Please use the designated Subclasses SaliencyMethods_PYT.py for PyTorch explanations and SaliencyMethods_TF.py for Tensforflow explanations.</span>
+
+<span class="sd">    [1] Ismail, Aya Abdelsalam, et al. &quot;Benchmarking deep learning interpretability in time series predictions.&quot; Advances in neural information processing systems 33 (2020): 6441-6452.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GRAD&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="o">=</span><span class="n">NumTimeSteps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="o">=</span><span class="n">NumFeatures</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mode in Saliency&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#TODO Move HeatMap to here</span>
+        <span class="k">pass</span> 
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency.explain">
+<code class="highlight language-python"><span class="n">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Explains instance or model. 
+Parameters</p>
+<hr />
+<p>!!! instance "np.array"
+    Not encoded and not normalised factual examples in two-dimensional shape (m, n).
+Returns</p>
+<hr />
+<p>pd.DataFrame
+    Encoded and normalised counterfactual examples.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/Saliency_Base.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">pass</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY">
+        <code>
+Saliency_PTY            (<a class="autorefs autorefs-internal" title="TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency" href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency">Saliency</a>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>PyTorch Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library captum [2].
+For PyTorch the following saliency methods are available: 
+    + Gradients (GRAD)
+    + Integrated Gradients (IG)
+    + Gradient Shap (GS)
+    + DeepLift (DL)
+    + DeepLiftShap (DLS)
+    + SmoothGrad (SG)
+    + Shapley Value Sampling(SVS)
+    + Feature Permutation (FP)
+    + Feature Sampling (FS)
+    + Occlusion (FO)</p>
+<p>[1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
+[2] Kokhlikyan, Narine, et al. "Captum: A unified and generic model interpretability library for pytorch." arXiv preprint arXiv:2009.07896 (2020).</p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/SaliencyMethods_PTY.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Saliency_PTY</span><span class="p">(</span><span class="n">Saliency</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    PyTorch Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library captum [2].</span>
+<span class="sd">    For PyTorch the following saliency methods are available: </span>
+<span class="sd">        + Gradients (GRAD)</span>
+<span class="sd">        + Integrated Gradients (IG)</span>
+<span class="sd">        + Gradient Shap (GS)</span>
+<span class="sd">        + DeepLift (DL)</span>
+<span class="sd">        + DeepLiftShap (DLS)</span>
+<span class="sd">        + SmoothGrad (SG)</span>
+<span class="sd">        + Shapley Value Sampling(SVS)</span>
+<span class="sd">        + Feature Permutation (FP)</span>
+<span class="sd">        + Feature Sampling (FS)</span>
+<span class="sd">        + Occlusion (FO)</span>
+
+<span class="sd">    [1] Ismail, Aya Abdelsalam, et al. &quot;Benchmarking deep learning interpretability in time series predictions.&quot; Advances in neural information processing systems 33 (2020): 6441-6452.</span>
+<span class="sd">    [2] Kokhlikyan, Narine, et al. &quot;Captum: A unified and generic model interpretability library for pytorch.&quot; arXiv preprint arXiv:2009.07896 (2020).</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GRAD&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39; Initialization</span>
+<span class="sd">        Attrubutes:</span>
+<span class="sd">            model: model to be explained</span>
+<span class="sd">            NumTimeStep int : Number of Time Step </span>
+<span class="sd">            NumFetaures int : Number Features</span>
+<span class="sd">            method str: Saliency Methode to be used</span>
+<span class="sd">            mode str: Second dimension &#39;time&#39; or &#39;feat&#39;</span>
+<span class="sd">            backend str: &#39;PYT&#39;  </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GRAD&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">Saliency</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span> <span class="n">IntegratedGradients</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span> <span class="n">GradientShap</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;DL&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">DeepLift</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;DLS&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">DeepLiftShap</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">:</span>
+            <span class="n">Grad_</span> <span class="o">=</span> <span class="n">Saliency</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">NoiseTunnel</span><span class="p">(</span><span class="n">Grad_</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SVS&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">ShapleyValueSampling</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FP&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">FeaturePermutation</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FA&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">FeatureAblation</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">Occlusion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span>
+
+    <span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">item</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span> <span class="n">TSR</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Method to explain the model based on the item. </span>
+<span class="sd">        Attrributes: </span>
+<span class="sd">            item np.array: item to get feature attribution for</span>
+<span class="sd">            labels np.array: labels </span>
+<span class="sd">            TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            List: feature attributiin weights</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1">#TODO differntiat between CNN and LSTM </span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">featureMask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1">#print(&#39;feature mask&#39;, featureMask.shape)</span>
+        <span class="c1">#print(&#39;time mask&#39;, mask.shape)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>  <span class="nb">range</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">):</span>
+            <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">=</span><span class="n">i</span>
+        <span class="n">rescaledGrad</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">item</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="c1">#for i in  range (NumTimeSteps):</span>
+        <span class="c1">#    featureMask[:,i]=i</span>
+        <span class="n">idx</span><span class="o">=</span><span class="mi">0</span>
+        <span class="c1">#for i,  samples  in enumerate(item).iterrows():</span>
+
+            <span class="c1">#print(&#39;[{}/{}] {} {} model accuracy {:.2f}&#39;\</span>
+            <span class="c1">#                        .format(i,len(test_loader), models[m], args.DataName, Test_Acc))</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="nb">input</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span>  <span class="n">volatile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">inputMask</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="n">inputMask</span><span class="p">[:,:,:]</span><span class="o">=</span><span class="n">mask</span>
+        <span class="n">inputMask</span> <span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">inputMask</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">mask_single</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">mask_single</span><span class="o">=</span><span class="n">mask_single</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1">#TODO what to do with labels </span>
+        <span class="c1">#labels=torch.tensor(labels.int().tolist()).to(self.device)</span>
+        <span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">)</span>
+        <span class="n">baseline_single</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">baseline_multiple</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">base</span><span class="o">=</span><span class="kc">None</span>
+        <span class="n">has_sliding_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;GRAD&#39;</span><span class="p">):</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span><span class="p">):</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;DL&#39;</span><span class="p">):</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;GS&#39;</span><span class="p">):</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">baseline_multiple</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_multiple</span><span class="p">,</span> <span class="n">stdevs</span><span class="o">=</span><span class="mf">0.09</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;DLS&#39;</span><span class="p">):</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">baseline_multiple</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_multiple</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;SG&#39;</span><span class="p">):</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;SVS&#39;</span><span class="p">):</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">feature_mask</span><span class="o">=</span><span class="n">inputMask</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FP&#39;</span><span class="p">):</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">perturbations_per_eval</span><span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">feature_mask</span><span class="o">=</span><span class="n">mask_single</span><span class="p">)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FA&#39;</span><span class="p">):</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+                                            <span class="c1"># perturbations_per_eval= input.shape[0],\</span>
+                                            <span class="c1"># feature_mask=mask_single)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">):</span>
+            <span class="c1">#TODO Is this correct ? </span>
+            <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+            <span class="n">has_sliding_window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span>  <span class="n">sliding_window_shapes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">),</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>   <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">TSR</span><span class="p">:</span>
+            <span class="c1">#print(&#39;TSR is set true&#39;)</span>
+            <span class="c1">#if self.mode ==&#39;feat&#39;:</span>
+            <span class="c1">#    help = self.NumFeatures</span>
+            <span class="c1">#    self.NumFeatures=self.NumTimeSteps</span>
+            <span class="c1">#    self.NumTimeSteps=help</span>
+            <span class="c1">#if self.mode ==&#39;time&#39;:</span>
+            <span class="c1">#help = self.NumFeatures</span>
+            <span class="c1">#self.NumFeatures=self.NumTimeSteps</span>
+            <span class="c1">#self.NumTimeSteps=help</span>
+            <span class="n">TSR_attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTwoStepRescaling</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span><span class="n">hasBaseline</span><span class="o">=</span><span class="n">base</span><span class="p">,</span><span class="n">hasSliding_window_shapes</span><span class="o">=</span><span class="n">has_sliding_window</span><span class="p">)</span>
+            <span class="n">TSR_saliency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">TSR_attributions</span><span class="p">,</span><span class="n">isTensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TSR_saliency</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rescaledGrad</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">batch_size</span><span class="p">,:,:]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">attributions</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rescaledGrad</span>
+
+    <span class="k">def</span> <span class="nf">_getTwoStepRescaling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nb">input</span><span class="p">,</span> <span class="n">TestingLabel</span><span class="p">,</span><span class="n">hasBaseline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hasFeatureMask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hasSliding_window_shapes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;From https://github.com/ayaabdelsalam91/TS-Interpretability-Benchmark/blob/main/MNIST%20Experiments/Scripts/interpret.py&#39;&#39;&#39;</span>
+        <span class="n">sequence_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span>
+        <span class="n">assignment</span><span class="o">=</span><span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">timeGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">))</span>
+        <span class="c1">#print(&#39;sequence length&#39;,sequence_length)</span>
+        <span class="n">inputGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">input_size</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="c1">#print(&#39;inpu size&#39;,input_size)</span>
+        <span class="n">newGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">input_size</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">))</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">hasBaseline</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>  
+            <span class="n">ActualGrad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">hasFeatureMask</span><span class="o">!=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="c1">#print(&#39;hasFeatureMask&#39;)</span>
+                <span class="n">ActualGrad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">,</span><span class="n">feature_mask</span><span class="o">=</span><span class="n">hasFeatureMask</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>    
+            <span class="k">elif</span><span class="p">(</span><span class="n">hasSliding_window_shapes</span><span class="o">!=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="c1">#print(&#39;HasSlidingWindow&#39;)</span>
+                <span class="n">ActualGrad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">sliding_window_shapes</span><span class="o">=</span><span class="n">hasSliding_window_shapes</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#print(&#39;Else&#39;)</span>
+                <span class="n">ActualGrad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                <span class="c1">#print(ActualGrad.shape)</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sequence_length</span><span class="p">):</span>
+            <span class="n">newInput</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="c1">#print(newInput.shape)</span>
+            <span class="n">newInput</span><span class="p">[:,:,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span><span class="n">assignment</span>
+
+            <span class="k">if</span><span class="p">(</span><span class="n">hasBaseline</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>  
+                <span class="n">timeGrad_perTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">hasFeatureMask</span><span class="o">!=</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="n">timeGrad_perTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">,</span><span class="n">feature_mask</span><span class="o">=</span><span class="n">hasFeatureMask</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>    
+                <span class="k">elif</span><span class="p">(</span><span class="n">hasSliding_window_shapes</span><span class="o">!=</span><span class="kc">None</span><span class="p">):</span>
+                    <span class="n">timeGrad_perTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">sliding_window_shapes</span><span class="o">=</span><span class="n">hasSliding_window_shapes</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">timeGrad_perTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+
+            <span class="n">timeGrad_perTime</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ActualGrad</span> <span class="o">-</span> <span class="n">timeGrad_perTime</span><span class="p">)</span>
+            <span class="n">timeGrad</span><span class="p">[:,</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">timeGrad_perTime</span><span class="p">)</span>
+
+
+
+        <span class="n">timeContibution</span><span class="o">=</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">timeGrad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">meanTime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">timeContibution</span><span class="p">,</span> <span class="mf">.55</span><span class="p">)</span>    
+
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sequence_length</span><span class="p">):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">timeContibution</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">&gt;</span><span class="n">meanTime</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_size</span><span class="p">):</span>
+                    <span class="n">newInput</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+                    <span class="n">newInput</span><span class="p">[:,</span><span class="n">c</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span><span class="n">assignment</span>
+
+                    <span class="k">if</span><span class="p">(</span><span class="n">hasBaseline</span><span class="o">==</span><span class="kc">None</span><span class="p">):</span>  
+                        <span class="n">inputGrad_perInput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span><span class="p">(</span><span class="n">hasFeatureMask</span><span class="o">!=</span><span class="kc">None</span><span class="p">):</span>
+                            <span class="n">inputGrad_perInput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">,</span><span class="n">feature_mask</span><span class="o">=</span><span class="n">hasFeatureMask</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>    
+                        <span class="k">elif</span><span class="p">(</span><span class="n">hasSliding_window_shapes</span><span class="o">!=</span><span class="kc">None</span><span class="p">):</span>
+                            <span class="n">inputGrad_perInput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">sliding_window_shapes</span><span class="o">=</span><span class="n">hasSliding_window_shapes</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">inputGrad_perInput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="n">newInput</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">hasBaseline</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+
+
+                    <span class="n">inputGrad_perInput</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ActualGrad</span> <span class="o">-</span> <span class="n">inputGrad_perInput</span><span class="p">)</span>
+                    <span class="n">inputGrad</span><span class="p">[</span><span class="n">c</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">inputGrad_perInput</span><span class="p">)</span>
+                    <span class="c1"># print(t,c,np.sum(inputGrad_perInput),np.sum(input.data.cpu().numpy()))</span>
+                <span class="c1"># featureContibution=inputGrad</span>
+                <span class="n">featureContibution</span><span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">inputGrad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">featureContibution</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">input_size</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">*</span><span class="mf">0.1</span>
+
+            <span class="c1"># meanFeature=np.mean(featureContibution, axis=0)</span>
+            <span class="c1"># for c in range(input_size): </span>
+            <span class="c1">#     if(featureContibution[c,0]&lt;=meanFeature):</span>
+            <span class="c1">#         featureContibution[c,0]=0</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_size</span><span class="p">):</span>
+
+                <span class="n">newGrad</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span> <span class="n">timeContibution</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">featureContibution</span><span class="p">[</span><span class="n">c</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+           <span class="c1"># if(newGrad [c,t]==0):</span>
+           <span class="c1">#  print(timeContibution[0,t],featureContibution[c,0])</span>
+        <span class="k">return</span> <span class="n">newGrad</span>
+
+    <span class="k">def</span> <span class="nf">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attributions</span><span class="p">,</span><span class="n">isTensor</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">isTensor</span><span class="p">):</span>
+            <span class="n">saliency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">attributions</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">saliency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">attributions</span><span class="p">)</span>
+        <span class="n">saliency</span><span class="o">=</span><span class="n">saliency</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+        <span class="n">rescaledSaliency</span><span class="o">=</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">saliency</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">rescaledSaliency</span><span class="o">=</span><span class="n">rescaledSaliency</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">attributions</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rescaledSaliency</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY.__init__">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GRAD&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Initialization
+!!! attrubutes
+    model: model to be explained
+    NumTimeStep int : Number of Time Step 
+    NumFetaures int : Number Features
+    method str: Saliency Methode to be used
+    mode str: Second dimension 'time' or 'feat'
+    backend str: 'PYT'  </p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/SaliencyMethods_PTY.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;GRAD&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="n">backend</span><span class="o">=</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39; Initialization</span>
+<span class="sd">    Attrubutes:</span>
+<span class="sd">        model: model to be explained</span>
+<span class="sd">        NumTimeStep int : Number of Time Step </span>
+<span class="sd">        NumFetaures int : Number Features</span>
+<span class="sd">        method str: Saliency Methode to be used</span>
+<span class="sd">        mode str: Second dimension &#39;time&#39; or &#39;feat&#39;</span>
+<span class="sd">        backend str: &#39;PYT&#39;  </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GRAD&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">Saliency</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span> <span class="n">IntegratedGradients</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span> <span class="n">GradientShap</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;DL&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">DeepLift</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;DLS&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">DeepLiftShap</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">:</span>
+        <span class="n">Grad_</span> <span class="o">=</span> <span class="n">Saliency</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">NoiseTunnel</span><span class="p">(</span><span class="n">Grad_</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SVS&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">ShapleyValueSampling</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FP&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">FeaturePermutation</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FA&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">FeatureAblation</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">Occlusion</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY.Saliency_PTY.explain">
+<code class="highlight language-python"><span class="n">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">TSR</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Method to explain the model based on the item. 
+Attrributes: 
+    item np.array: item to get feature attribution for
+    labels np.array: labels 
+    TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
+Returns: 
+    List: feature attributiin weights</p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/SaliencyMethods_PTY.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">item</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span> <span class="n">TSR</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Method to explain the model based on the item. </span>
+<span class="sd">    Attrributes: </span>
+<span class="sd">        item np.array: item to get feature attribution for</span>
+<span class="sd">        labels np.array: labels </span>
+<span class="sd">        TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened</span>
+<span class="sd">    Returns: </span>
+<span class="sd">        List: feature attributiin weights</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">#TODO differntiat between CNN and LSTM </span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">featureMask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="c1">#print(&#39;feature mask&#39;, featureMask.shape)</span>
+    <span class="c1">#print(&#39;time mask&#39;, mask.shape)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>  <span class="nb">range</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">):</span>
+        <span class="n">mask</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">=</span><span class="n">i</span>
+    <span class="n">rescaledGrad</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">item</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="c1">#for i in  range (NumTimeSteps):</span>
+    <span class="c1">#    featureMask[:,i]=i</span>
+    <span class="n">idx</span><span class="o">=</span><span class="mi">0</span>
+    <span class="c1">#for i,  samples  in enumerate(item).iterrows():</span>
+
+        <span class="c1">#print(&#39;[{}/{}] {} {} model accuracy {:.2f}&#39;\</span>
+        <span class="c1">#                        .format(i,len(test_loader), models[m], args.DataName, Test_Acc))</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="nb">input</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span>  <span class="n">volatile</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">inputMask</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">inputMask</span><span class="p">[:,:,:]</span><span class="o">=</span><span class="n">mask</span>
+    <span class="n">inputMask</span> <span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">inputMask</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">mask_single</span><span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">mask_single</span><span class="o">=</span><span class="n">mask_single</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1">#TODO what to do with labels </span>
+    <span class="c1">#labels=torch.tensor(labels.int().tolist()).to(self.device)</span>
+    <span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">)</span>
+    <span class="n">baseline_single</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">baseline_multiple</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="n">base</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">has_sliding_window</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;GRAD&#39;</span><span class="p">):</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span><span class="p">):</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;DL&#39;</span><span class="p">):</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;GS&#39;</span><span class="p">):</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">baseline_multiple</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_multiple</span><span class="p">,</span> <span class="n">stdevs</span><span class="o">=</span><span class="mf">0.09</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;DLS&#39;</span><span class="p">):</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">baseline_multiple</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_multiple</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;SG&#39;</span><span class="p">):</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;SVS&#39;</span><span class="p">):</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">feature_mask</span><span class="o">=</span><span class="n">inputMask</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FP&#39;</span><span class="p">):</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">perturbations_per_eval</span><span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">feature_mask</span><span class="o">=</span><span class="n">mask_single</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FA&#39;</span><span class="p">):</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+                                        <span class="c1"># perturbations_per_eval= input.shape[0],\</span>
+                                        <span class="c1"># feature_mask=mask_single)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">):</span>
+        <span class="c1">#TODO Is this correct ? </span>
+        <span class="n">base</span><span class="o">=</span><span class="n">baseline_single</span>
+        <span class="n">has_sliding_window</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span>  <span class="n">sliding_window_shapes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">),</span><span class="n">target</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>   <span class="n">baselines</span><span class="o">=</span><span class="n">baseline_single</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">TSR</span><span class="p">:</span>
+        <span class="c1">#print(&#39;TSR is set true&#39;)</span>
+        <span class="c1">#if self.mode ==&#39;feat&#39;:</span>
+        <span class="c1">#    help = self.NumFeatures</span>
+        <span class="c1">#    self.NumFeatures=self.NumTimeSteps</span>
+        <span class="c1">#    self.NumTimeSteps=help</span>
+        <span class="c1">#if self.mode ==&#39;time&#39;:</span>
+        <span class="c1">#help = self.NumFeatures</span>
+        <span class="c1">#self.NumFeatures=self.NumTimeSteps</span>
+        <span class="c1">#self.NumTimeSteps=help</span>
+        <span class="n">TSR_attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTwoStepRescaling</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span><span class="n">hasBaseline</span><span class="o">=</span><span class="n">base</span><span class="p">,</span><span class="n">hasSliding_window_shapes</span><span class="o">=</span><span class="n">has_sliding_window</span><span class="p">)</span>
+        <span class="n">TSR_saliency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">TSR_attributions</span><span class="p">,</span><span class="n">isTensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TSR_saliency</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rescaledGrad</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">batch_size</span><span class="p">,:,:]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">attributions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rescaledGrad</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF">
+        <code>
+Saliency_TF            (<a class="autorefs autorefs-internal" title="TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency" href="#TSInterpret.InterpretabilityModels.Saliency.Saliency_Base.Saliency">Saliency</a>)
+        </code>
+
+
+
+</h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Tensorflow Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library tf-explain [2] and shap [3].
+For Tensorflow the following saliency methods are available: 
+    + Gradients (GRAD)
+    + Integrated Gradients (IG)
+    + Gradient Shap (GS))
+    + DeepLiftShap (DLS)
+    + SmoothGrad (SG)
+    + Occlusion (FO)</p>
+<h3 id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF--todo-svs-from-shap-library-deep-lift">TODO SVS from shap Library  &amp; Deep Lift</h3>
+<p>[1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
+[2] Meudec, Raphael: , tf-explain. https://github.com/sicara/tf-explain
+[3] Lundberg, Scott M., and Su-In Lee. "A unified approach to interpreting model predictions." Advances in neural information processing systems 30 (2017). 
+    https://shap.readthedocs.io/</p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/SaliencyMethods_TF.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">Saliency_TF</span><span class="p">(</span><span class="n">Saliency</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Tensorflow Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library tf-explain [2] and shap [3].</span>
+<span class="sd">    For Tensorflow the following saliency methods are available: </span>
+<span class="sd">        + Gradients (GRAD)</span>
+<span class="sd">        + Integrated Gradients (IG)</span>
+<span class="sd">        + Gradient Shap (GS))</span>
+<span class="sd">        + DeepLiftShap (DLS)</span>
+<span class="sd">        + SmoothGrad (SG)</span>
+<span class="sd">        + Occlusion (FO)</span>
+<span class="sd">    #TODO SVS from shap Library  &amp; Deep Lift</span>
+<span class="sd">    [1] Ismail, Aya Abdelsalam, et al. &quot;Benchmarking deep learning interpretability in time series predictions.&quot; Advances in neural information processing systems 33 (2020): 6441-6452.</span>
+<span class="sd">    [2] Meudec, Raphael: , tf-explain. https://github.com/sicara/tf-explain</span>
+<span class="sd">    [3] Lundberg, Scott M., and Su-In Lee. &quot;A unified approach to interpreting model predictions.&quot; Advances in neural information processing systems 30 (2017). </span>
+<span class="sd">        https://shap.readthedocs.io/</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;saliency&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1">#tf explain does not provide baseline !</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mode in TF Saliency&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GRAD&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">VanillaGradients</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span> <span class="n">IntegratedGradients</span><span class="p">()</span>
+        <span class="c1">#elif method == &#39;DL&#39;:</span>
+        <span class="c1">#    self.Grad = DeepLift(model)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;DLS&#39;</span><span class="p">:</span>
+            <span class="c1"># According to shap documentation, ehanced Version of DeepLift ( Deep Shap )</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">GradientExplainer</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">SmoothGrad</span><span class="p">()</span>
+
+        <span class="c1">#elif method == &#39;SVS&#39;:</span>
+        <span class="c1">#    self.Grad = ShapleyValueSampling(model)</span>
+        <span class="c1">#elif method == &#39;FP&#39;:</span>
+        <span class="c1">#    self.Grad = FeaturePermutation(model)</span>
+        <span class="c1">#elif method == &#39;FA&#39;:</span>
+        <span class="c1">#    self.Grad = FeatureAblation(model)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+            <span class="c1">#sollte passen</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">OcclusionSensitivity</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">item</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span> <span class="n">TSR</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Method to explain the model based on the item. </span>
+<span class="sd">        Attrributes: </span>
+<span class="sd">            item np.array: item to get feature attribution for</span>
+<span class="sd">            labels np.array: labels </span>
+<span class="sd">            TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            List: feature attributiin weights</span>
+
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1">#featureMask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)</span>
+        <span class="c1">#for i in  range (self.NumTimeSteps):</span>
+        <span class="c1">#    mask[i,:]=i</span>
+        <span class="n">rescaledGrad</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">item</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+        <span class="n">idx</span><span class="o">=</span><span class="mi">0</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">)</span>
+
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1">#inputMask= np.zeros((input.shape))</span>
+        <span class="c1">#inputMask[:,:,:]=mask</span>
+        <span class="c1">#inputMask =torch.from_numpy(inputMask).to(self.device)</span>
+        <span class="c1">#mask_single= mask#torch.from_numpy(mask).to(self.device)</span>
+        <span class="c1">#mask_single=mask_single.reshape(1,self.NumTimeSteps, self.NumFeatures)#.to(self.device)</span>
+        <span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+        <span class="n">base</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GRAD&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">):</span>
+            <span class="c1">#TODO What does Baselines Single do ? </span>
+            <span class="c1">#input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps,1)</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="nb">input</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;DLS&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+            <span class="n">attributions</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+
+        <span class="c1">#elif(self.method==&#39;SG&#39;):</span>
+        <span class="c1">#    attributions = self.Grad.attribute(input,target=labels)</span>
+        <span class="c1">#elif(self.method==&#39;ShapleySampling&#39;):</span>
+        <span class="c1">#    base=baseline_single</span>
+        <span class="c1">#    attributions = self.Grad.attribute(input, baselines=baseline_single, target=labels, feature_mask=inputMask)</span>
+        <span class="c1">#elif(self.method==&#39;FeaturePermutation&#39;):</span>
+        <span class="c1">#    attributions = self.Grad.attribute(input, target=labels, perturbations_per_eval= input.shape[0],feature_mask=mask_single)</span>
+        <span class="c1">#elif(self.method==&#39;FeatureAblation&#39;):</span>
+        <span class="c1">#    attributions = self.Grad.attribute(input, target=labels)</span>
+                                            <span class="c1"># perturbations_per_eval= input.shape[0],\</span>
+                                            <span class="c1"># feature_mask=mask_single)</span>
+        <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">):</span>
+            <span class="c1">#TODO patch size correct ? </span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="nb">input</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">TSR</span><span class="p">:</span>
+            <span class="c1">#print(base)</span>
+            <span class="n">TSR_attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTwoStepRescaling</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+            <span class="n">TSR_saliency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">TSR_attributions</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">TSR_saliency</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rescaledGrad</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">batch_size</span><span class="p">,:,:]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">attributions</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">rescaledGrad</span>
+
+    <span class="k">def</span> <span class="nf">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">attributions</span><span class="p">):</span>
+        <span class="n">saliency</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">attributions</span><span class="p">)</span>
+        <span class="n">saliency</span><span class="o">=</span><span class="n">saliency</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+        <span class="n">rescaledSaliency</span><span class="o">=</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">saliency</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">rescaledSaliency</span><span class="o">=</span><span class="n">rescaledSaliency</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">attributions</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rescaledSaliency</span>
+
+    <span class="k">def</span> <span class="nf">_getTwoStepRescaling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nb">input</span><span class="p">,</span> <span class="n">TestingLabel</span><span class="p">,</span><span class="n">hasFeatureMask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">hasSliding_window_shapes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;From https://github.com/ayaabdelsalam91/TS-Interpretability-Benchmark/blob/main/MNIST%20Experiments/Scripts/interpret.py&#39;&#39;&#39;</span>
+        <span class="n">sequence_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span>
+        <span class="n">assignment</span><span class="o">=</span><span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">timeGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sequence length&#39;</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">)</span>
+        <span class="n">inputGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">input_size</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;inpu size&#39;</span><span class="p">,</span><span class="n">input_size</span><span class="p">)</span>
+        <span class="n">newGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">input_size</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+            <span class="n">ActualGrad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="nb">input</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">,</span><span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;DLS&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+            <span class="n">ActualGrad</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+            <span class="n">ActualGrad</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ActualGrad</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">ActualGrad</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ActualGrad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="nb">input</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="c1">#.data.cpu().numpy()</span>
+
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sequence_length</span><span class="p">):</span>
+            <span class="n">newInput</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">newInput</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">newInput</span><span class="p">[:,:,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span><span class="n">assignment</span>
+            <span class="n">newInput</span> <span class="o">=</span> <span class="n">newInput</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">,</span> <span class="n">input_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+                <span class="n">timeGrad_perTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="n">newInput</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">,</span><span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;DLS&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+                <span class="n">timeGrad_perTime</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">newInput</span><span class="p">)</span>
+                <span class="n">timeGrad_perTime</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timeGrad_perTime</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">timeGrad_perTime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">newInput</span> <span class="o">=</span> <span class="n">newInput</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">timeGrad_perTime</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="n">newInput</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="c1">#.data.cpu().numpy()</span>
+            <span class="n">timeGrad_perTime</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ActualGrad</span> <span class="o">-</span> <span class="n">timeGrad_perTime</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">timeGrad_perTime</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">timeGrad</span><span class="p">[:,</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">timeGrad_perTime</span><span class="p">)</span>
+
+
+
+        <span class="n">timeContibution</span><span class="o">=</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">timeGrad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">meanTime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">timeContibution</span><span class="p">,</span> <span class="mf">.55</span><span class="p">)</span>    
+
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sequence_length</span><span class="p">):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">timeContibution</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">&gt;</span><span class="n">meanTime</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_size</span><span class="p">):</span>
+                    <span class="n">newInput</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">)</span>
+                    <span class="n">newInput</span><span class="p">[:,</span><span class="n">c</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span><span class="n">assignment</span>
+                    <span class="n">newInput</span> <span class="o">=</span> <span class="n">newInput</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">,</span> <span class="n">input_size</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+                        <span class="n">inputGrad_perInput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="n">newInput</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">,</span><span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;DLS&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+                        <span class="n">inputGrad_perInput</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">newInput</span><span class="p">)</span>
+                        <span class="n">inputGrad_perInput</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inputGrad_perInput</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">inputGrad_perInput</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">newInput</span> <span class="o">=</span> <span class="n">newInput</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">sequence_length</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">inputGrad_perInput</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="n">newInput</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">TestingLabel</span><span class="p">)</span><span class="c1">#.data.cpu().numpy()</span>
+
+
+                    <span class="n">inputGrad_perInput</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">ActualGrad</span> <span class="o">-</span> <span class="n">inputGrad_perInput</span><span class="p">)</span>
+                    <span class="n">inputGrad</span><span class="p">[</span><span class="n">c</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">inputGrad_perInput</span><span class="p">)</span>
+
+                <span class="n">featureContibution</span><span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">minmax_scale</span><span class="p">(</span><span class="n">inputGrad</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">featureContibution</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">input_size</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">*</span><span class="mf">0.1</span>
+
+
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">input_size</span><span class="p">):</span>
+                <span class="c1">#TODO Grad Calculation currently insufficient</span>
+                <span class="n">newGrad</span> <span class="p">[</span><span class="n">c</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">=</span> <span class="n">timeContibution</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">t</span><span class="p">]</span><span class="o">*</span><span class="n">featureContibution</span><span class="p">[</span><span class="n">c</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;NEW GRAD&#39;</span><span class="p">,</span><span class="n">newGrad</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Time Contrib&#39;</span><span class="p">,</span> <span class="n">timeContibution</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Feat Contrib&#39;</span><span class="p">,</span> <span class="n">featureContibution</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">newGrad</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">sequence_length</span><span class="p">,</span><span class="n">input_size</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF.__init__">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;saliency&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/SaliencyMethods_TF.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;saliency&#39;</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1">#tf explain does not provide baseline !</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">NumTimeSteps</span><span class="p">,</span> <span class="n">NumFeatures</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Mode in TF Saliency&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GRAD&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">VanillaGradients</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span> <span class="n">IntegratedGradients</span><span class="p">()</span>
+    <span class="c1">#elif method == &#39;DL&#39;:</span>
+    <span class="c1">#    self.Grad = DeepLift(model)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;DLS&#39;</span><span class="p">:</span>
+        <span class="c1"># According to shap documentation, ehanced Version of DeepLift ( Deep Shap )</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">DeepExplainer</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">shap</span><span class="o">.</span><span class="n">GradientExplainer</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">SmoothGrad</span><span class="p">()</span>
+
+    <span class="c1">#elif method == &#39;SVS&#39;:</span>
+    <span class="c1">#    self.Grad = ShapleyValueSampling(model)</span>
+    <span class="c1">#elif method == &#39;FP&#39;:</span>
+    <span class="c1">#    self.Grad = FeaturePermutation(model)</span>
+    <span class="c1">#elif method == &#39;FA&#39;:</span>
+    <span class="c1">#    self.Grad = FeatureAblation(model)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;FO&#39;</span><span class="p">:</span>
+        <span class="c1">#sollte passen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span> <span class="o">=</span> <span class="n">OcclusionSensitivity</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 class="doc doc-heading" id="TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF.Saliency_TF.explain">
+<code class="highlight language-python"><span class="n">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">TSR</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+</h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Method to explain the model based on the item. 
+Attrributes: 
+    item np.array: item to get feature attribution for
+    labels np.array: labels 
+    TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
+Returns: 
+    List: feature attributiin weights</p>
+
+        <details class="quote">
+          <summary>Source code in <code>Saliency/SaliencyMethods_TF.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">explain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">item</span><span class="p">,</span><span class="n">labels</span><span class="p">,</span> <span class="n">TSR</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Method to explain the model based on the item. </span>
+<span class="sd">    Attrributes: </span>
+<span class="sd">        item np.array: item to get feature attribution for</span>
+<span class="sd">        labels np.array: labels </span>
+<span class="sd">        TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened</span>
+<span class="sd">    Returns: </span>
+<span class="sd">        List: feature attributiin weights</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="c1">#featureMask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)</span>
+    <span class="c1">#for i in  range (self.NumTimeSteps):</span>
+    <span class="c1">#    mask[i,:]=i</span>
+    <span class="n">rescaledGrad</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">item</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="n">idx</span><span class="o">=</span><span class="mi">0</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">)</span>
+
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1">#inputMask= np.zeros((input.shape))</span>
+    <span class="c1">#inputMask[:,:,:]=mask</span>
+    <span class="c1">#inputMask =torch.from_numpy(inputMask).to(self.device)</span>
+    <span class="c1">#mask_single= mask#torch.from_numpy(mask).to(self.device)</span>
+    <span class="c1">#mask_single=mask_single.reshape(1,self.NumTimeSteps, self.NumFeatures)#.to(self.device)</span>
+    <span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+    <span class="n">base</span><span class="o">=</span><span class="kc">None</span>
+    <span class="k">if</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;IG&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;GRAD&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">):</span>
+        <span class="c1">#TODO What does Baselines Single do ? </span>
+        <span class="c1">#input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps,1)</span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="nb">input</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;DLS&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span> <span class="s1">&#39;GS&#39;</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="nb">input</span><span class="p">)</span>
+        <span class="n">attributions</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+
+    <span class="c1">#elif(self.method==&#39;SG&#39;):</span>
+    <span class="c1">#    attributions = self.Grad.attribute(input,target=labels)</span>
+    <span class="c1">#elif(self.method==&#39;ShapleySampling&#39;):</span>
+    <span class="c1">#    base=baseline_single</span>
+    <span class="c1">#    attributions = self.Grad.attribute(input, baselines=baseline_single, target=labels, feature_mask=inputMask)</span>
+    <span class="c1">#elif(self.method==&#39;FeaturePermutation&#39;):</span>
+    <span class="c1">#    attributions = self.Grad.attribute(input, target=labels, perturbations_per_eval= input.shape[0],feature_mask=mask_single)</span>
+    <span class="c1">#elif(self.method==&#39;FeatureAblation&#39;):</span>
+    <span class="c1">#    attributions = self.Grad.attribute(input, target=labels)</span>
+                                        <span class="c1"># perturbations_per_eval= input.shape[0],\</span>
+                                        <span class="c1"># feature_mask=mask_single)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="o">==</span><span class="s1">&#39;FO&#39;</span><span class="p">):</span>
+        <span class="c1">#TODO patch size correct ? </span>
+        <span class="nb">input</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">NumTimeSteps</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Grad</span><span class="o">.</span><span class="n">explain</span><span class="p">((</span><span class="nb">input</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span><span class="n">class_index</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="n">patch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">NumFeatures</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">TSR</span><span class="p">:</span>
+        <span class="c1">#print(base)</span>
+        <span class="n">TSR_attributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTwoStepRescaling</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="n">TSR_saliency</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">TSR_attributions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TSR_saliency</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rescaledGrad</span><span class="p">[</span><span class="n">idx</span><span class="p">:</span><span class="n">idx</span><span class="o">+</span><span class="n">batch_size</span><span class="p">,:,:]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_givenAttGetRescaledSaliency</span><span class="p">(</span><span class="n">attributions</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rescaledGrad</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../CF/" title="Counterfactual" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Counterfactual
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../Leftist/" title="LEFTIST" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                LEFTIST
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.92ffa368.min.js"></script>
+      <script src="../../assets/javascripts/bundle.5123e3d4.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.a68abb33.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

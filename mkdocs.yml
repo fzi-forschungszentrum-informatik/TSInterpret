@@ -11,6 +11,10 @@ plugins:
 - autorefs
 - mkdocstrings
 - mkdocs-jupyter
+- bibtex:
+      bib_file: "./docs/library.bib"
+markdown_extensions:
+  - footnotes
 
 nav:
   - Home: index.md

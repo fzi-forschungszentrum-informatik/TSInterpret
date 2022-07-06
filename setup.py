@@ -72,6 +72,7 @@ docs_packages = [
     "mkdocs-autorefs",
     "ipython_genutils==0.1.0",
     "mkdocs-jupyter==0.20.0",
+    "mkdocs-bibtex",
     "nbconvert==6.4.2",
     "numpydoc==1.2",
     "spacy==3.2.2",
