@@ -5,7 +5,7 @@ The ambition is to faciliate the usage of times series interpretability methods.
 
 ## 💈 Installation
 ```shell
-pip install TSInterpre
+pip install TSInterpret
 ```
 You can install the latest development version from GitHub as so:
 ```shell
