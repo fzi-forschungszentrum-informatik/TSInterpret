@@ -20,7 +20,7 @@ class LEFTIST(FeatureAttribution):
 
     [1] Guillemé, Maël, et al. "Agnostic local explanation for time series classification." 2019 IEEE 31st International Conference on Tools with Artificial Intelligence (ICTAI). IEEE, 2019.
     """
-    def __init__(self,model_to_explain, reference_set = None,mode='time',backend='F') -> None:
+    def __init__(self,model_to_explain, reference_set = None,mode='time',backend='F',transform_name='straight', segmentator_name='uniform', learning_process_name='Lime',nb_interpretable_feature=10) -> None:
         ''' Initization.
          Arguments:
             model_to_explain: classification model to explain
@@ -36,6 +36,10 @@ class LEFTIST(FeatureAttribution):
         self.backend=backend
         self.mode = mode
         self.change = False
+        self.transform_name=transform_name
+        self.segmentator_name=segmentator_name
+        self.learning_process_name=learning_process_name
+        self.nb_interpretable_feature=nb_interpretable_feature
         if mode == 'feat':
             self.change=True 
             self.test_x=self.test_x.reshape (-1,self.test_x.shape[-1], self.test_x.shape[-2])
@@ -55,7 +59,7 @@ class LEFTIST(FeatureAttribution):
             self.predict=self.model
 
 
-    def explain(self,instance,nb_neighbors, idx_label=None, explanation_size=None,transform_name='straight', segmentator_name='uniform', learning_process_name='Lime',nb_interpretable_feature=10, random_state=0):
+    def explain(self,instance,nb_neighbors, idx_label=None, explanation_size=None, random_state=0):
         """
         Compute the explanation.
 
@@ -72,11 +76,9 @@ class LEFTIST(FeatureAttribution):
         Returns:
             List: Attribution weight
         """
-        self.transform = transform_name
-        self.transform_name=transform_name
-        self.learning_process_name = learning_process_name
-        if segmentator_name=='uniform':
-            self.segmentator = UniformSegmentator(nb_interpretable_feature)
+        
+        if self.segmentator_name=='uniform':
+            self.segmentator = UniformSegmentator(self.nb_interpretable_feature)
 
         if self.mode =='feat':
             instance=instance.reshape(instance.shape[-1],instance.shape[-2])
