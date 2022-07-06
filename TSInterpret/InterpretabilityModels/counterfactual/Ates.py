@@ -438,7 +438,7 @@ class OptimizedSearch(BaseExplanation):
                 short_explanation.add(best_col)
         return short_explanation
 
-    def explain(self, x_test, num_features=None, to_maximize=None, return_dist = False, savefig=False)-> Tuple[np.array, int]:
+    def explain(self, x_test, num_features=None, to_maximize=None, savefig=False)-> Tuple[np.array, int]:
         
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds = self.clf(input_)
@@ -457,12 +457,12 @@ class OptimizedSearch(BaseExplanation):
 
 
         explanation = self._get_explanation(
-            x_test, to_maximize, num_features, return_dist, savefig=savefig)
+            x_test, to_maximize, num_features, savefig=savefig)
         tr,_=explanation
         if tr is None:
             print('Run Brute Force as Backup.')
             explanation = self.backup.explain(x_test, num_features=num_features,
-                                       to_maximize=to_maximize, return_dist=return_dist, savefig=savefig)
+                                       to_maximize=to_maximize, savefig=savefig)
         best, other = explanation
         print('Other',np.array(other).shape)
         print('Best',np.array(best).shape)
@@ -470,7 +470,7 @@ class OptimizedSearch(BaseExplanation):
         
         return best, target
 
-    def _get_explanation(self, x_test, to_maximize, num_features, return_dist=False, savefig=False):
+    def _get_explanation(self, x_test, to_maximize, num_features, savefig=False):
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors)
 
@@ -528,10 +528,9 @@ class OptimizedSearch(BaseExplanation):
                     best_dist = dist
         if len(best_explanation) == 0:
             return None, None
-        if return_dist == False: 
-            return best_modified, best_explanation
-        else:
-            return best_explanation, best_dist
+        
+        return best_modified, best_explanation
+       
 
 
 
