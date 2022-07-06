@@ -20,6 +20,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt 
 from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 
+
 class Saliency_PTY(Saliency):
     '''
     PyTorch Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library captum [2].
@@ -41,7 +42,7 @@ class Saliency_PTY(Saliency):
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='GRAD',mode='time',backend= 'torch',device='cpu') -> None:
         ''' Initialization
-        Attrubutes:
+        Arguments:
             model: model to be explained
             NumTimeStep int : Number of Time Step 
             NumFetaures int : Number Features
@@ -75,14 +76,14 @@ class Saliency_PTY(Saliency):
         if backend == 'torch':
             self.device='cpu'
 
-    def explain(self,item,labels, TSR = True):
+    def explain(self,item,labels, TSR = True) :
         '''Method to explain the model based on the item. 
-        Attrributes: 
+        Arguments:
             item np.array: item to get feature attribution for
             labels np.array: labels 
             TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
         Returns: 
-            List: feature attributiin weights
+            List: feature attribution weights
         
         '''
         mask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)

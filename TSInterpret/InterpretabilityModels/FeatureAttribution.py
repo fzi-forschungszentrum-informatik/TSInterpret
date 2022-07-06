@@ -51,13 +51,11 @@ class FeatureAttribution(InterpretabilityBase):
     def plot(self, item, exp, figsize=(15,15),heatmap= False, normelize_saliency = True,vmin=-1,vmax=1,  save = None):
         """
         Plots expalantion on the explained Sample. 
-
         Parameters
         ----------
         instance: np.array
             timeseries instance in two-dimensional shape (m, n).
         exp: expalantaion 
-
         Returns
         -------
         matplotlib.pyplot.Figure

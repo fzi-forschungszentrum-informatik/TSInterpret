@@ -33,11 +33,12 @@ class Saliency_TF(Saliency):
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='saliency',mode='time',device='cpu') -> None:
         '''
-        model: model to be explained. 
-        NumTimeSteps int: number of timesteps. 
-        NumFeature int: number of features.
-        method str: Saliency Method to be used.
-        mode str: second dimension is 'feat' or 'time'.
+        Arguments: 
+            model: model to be explained. 
+            NumTimeSteps int: number of timesteps. 
+            NumFeature int: number of features.
+            method str: Saliency Method to be used.
+            mode str: second dimension is 'feat' or 'time'.
         '''
         #tf explain does not provide baseline !
         super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
@@ -68,7 +69,7 @@ class Saliency_TF(Saliency):
 
     def explain(self,item,labels, TSR = True) -> List:
         '''Method to explain the model based on the item. 
-        Attrributes: 
+        Arguments:
             item np.array: item to get feature attribution for
             labels np.array: labels 
             TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
@@ -178,6 +179,6 @@ class Saliency_TF(Saliency):
        
 
             for c in range(input_size):
-                #TODO Grad Calculation currently insufficient
                 newGrad [c,t]= timeContibution[0,t]*featureContibution[c,0]
         return newGrad.reshape(sequence_length,input_size)
+
