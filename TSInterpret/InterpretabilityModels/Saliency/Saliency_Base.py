@@ -4,7 +4,8 @@ from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribu
 
 class Saliency(FeatureAttribution):
     '''
-    Base Method for Saliency Calculation based on [1]. Please use the designated Subclasses SaliencyMethods_PYT.py for PyTorch explanations and SaliencyMethods_TF.py for Tensforflow explanations.
+    Base Method for Saliency Calculation based on [1]. Please use the designated Subclasses SaliencyMethods_PYT.py for PyTorch explanations 
+    and SaliencyMethods_TF.py for Tensforflow explanations.
 
     [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
     '''
@@ -13,12 +14,10 @@ class Saliency(FeatureAttribution):
         self.NumTimeSteps=NumTimeSteps
         self.NumFeatures=NumFeatures 
         self.method = method
-        print('Mode in Saliency', self.mode)
 
     def explain(self):
-        pass
+        raise NotImplementedError("Please don't use the base CF class directly")
 
     def plot_heatmap(self):
-        #TODO Move HeatMap to here
         pass 
 

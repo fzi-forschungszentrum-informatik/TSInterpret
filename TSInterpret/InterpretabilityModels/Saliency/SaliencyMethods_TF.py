@@ -1,4 +1,5 @@
 import re
+from typing import List
 #from tf_explain.core.grad_cam import GradCAM
 from tf_explain.core.integrated_gradients import IntegratedGradients
 from tf_explain.core.occlusion_sensitivity import OcclusionSensitivity
@@ -22,14 +23,21 @@ class Saliency_TF(Saliency):
         + DeepLiftShap (DLS)
         + SmoothGrad (SG)
         + Occlusion (FO)
-    #TODO SVS from shap Library  & Deep Lift
+
     [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
+    
     [2] Meudec, Raphael: , tf-explain. https://github.com/sicara/tf-explain
+    
     [3] Lundberg, Scott M., and Su-In Lee. "A unified approach to interpreting model predictions." Advances in neural information processing systems 30 (2017). 
         https://shap.readthedocs.io/
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='saliency',mode='time',device='cpu') -> None:
         '''
+        model: model to be explained. 
+        NumTimeSteps int: number of timesteps. 
+        NumFeature int: number of features.
+        method str: Saliency Method to be used.
+        mode str: second dimension is 'feat' or 'time'.
         '''
         #tf explain does not provide baseline !
         super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
@@ -56,10 +64,9 @@ class Saliency_TF(Saliency):
         #elif method == 'FA':
         #    self.Grad = FeatureAblation(model)
         elif method == 'FO':
-            #sollte passen
             self.Grad = OcclusionSensitivity()
 
-    def explain(self,item,labels, TSR = True):
+    def explain(self,item,labels, TSR = True) -> List:
         '''Method to explain the model based on the item. 
         Attrributes: 
             item np.array: item to get feature attribution for
@@ -79,37 +86,15 @@ class Saliency_TF(Saliency):
 
         batch_size = input.shape[0]
        
-        #inputMask= np.zeros((input.shape))
-        #inputMask[:,:,:]=mask
-        #inputMask =torch.from_numpy(inputMask).to(self.device)
-        #mask_single= mask#torch.from_numpy(mask).to(self.device)
-        #mask_single=mask_single.reshape(1,self.NumTimeSteps, self.NumFeatures)#.to(self.device)
         input=input.reshape(-1, self.NumTimeSteps,self.NumFeatures)
         base=None
         if(self.method == 'IG' or self.method == 'GRAD' or self.method == 'SG'):
-            #TODO What does Baselines Single do ? 
-            #input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps,1)
             input = input.reshape(-1, self.NumTimeSteps,self.NumFeatures,1)
-            print(input.shape)
             attributions = self.Grad.explain((input,None), self.model,class_index=labels)
         elif self.method== 'DLS' or self.method== 'GS':
             self.Grad=self.Grad(self.model, input)
             attributions =self.Grad.shap_values(input)
-       
-
-        #elif(self.method=='SG'):
-        #    attributions = self.Grad.attribute(input,target=labels)
-        #elif(self.method=='ShapleySampling'):
-        #    base=baseline_single
-        #    attributions = self.Grad.attribute(input, baselines=baseline_single, target=labels, feature_mask=inputMask)
-        #elif(self.method=='FeaturePermutation'):
-        #    attributions = self.Grad.attribute(input, target=labels, perturbations_per_eval= input.shape[0],feature_mask=mask_single)
-        #elif(self.method=='FeatureAblation'):
-        #    attributions = self.Grad.attribute(input, target=labels)
-                                            # perturbations_per_eval= input.shape[0],\
-                                            # feature_mask=mask_single)
         elif(self.method=='FO'):
-            #TODO patch size correct ? 
             input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps,1)
             attributions = self.Grad.explain((input,None), self.model,class_index=labels,patch_size=self.NumFeatures)
 
@@ -130,14 +115,11 @@ class Saliency_TF(Saliency):
         return rescaledSaliency
 
     def _getTwoStepRescaling(self,input, TestingLabel,hasFeatureMask=None,hasSliding_window_shapes=None):
-        '''From https://github.com/ayaabdelsalam91/TS-Interpretability-Benchmark/blob/main/MNIST%20Experiments/Scripts/interpret.py'''
         sequence_length=self.NumTimeSteps
         input_size=self.NumFeatures
         assignment=input[0,0,0]
         timeGrad=np.zeros((1,sequence_length))
-        print('sequence length',sequence_length)
         inputGrad=np.zeros((input_size,1))
-        print('inpu size',input_size)
         newGrad=np.zeros((input_size, sequence_length))
         if self.method=='FO':
             ActualGrad = self.Grad.explain((input,None), self.model,class_index=TestingLabel,patch_size=self.NumFeatures)
@@ -151,7 +133,6 @@ class Saliency_TF(Saliency):
 
         for t in range(sequence_length):
             newInput = input.copy().reshape(1, input_size,sequence_length)
-            print(newInput.shape)
             newInput[:,:,t]=assignment
             newInput = newInput.reshape(1,sequence_length, input_size)
             if self.method=='FO':
@@ -159,12 +140,10 @@ class Saliency_TF(Saliency):
             elif self.method== 'DLS' or self.method== 'GS':
                 timeGrad_perTime =self.Grad.shap_values(newInput)
                 timeGrad_perTime=np.array(timeGrad_perTime)
-                print(timeGrad_perTime.shape)
             else:
                 newInput = newInput.reshape(1,sequence_length, input_size,1)
                 timeGrad_perTime = self.Grad.explain((newInput,None), self.model,class_index=TestingLabel)#.data.cpu().numpy()
             timeGrad_perTime= np.absolute(ActualGrad - timeGrad_perTime)
-            print(timeGrad_perTime.shape)
             timeGrad[:,t] = np.sum(timeGrad_perTime)
 
 
@@ -201,7 +180,4 @@ class Saliency_TF(Saliency):
             for c in range(input_size):
                 #TODO Grad Calculation currently insufficient
                 newGrad [c,t]= timeContibution[0,t]*featureContibution[c,0]
-        print('NEW GRAD',newGrad.shape)
-        print('Time Contrib', timeContibution.shape)
-        print('Feat Contrib', featureContibution.shape)
         return newGrad.reshape(sequence_length,input_size)

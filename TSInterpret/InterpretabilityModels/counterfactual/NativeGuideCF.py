@@ -153,7 +153,7 @@ class NativeGuideCF(CF):
 
     def _counterfactual_generator_swap(self,instance, label,subarray_length=1,max_iter=500):
         print(label)
-        _,nun=self._native_guide_retrieval(instance, label, 'euclidean', 1)
+        _,nun=self._native_guide_retrieval(instance, label, self.distance_measure, 1)
         if np.count_nonzero(nun.reshape(-1)-instance.reshape(-1))==0:
             print('Starting and nun are Identical !')
 
