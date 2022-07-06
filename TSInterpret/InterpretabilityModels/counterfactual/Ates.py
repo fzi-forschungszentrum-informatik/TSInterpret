@@ -279,18 +279,23 @@ class BruteForceSearch(BaseExplanation):
                          best_column, best_case)
         return best_column, best_case
 
-    def explain(self, x_test, to_maximize=None, num_features=10,return_dist=False, savefig=False):
+    def explain(self, x_test, to_maximize=None, num_features=10):
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds= self.clf(input_)
         if to_maximize is None:
-            to_maximize = np.argmin(orig_preds)    
+            to_maximize =  np.argsort(orig_preds)[0][-2:-1][0]  #np.argmin(orig_preds)
+        
+        #TODO WHERE AND WHY IS ORIFIAL PREDS RELEVANT
         orig_preds= orig_preds[0][to_maximize]
         orig_label = np.argmax(self.clf(input_))
+        print('Original Label', orig_label)
+        print('Max',to_maximize) 
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
             return None, None
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors)
+        print('distractores',distractors)
         best_explanation = set()
         best_explanation_score = 0
         for count, dist in enumerate(distractors):
@@ -300,7 +305,9 @@ class BruteForceSearch(BaseExplanation):
             #best_dist = dist 
             while True:
                 input_ = modified.reshape(1,-1,self.window_size)
-                probas= self.clf(input_)[0][to_maximize]
+                probas= self.clf(input_)
+                print('Current may',np.argmax(probas))
+                print(to_maximize)
                 if np.argmax(probas) == to_maximize:
                     current_best = np.max(probas)
                     if current_best > best_explanation_score:
@@ -439,8 +446,11 @@ class OptimizedSearch(BaseExplanation):
         orig_label = np.argmax(orig_preds)
 
         if to_maximize is None:
-            to_maximize = np.argmin(orig_preds)
-
+            to_maximize =  np.argsort(orig_preds)[0][-2:-1][0]
+        
+        print('Current may',np.argmax(orig_preds))
+        print(to_maximize)
+      
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
             return None, None
@@ -449,12 +459,15 @@ class OptimizedSearch(BaseExplanation):
         explanation = self._get_explanation(
             x_test, to_maximize, num_features, return_dist, savefig=savefig)
         tr,_=explanation
-        if tr==None:
+        if tr is None:
             print('Run Brute Force as Backup.')
             explanation = self.backup.explain(x_test, num_features=num_features,
                                        to_maximize=to_maximize, return_dist=return_dist, savefig=savefig)
         best, other = explanation
+        print('Other',np.array(other).shape)
+        print('Best',np.array(best).shape)
         target = np.argmax(self.clf(best),axis=1)
+        
         return best, target
 
     def _get_explanation(self, x_test, to_maximize, num_features, return_dist=False, savefig=False):
@@ -516,11 +529,10 @@ class OptimizedSearch(BaseExplanation):
         if len(best_explanation) == 0:
             return None, None
         if return_dist == False: 
-            #TODO this was turned around!
-            return best_modified,best_explanation
+            return best_modified, best_explanation
         else:
-            #TODO best explanation was changed to best_modified
-            return best_modified, best_dist
+            return best_explanation, best_dist
+
 
 
 class AtesCF(CF):
@@ -529,13 +541,16 @@ class AtesCF(CF):
      [1] Ates, Emre, et al. "Counterfactual Explanations for Multivariate Time Series." 2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
      
     """
-    def __init__(self,model, ref, backend, mode) -> None:
+    def __init__(self,model, ref, backend, mode, method= 'opt', number_distractors=2, silent=False) -> None:
         """
         Arguments:
             model : Model to be interpreted.
             ref Tuple: Reference Dataset as Tuple (x,y).
             backend: desired Model Backend ('PYT', 'TF', 'SK').
             mode: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
+            method str : 'opt' if optimized calculation, 'brute' for Brute Force
+            number_distractors int: number of distractore to be used
+            silent bool: logging.
 
         """
         super().__init__(model,mode) 
@@ -560,91 +575,33 @@ class AtesCF(CF):
         elif backend == 'SK':
             self.predict=SklearnModel(model,change).predict
         self.referenceset=(test_x,test_y)
+        self.method=method
+        self.silent=silent
+        self.number_distractors=number_distractors 
          
 
-    def explain(self, x: np.ndarray,orig_class:int=None, target: int=None, method= 'opt')-> Tuple[np.array, int]:
+    def explain(self, x: np.ndarray,orig_class:int=None, target: int=None)-> Tuple[np.array, int]:
         '''
         Calculates the Counterfactual according to Ates.
         Arguments:
             x (np.array): The instance to explain.
             target (np.array): target class. If no target class is given, the class with the secon heighest classification probability is selected.
-            method str : 'opt' if optimized calculation, 'brute' for Brute Force.
-            
+           
         Returns:
             ([np.array], int): Tuple of Counterfactual and Label
     
-        '''
+        '''        
+        
         if self.mode != 'feat':
             x=x.reshape(-1, x.shape[-1], x.shape[-2])
         train_x,train_y=self.referenceset
         if len(train_y.shape)>1:
              train_y= np.argmax(train_y,axis=1)
-        #print(train_x.shape)
-        if method=='opt':
-            opt=OptimizedSearch(self.predict, train_x, train_y, silent=False, threads=1,num_distractors=2)
-            return opt.explain(x,to_maximize=target,savefig=False)
-        elif method =='brute':
+        if self.method=='opt':
+            opt=OptimizedSearch(self.predict, train_x, train_y, silent=self.silent, threads=1,num_distractors=self.number_distractors)
+            return opt.explain(x,to_maximize=target)
+        elif self.method =='brute':
             #TODO Currently not Threadable as TF Model does not support
             opt=BruteForceSearch(self.predict, train_x,train_y, threads=1)
-            return opt.explain(x,to_maximize=target,savefig=False)
+            return opt.explain(x,to_maximize=target)
         
-
-    def plot(self,item,org_label,exp,cf_label,figsize=(15,15), save_fig=None):
-        """Plot Function for Ates et al. 
-        Arguments:
-            item np.array: original instance.
-            org_label int: originally predicted label. 
-            exp np.array: returned explanation. 
-            cf_label int: lebel of returned instance. 
-            figsize Tuple: Size of Figure (x,y).
-            save_fig str: Path to Save the figure.
-        """
-        if self.mode == 'time':
-            item = item.reshape(item.shape[0],item.shape[2],item.shape[1]) 
-
-        plt.style.use("classic")
-        colors = [
-            '#08F7FE',  # teal/cyan
-            '#FE53BB',  # pink
-            '#F5D300',  # yellow
-            '#00ff41',  # matrix green
-        ]
-        #Figure out number changed channels
-        #index= np.where(np.any(item))
-        res = (item != exp).any(-1)
-        ind=np.where(res[0])
-        if len(ind[0]) == 0:
-            print('Items are identical')
-            return
-        i=0
-        #Draw changed channels
-        fig, ax = plt.subplots(len(ind[0]),1,figsize=figsize)
-        #print(ax)
-        for channel in ind[0]:
-            #fig,ax=plt.subplot(len(ind[0]),1,i)
-    
-            df = pd.DataFrame({f'Predicted: {org_label}': list(item[0][channel].flatten()),
-                   f'Counterfactual: {cf_label}': list(exp[0][channel].flatten())})
-    
-            df.plot(marker='.', color=colors, ax=ax[i])
-            # Redraw the data with low alpha and slighty increased linewidth:
-            n_shades = 10
-            diff_linewidth = 1.05
-            alpha_value = 0.3 / n_shades
-            for n in range(1, n_shades+1):
-                df.plot(marker='.',
-                linewidth=2+(diff_linewidth*n),
-                alpha=alpha_value,
-                legend=False,
-                ax=ax[i],
-                color=colors)
-
-            ax[i].grid(color='#2A3459')
-            plt.xlabel('Time', fontweight = 'bold', fontsize='large')
-            plt.ylabel('Value', fontweight = 'bold', fontsize='large')
-            i=i+1
-        if save_fig is None: 
-            plt.show()
-        else:
-            plt.savefig(save_fig)
-
