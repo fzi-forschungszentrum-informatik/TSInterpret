@@ -283,19 +283,15 @@ class BruteForceSearch(BaseExplanation):
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds= self.clf(input_)
         if to_maximize is None:
-            to_maximize =  np.argsort(orig_preds)[0][-2:-1][0]  #np.argmin(orig_preds)
+            to_maximize =  np.argsort(orig_preds)[0][-2:-1][0] 
         
-        #TODO WHERE AND WHY IS ORIFIAL PREDS RELEVANT
-        orig_preds= orig_preds[0][to_maximize]
-        orig_label = np.argmax(self.clf(input_))
-        print('Original Label', orig_label)
-        print('Max',to_maximize) 
+        orig_label = np.argmax(self.clf(input_)) 
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
             return None, None
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors)
-        print('distractores',distractors)
+        #print('distractores',distractors)
         best_explanation = set()
         best_explanation_score = 0
         for count, dist in enumerate(distractors):
@@ -438,7 +434,7 @@ class OptimizedSearch(BaseExplanation):
                 short_explanation.add(best_col)
         return short_explanation
 
-    def explain(self, x_test, num_features=None, to_maximize=None, savefig=False)-> Tuple[np.array, int]:
+    def explain(self, x_test, num_features=None, to_maximize=None)-> Tuple[np.array, int]:
         
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds = self.clf(input_)
@@ -457,12 +453,12 @@ class OptimizedSearch(BaseExplanation):
 
 
         explanation = self._get_explanation(
-            x_test, to_maximize, num_features, savefig=savefig)
+            x_test, to_maximize, num_features)
         tr,_=explanation
         if tr is None:
             print('Run Brute Force as Backup.')
             explanation = self.backup.explain(x_test, num_features=num_features,
-                                       to_maximize=to_maximize, savefig=savefig)
+                                       to_maximize=to_maximize)
         best, other = explanation
         print('Other',np.array(other).shape)
         print('Best',np.array(best).shape)
@@ -470,7 +466,7 @@ class OptimizedSearch(BaseExplanation):
         
         return best, target
 
-    def _get_explanation(self, x_test, to_maximize, num_features, savefig=False):
+    def _get_explanation(self, x_test, to_maximize, num_features):
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors)
 
