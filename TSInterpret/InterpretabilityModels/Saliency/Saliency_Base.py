@@ -63,18 +63,23 @@ class Saliency(FeatureAttribution):
             ax011=[]
             ax012=[]
 
+            fig, axn = plt.subplots(len(item[0]), 1, sharex=True, sharey=True)
+            cbar_ax = fig.add_axes([.91, .3, .03, .4])
+
             for channel in item[0]:
                 #print(item.shape)
-                ax011.append(plt.subplot(len(item[0]),1,i+1))
-                ax012.append(ax011[i].twinx())
-                ax011[i].set_facecolor("#440154FF")
+                #ax011.append(plt.subplot(len(item[0]),1,i+1))
+                #ax012.append(ax011[i].twinx())
+                #ax011[i].set_facecolor("#440154FF")
+                axn012=axn[i].twinx()
                 
 
-                sns.heatmap(exp[i].reshape(1,-1), fmt="g",cmap='viridis', cbar=True, ax=ax011[i], yticklabels=False, vmin=0,vmax=1)
-                sns.lineplot(x=range(0,len(channel.reshape(-1))), y=channel.flatten(),ax=ax012[i])
+                sns.heatmap(exp[i].reshape(1,-1), fmt="g",cmap='viridis', cbar=i == 0 ,cbar_ax=None if i else cbar_ax, ax=axn[i], yticklabels=False, vmin=0,vmax=1)
+                sns.lineplot(x=range(0,len(channel.reshape(-1))), y=channel.flatten(),ax=axn012)
                 plt.xlabel('Time', fontweight = 'bold', fontsize='large')
                 plt.ylabel('Value', fontweight = 'bold', fontsize='large')
                 i=i+1
+            fig.tight_layout(rect=[0, 0, .9, 1])
         if save == None: 
             plt.show()
         else: 
