@@ -74,6 +74,24 @@ class FeatureAttribution(InterpretabilityBase):
             ]
             #Figure out number changed channels
             #index= np.where(np.any(item))
+            #TODO Positiv8
+        #cmap = pl.cm.RdBu
+
+        # Get the colormap colors
+        #my_cmap = cmap(np.arange(cmap.N))
+        # Define the alphas in the range from 0 to 1
+        #alphas = np.linspace(0, 1, cmap.N)
+        # Define the background as white
+        #BG = np.asarray([1., 1., 1.,])
+        # Mix the colors with the background
+        #for i in range(cmap.N):
+        #    my_cmap[i,:-1] = my_cmap[i,:-1] * alphas[i] + BG * (1.-alphas[i])
+        # Create new colormap which mimics the alpha values
+        #my_cmap = ListedColormap(my_cmap)
+        cmap =sns.diverging_palette(220,251,s=74,l=50, n=16)#240, 10, center="dark")#sns.diverging_palette(250, 15, s=75, l=40,
+
+               #                   n=9, center="dark")#sns.color_palette("ch:start=.2,rot=-.3", as_cmap=True)
+#sns.color_palette("coolwarm", as_cmap=True)#'mako'# 'bwr' #sns.diverging_palette(288, 52, s=97, l=16, center="dark", as_cmap=True)# 'mako'#'viridis' #sns.diverging_palette(250, 15, s=75, l=40, n=9, center="dark", as_cmap=True)
         i=0
         if self.mode=='time':
             print('time mode')
@@ -103,7 +121,8 @@ class FeatureAttribution(InterpretabilityBase):
         center=None
         if vmin < 0: 
             center=0
-        if heatmap: 
+        if heatmap:
+            pass 
             ax011 = plt.subplot(1,1,1)
             ax012 = ax011.twinx()
             if normelize_saliency:
@@ -118,16 +137,19 @@ class FeatureAttribution(InterpretabilityBase):
                 #print(item.shape)
                 ax011.append(plt.subplot(len(item[0]),1,i+1))
                 ax012.append(ax011[i].twinx())
+                ax011[i].set_facecolor("#440154FF")
+                
+
                 print(i)
                 if normelize_saliency:
-                    sns.heatmap(exp[i].reshape(1,-1), fmt="g",cmap='coolwarm',  cbar=True, ax=ax011[i], yticklabels=False, vmin=vmin,vmax=vmax,center=center)
+                    #Used to be vivaris 
+                    sns.heatmap(exp[i].reshape(1,-1), fmt="g",cmap=cmap,  cbar=True, ax=ax011[i], yticklabels=False, vmin=vmin,vmax=vmax,center=center)
                 else: 
-                    sns.heatmap(exp[i].reshape(1,-1), fmt="g", cmap='viridis', cbar=True, ax=ax011[i], yticklabels=False,center=center)
+                    sns.heatmap(exp[i].reshape(1,-1), fmt="g", cmap=cmap, cbar=True, ax=ax011[i], yticklabels=False,center=center)
                 sns.lineplot(x=range(0,len(channel.reshape(-1))), y=channel.flatten(),ax=ax012[i])
                 plt.xlabel('Time', fontweight = 'bold', fontsize='large')
                 plt.ylabel('Value', fontweight = 'bold', fontsize='large')
                 i=i+1
-
         if save == None: 
             plt.show()
         else: 

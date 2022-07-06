@@ -80,12 +80,31 @@ class CF(InstanceBase):
         else:
             plt.savefig(save_fig)
     
-    def plot_in_one(self,item,org_label,exp,cf_label, save_fig= None):
+    def plot_in_one(self,item,org_label,exp,cf_label, save_fig= None,figsize=(15,15)):
         """
-        Basic Plot Function for Visualizing Coutnerfactuals.
+        Plot Function for Counterfactuals in uni-and multivariate setting. In the multivariate setting only the changed features are visualized.
         Arguments:
-            instance np.array: Not encoded and not normalised factual examples in two-dimensional shape (m, n).
+            item np.array: original instance.
+            org_label int: originally predicted label. 
+            exp np.array: returned explanation. 
+            cf_label int: lebel of returned instance. 
+            figsize Tuple: Size of Figure (x,y).
+            save_fig str: Path to Save the figure.
         """
+        if self.mode == 'time':
+            item = item.reshape(item.shape[0],item.shape[2],item.shape[1]) 
+        #TODO This is new and needs to be testes
+        if item.shape[-2]>1:
+            res = (item != exp).any(-1)
+            ind=np.where(res[0])
+            if len(ind[0]) == 0:
+                print('Items are identical')
+                return
+            elif len(ind[0]) > 1:
+                self.plot_multi(item,org_label,exp,cf_label,figsize=figsize, save_fig=save_fig)
+                return
+            else: 
+                item =item[ind]
         
         plt.style.use("classic")
         colors = [
@@ -114,6 +133,68 @@ class CF(InstanceBase):
         ax.grid(color='#2A3459')
         plt.xlabel('Time', fontweight = 'bold', fontsize='large')
         plt.ylabel('Value', fontweight = 'bold', fontsize='large')
+        if save_fig is None: 
+            plt.show()
+        else:
+            plt.savefig(save_fig)
+    
+    def plot_multi(self,item,org_label,exp,cf_label,figsize=(15,15), save_fig=None):
+        """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting.
+        Arguments:
+            item np.array: original instance.
+            org_label int: originally predicted label. 
+            exp np.array: returned explanation. 
+            cf_label int: lebel of returned instance. 
+            figsize Tuple: Size of Figure (x,y).
+            save_fig str: Path to Save the figure.
+        """
+        #if self.mode == 'time':
+        #    item = item.reshape(item.shape[0],item.shape[2],item.shape[1]) 
+
+        plt.style.use("classic")
+        colors = [
+            '#08F7FE',  # teal/cyan
+            '#FE53BB',  # pink
+            '#F5D300',  # yellow
+            '#00ff41',  # matrix green
+        ]
+        #Figure out number changed channels
+        #index= np.where(np.any(item))
+      
+        i=0
+        res = (item != exp).any(-1)
+        ind=np.where(res[0])
+        if len(ind[0]) == 0:
+            print('Items are identical')
+            return
+        
+        #Draw changed channels
+        fig, ax = plt.subplots(len(ind[0]),1,figsize=figsize)
+
+        #print(ax)
+        for channel in ind[0]:
+            #fig,ax=plt.subplot(len(ind[0]),1,i)
+    
+            df = pd.DataFrame({f'Predicted: {org_label}': list(item[0][channel].flatten()),
+                   f'Counterfactual: {cf_label}': list(exp[0][channel].flatten())})
+    
+            df.plot(marker='.', color=colors, ax=ax[i])
+            # Redraw the data with low alpha and slighty increased linewidth:
+            n_shades = 10
+            diff_linewidth = 1.05
+            alpha_value = 0.3 / n_shades
+            for n in range(1, n_shades+1):
+                df.plot(marker='.',
+                linewidth=2+(diff_linewidth*n),
+                alpha=alpha_value,
+                legend=False,
+                ax=ax[i],
+                color=colors)
+
+            ax[i].grid(color='#2A3459')
+            plt.xlabel('Time', fontweight = 'bold', fontsize='large')
+            plt.ylabel('Value', fontweight = 'bold', fontsize='large')
+            i=i+1
         if save_fig is None: 
             plt.show()
         else:
