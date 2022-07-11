@@ -36,6 +36,7 @@ base_packages = [
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
+    "tensorflow",
     "tslearn",
     "seaborn",
     "scikit_optimize",
