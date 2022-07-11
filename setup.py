@@ -116,7 +116,7 @@ setuptools.setup(
         "torch": torch_packages,
         "tensorflow" : tensorflow_packages,
         "all": dev_packages,# + docs_packages,
-        ":python_version == '3.7'": ["dataclasses"],
+        ":python_version == '3.6'": ["dataclasses"],
     },
     include_package_data=True,
     license="BSD-3",
