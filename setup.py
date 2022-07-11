@@ -1,15 +1,15 @@
 import io
 import os
-#import subprocess
-#import sys
+import subprocess
+import sys
 
 import setuptools
 
-#try:
- #   from numpy import get_include
-#except ImportError:
-#    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
-#    from numpy import get_include
+try:
+   from numpy import get_include
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.26.1"])
+    from numpy import get_include
 
 # Package meta-data.
 NAME = "TSInterpret"
@@ -66,6 +66,7 @@ dev_packages = base_packages + [
 ]
 
 docs_packages = [
+    "numpy==1.26.1"
     "flask==2.0.2",
     "ipykernel==6.9.0",
     "mike==0.5.3",
