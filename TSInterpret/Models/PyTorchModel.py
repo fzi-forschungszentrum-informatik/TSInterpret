@@ -1,6 +1,5 @@
 """Module containing an interface to trained PyTorch model."""
 
-import torch
 import numpy as np 
 from TSInterpret.Models.base_model import BaseModel
 from typing import List
@@ -12,6 +11,11 @@ class PyTorchModel(BaseModel):
             model : Trained PYT Model.
             change bool: if swapping of dimension is necessary = True 
         """
+        try:
+            import torch
+        except ImportError:
+            assert "Please install torch via pip install .[torch]"
+
 
         super().__init__(model,change, model_path='', backend='PYT')
        

@@ -22,6 +22,7 @@ pip install git@github.com:jhoelli/TSInterpret.git --upgrade
 The following example creates a simple Supported Vector Classifer based on tslearn and interprets the Classfier by creating a counterfactual.
 For further examples check out the <a href="">Documentation</a>.
 
+### Import
 ```python
 from TSInterpret.data import load_data
 import sklearn
@@ -30,6 +31,10 @@ import pandas as pd
 from tslearn.datasets import UCR_UEA_datasets
 from tslearn.svm import TimeSeriesSVC
 from tslearn.preprocessing import TimeSeriesScalerMinMax
+
+```
+### Create Classifcation Model
+```python
 
 dataset='BasicMotions'
 train_x,train_y, test_x, test_y=UCR_UEA_datasets().load_dataset(dataset)
@@ -44,6 +49,9 @@ item=test_x[10].reshape(1,test_x.shape[1],test_x.shape[2])
 shape=item.shape
 y_target= model.predict_proba(item)
 
+```
+Explain & Visualize Model
+```python
 from TSInterpret.InterpretabilityModels.counterfactual.Ates import AtesCF
 
 exp_model= AtesCF(model,(train_x,train_y),backend='SK', mode='time')
