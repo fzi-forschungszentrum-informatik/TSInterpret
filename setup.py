@@ -8,7 +8,7 @@ import setuptools
 try:
     from numpy import get_include
 except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.19.0"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
     from numpy import get_include
 
 # Package meta-data.
@@ -70,7 +70,6 @@ docs_packages = [
     "flask==2.0.2",
     "pycocotools",
     "ipykernel==6.9.0",
-    "numpy==1.19.0",
     "mike==0.5.3",
     "mkdocs==1.2.3",
     "mkdocs-awesome-pages-plugin==2.7.0",
