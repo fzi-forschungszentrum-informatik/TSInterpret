@@ -73,15 +73,12 @@ docs_packages = [
     "mkdocs-awesome-pages-plugin==2.7.0",
     "mkdocs-material==8.1.11",
     "mkdocstrings==0.18.0",
-    "mkdocs-material-extensions",
-    "mkdocs-autorefs",
     "ipython_genutils==0.1.0",
     "mkdocs-jupyter==0.20.0",
-    "mkdocs-bibtex==2.8.1",
     "nbconvert==6.4.2",
     "numpydoc==1.2",
     "spacy==3.2.2",
-    "jinja2==3.0.3"
+    "jinja2==3.0.3",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
