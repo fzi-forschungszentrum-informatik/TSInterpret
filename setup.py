@@ -33,7 +33,6 @@ base_packages = [
     "pytz==2021.3",
     "scikit-learn==0.24.2",
     "shap==0.39.0",
-    "sktime==0.8.0",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
