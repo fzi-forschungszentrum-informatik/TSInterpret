@@ -28,7 +28,6 @@ base_packages = [
     "lime==0.2.0.1",
     "Markdown==3.3.4",
     "matplotlib==3.3.4",
-    "pandas==1.1.5",
     "partd==1.2.0",
     "pytz==2021.3",
     "scikit-learn==0.24.2",
