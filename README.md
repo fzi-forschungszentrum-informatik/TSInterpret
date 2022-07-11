@@ -37,8 +37,6 @@ import tensorflow as tf
 
 dataset='BasicMotions'
 train_x,train_y, test_x, test_y=UCR_UEA_datasets().load_dataset(dataset)
-train_x = TimeSeriesScalerMinMax().fit_transform(train_x)
-test_x = TimeSeriesScalerMinMax().fit_transform(test_x)
 enc1=pickle.load(open(f'../../ClassificationModels/models/{dataset}/OneHotEncoder.pkl','rb'))
 train_y=enc1.transform(train_y.reshape(-1,1))
 test_y=enc1.transform(test_y.reshape(-1,1))
@@ -58,7 +56,7 @@ int_mod.plot(np.array([test_x[0,:,:]]),exp)
 
 ```
 <p align="center">
-    <img src="./docs/image/ReadMe.png" alt="FZI Logo" height="200"/>
+    <img src="./docs/img/ReadMe.png" alt="Algorithm Results" height="200"/>
 </p>
 
 ## 🏫 Affiliations
