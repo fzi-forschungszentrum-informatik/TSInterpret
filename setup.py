@@ -68,7 +68,7 @@ dev_packages = base_packages + [
 docs_packages = [
     "flask==2.0.2",
     "ipykernel==6.9.0",
-    "numpy==1.21.6"
+    "numpy==1.21.6",
     "mike==0.5.3",
     "mkdocs==1.2.3",
     "mkdocs-awesome-pages-plugin==2.7.0",
