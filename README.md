@@ -1,6 +1,6 @@
 # TSInterpret
 
-TSExplain is a Python library for interpreting time series classification.
+TSInterpret is a Python library for interpreting time series classification.
 The ambition is to faciliate the usage of times series interpretability methods. 
 
 ## 💈 Installation
@@ -24,13 +24,12 @@ For further examples check out the <a href="">Documentation</a>.
 
 ### Import
 ```python
-from TSInterpret.data import load_data
-import sklearn
+import pickle
 import numpy as np 
-import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as snst
 from tslearn.datasets import UCR_UEA_datasets
-from tslearn.svm import TimeSeriesSVC
-from tslearn.preprocessing import TimeSeriesScalerMinMax
+import tensorflow as tf 
 
 ```
 ### Create Classifcation Model
@@ -40,34 +39,31 @@ dataset='BasicMotions'
 train_x,train_y, test_x, test_y=UCR_UEA_datasets().load_dataset(dataset)
 train_x = TimeSeriesScalerMinMax().fit_transform(train_x)
 test_x = TimeSeriesScalerMinMax().fit_transform(test_x)
-
-model = TimeSeriesSVC(kernel="gak", gamma="auto", probability=True)
-model.fit(train_x, train_y)
-print("Correct classification rate:", model.score(test_x, test_y))
-
-item=test_x[10].reshape(1,test_x.shape[1],test_x.shape[2])
-shape=item.shape
-y_target= model.predict_proba(item)
-
+enc1=pickle.load(open(f'../../ClassificationModels/models/{dataset}/OneHotEncoder.pkl','rb'))
+train_y=enc1.transform(train_y.reshape(-1,1))
+test_y=enc1.transform(test_y.reshape(-1,1))
+model_to_explain = tf.keras.models.load_model(f'../../ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5')
 ```
 Explain & Visualize Model
 ```python
-from TSInterpret.InterpretabilityModels.counterfactual.Ates import AtesCF
+from TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF import Saliency_TF
+int_mod=Saliency_TF(model_to_explain, train_x.shape[-2],train_x.shape[-1], method='IG',mode='time')
+item= np.array([test_x[0,:,:]])
+label=int(np.argmax(test_y[0]))
 
-exp_model= AtesCF(model,(train_x,train_y),backend='SK', mode='time')
+exp=int_mod.explain(item,labels=label,TSR =True)
 
-exp = exp_model.explain(item,0, method= 'opt')
-
-array, label=exp
-org_label=y_target
-cf_label=label[0]
-exp=array
-
-exp_model.plot(item,org_label,exp,cf_label,figsize=(15,15))
+%matplotlib inline  
+int_mod.plot(np.array([test_x[0,:,:]]),exp)
 
 ```
+<p align="center">
+    <img src="./docs/image/ReadMe.png" alt="FZI Logo" height="200"/>
+</p>
 
 ## 🏫 Affiliations
 <p align="center">
     <img src="https://upload.wikimedia.org/wikipedia/de/thumb/4/44/Fzi_logo.svg/1200px-Fzi_logo.svg.png?raw=true" alt="FZI Logo" height="200"/>
 </p>
+
+## Aknowledgement

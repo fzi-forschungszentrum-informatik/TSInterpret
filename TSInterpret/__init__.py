@@ -1,20 +1,14 @@
-from dataclasses import dataclass
+from .__version__ import __version__ 
 from . import (
-  ClassificationModels,
-  data,
-  Evaluate,
-  InterpretabiliyModels,
   Models,
-  constants
+  constants,
+  InterpretabilityModels
 
 
 )
-from .__version__ import __version__  # noqa: F401
 
 __all__ = [
-    "ClassificationModels",
-    "Evaluate",
-    "InterpretabiliyModels",
+    "InterpretabilityModels",
     "Models",
     "constants"
 ]
