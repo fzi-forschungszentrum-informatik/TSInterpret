@@ -8,7 +8,7 @@ import setuptools
 try:
     from numpy import get_include
 except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy>=1.21.1"])
     from numpy import get_include
 
 # Package meta-data.
