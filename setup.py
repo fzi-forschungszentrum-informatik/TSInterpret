@@ -1,3 +1,4 @@
+
 import io
 import os
 import subprocess
@@ -18,7 +19,7 @@ LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://ipe-wim-gitlab.fzi.de/hoellig/interpretabilitytimeseries"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
-REQUIRES_PYTHON = ">=3.7.0"
+REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
@@ -33,12 +34,15 @@ base_packages = [
     "pytz==2021.3",
     "scikit-learn==0.24.2",
     "shap==0.39.0",
+    "Shapely==1.7.1",
+    "sktime==0.8.0",
+    "tensorflow==2.6.0",
+    "keras==2.6",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
-    "tensorflow",
-    "keras",
     "tslearn",
+    "torch",
     "seaborn",
     "scikit_optimize",
     "mlrose",
@@ -48,15 +52,6 @@ base_packages = [
     "captum",
     "pyts",
     "deprecated"
-    
-]
-
-torch_packages = base_packages + [
-    "torch",
-]
-
-tensorflow_packages = base_packages + [
-    "tensorflow"
 ]
 
 dev_packages = base_packages + [
@@ -69,17 +64,13 @@ dev_packages = base_packages + [
 docs_packages = [
     "flask==2.0.2",
     "ipykernel==6.9.0",
-    "numpy==1.21.6",
     "mike==0.5.3",
     "mkdocs==1.2.3",
     "mkdocs-awesome-pages-plugin==2.7.0",
     "mkdocs-material==8.1.11",
     "mkdocstrings==0.18.0",
-    "mkdocs-material-extensions",
-    "mkdocs-autorefs",
     "ipython_genutils==0.1.0",
     "mkdocs-jupyter==0.20.0",
-    "mkdocs-bibtex==2.8.1",
     "nbconvert==6.4.2",
     "numpydoc==1.2",
     "spacy==3.2.2",
@@ -114,10 +105,8 @@ setuptools.setup(
         "dev": dev_packages,
         "test": dev_packages,
         "docs": docs_packages,
-        "torch": torch_packages,
-        "tensorflow" : tensorflow_packages,
         "all": dev_packages,# + docs_packages,
-        ":python_version == '3.7'": ["dataclasses"],
+        ":python_version == '3.6'": ["dataclasses"],
     },
     include_package_data=True,
     license="BSD-3",
@@ -127,6 +116,7 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
