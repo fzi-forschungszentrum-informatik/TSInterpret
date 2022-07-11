@@ -34,8 +34,6 @@ base_packages = [
     "scikit-learn==0.24.2",
     "shap==0.39.0",
     "sktime==0.8.0",
-    "tensorflow",#TODO used to be 2.6.0.
-    "keras",#TODO used to be 2.6
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
@@ -52,8 +50,12 @@ base_packages = [
     
 ]
 
-torch = base_packages + [
+torch_packages = base_packages + [
     "torch",
+]
+
+tensorflow_packages = base_packages + [
+    "tensorflow"
 ]
 
 dev_packages = base_packages + [
@@ -110,6 +112,8 @@ setuptools.setup(
         "dev": dev_packages,
         "test": dev_packages,
         "docs": docs_packages,
+        "torch": torch_packages,
+        "tensorflow" : tensorflow_packages,
         "all": dev_packages,# + docs_packages,
         ":python_version == '3.7'": ["dataclasses"],
     },
