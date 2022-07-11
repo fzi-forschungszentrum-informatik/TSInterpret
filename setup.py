@@ -68,6 +68,7 @@ dev_packages = base_packages + [
 
 docs_packages = [
     "flask==2.0.2",
+    "mmdet3d",
     "ipykernel==6.9.0",
     "numpy==1.21.6",
     "mike==0.5.3",
