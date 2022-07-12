@@ -2,6 +2,14 @@
 site_name: TSInterpret
 site_description: TSInterpret is a Python library for interpretable time series classification.
 site_author: Jacqueline Höllig
+site_url: https://github.com/jhoelli/TSInterpret
+
+# Repository
+repo_name: TSInterpret
+repo_url: https://github.com/jhoelli/TSInterpret
+edit_uri: "https://github.com/jhoelli/TSInterpret"
+
+copyright: Copyright &copy; 2019 - 2022
 
 theme:
   name: "material"
