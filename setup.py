@@ -8,7 +8,7 @@ import setuptools
 try:
    from numpy import get_include
 except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy==1.26.1"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
     from numpy import get_include
 
 # Package meta-data.
@@ -66,7 +66,7 @@ dev_packages = base_packages + [
 ]
 
 docs_packages = [
-    "numpy==1.26.1"
+    "numpy===1.19.3"
     "flask==2.0.2",
     "ipykernel==6.9.0",
     "mike==0.5.3",
