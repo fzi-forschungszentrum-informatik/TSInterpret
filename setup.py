@@ -33,6 +33,7 @@ base_packages = [
     "pytz==2021.3",
     "scikit-learn==0.24.2",
     "shap==0.39.0",
+    "pandas >=1.1.0",
     "sktime==0.8.0",
     "tensorflow",
     "keras",
