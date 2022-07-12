@@ -66,7 +66,7 @@ dev_packages = base_packages + [
 ]
 
 docs_packages = [
-    "numpy===1.19.3"
+    "numpy==1.19.3"
     "flask==2.0.2",
     "ipykernel==6.9.0",
     "mike==0.5.3",
