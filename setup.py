@@ -4,12 +4,12 @@ import subprocess
 import sys
 
 import setuptools
-subprocess.check_call([sys.executable, "-m", "pip", "install", "Cython"])
-try:
-    from numpy import get_include
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
-    from numpy import get_include
+#subprocess.check_call([sys.executable, "-m", "pip", "install", "Cython"])
+#try:
+#    from numpy import get_include
+#except ImportError:
+#    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy ==1.21.6"])
+#    from numpy import get_include
 
 
 # Package meta-data.
@@ -23,23 +23,27 @@ REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
+    "scikit-learn==1.0.2",
+    # "scikit-surprise==1.1.1",
+    "torch==1.11",
+    "pandas~=1.3.2",
+    "numpy>=1.21.6",
+    "river==0.11.1",
+    "tqdm~=4.61.2",
     "h5py", # todo add version
     "joblib==1.0.1",
     "kaggle==1.5.12",
     "lime==0.2.0.1",
     "Markdown==3.3.4",
     "matplotlib==3.3.4",
-    "pandas==1.1.5",
     "partd==1.2.0",
     "pytz==2021.3",
-    "scikit-learn==0.24.2",
     "shap==0.39.0",
     "tensorflow",
     "keras",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "tslearn",
-    "torch",
     "seaborn",
     "scikit_optimize",
     "mlrose",
@@ -71,8 +75,7 @@ docs_packages = [
     "nbconvert==6.4.2",
     "numpydoc==1.2",
     "spacy==3.2.2",
-    "jinja2==3.0.3",
-    "numpy >=1.21.6"
+    "jinja2==3.0.3"
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
