@@ -18,7 +18,7 @@ LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://github.com/JHoelli/TSInterpret"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = "==3.6.0"
 
 # Package requirements.
 base_packages = [
