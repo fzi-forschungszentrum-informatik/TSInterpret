@@ -15,7 +15,7 @@ except ImportError:
 NAME = "TSInterpret"
 DESCRIPTION = "todo"
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
-URL = "https://ipe-wim-gitlab.fzi.de/hoellig/interpretabilitytimeseries"
+URL = "https://github.com/JHoelli/TSInterpret"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
 REQUIRES_PYTHON = ">=3.6.0"
@@ -66,7 +66,7 @@ dev_packages = base_packages + [
 ]
 
 docs_packages = [
-    "numpy==1.19.3"
+    "numpy==1.19.3",
     "flask==2.0.2",
     "ipykernel==6.9.0",
     "mike==0.5.3",
