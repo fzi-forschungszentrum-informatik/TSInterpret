@@ -72,6 +72,7 @@ docs_packages = [
     "numpydoc==1.2",
     "spacy==3.2.2",
     "jinja2==3.0.3",
+    "numpy >=1.21.6"
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
