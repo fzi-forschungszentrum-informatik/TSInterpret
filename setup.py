@@ -1,4 +1,4 @@
-import io
+mport io
 import os
 import subprocess
 import sys
@@ -33,7 +33,6 @@ base_packages = [
     "pytz==2021.3",
     "scikit-learn==0.24.2",
     "shap==0.39.0",
-    "Shapely==1.7.1",
     "sktime==0.8.0",
     "tensorflow==2.6.0",
     "keras==2.6",
