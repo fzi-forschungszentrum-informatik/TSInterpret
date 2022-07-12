@@ -28,7 +28,6 @@ base_packages = [
     "torch==1.11",
     "pandas~=1.3.2",
     "numpy>=1.21.6",
-    "river==0.11.1",
     "tqdm~=4.61.2",
     "h5py", # todo add version
     "joblib==1.0.1",
@@ -41,7 +40,6 @@ base_packages = [
     "shap==0.39.0",
     "tensorflow",
     "keras",
-    "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "tslearn",
     "seaborn",
