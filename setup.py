@@ -6,7 +6,7 @@ import sys
 import setuptools
 
 try:
-   from numpy import get_include
+    from numpy import get_include
 except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy"])
     from numpy import get_include
@@ -15,10 +15,10 @@ except ImportError:
 NAME = "TSInterpret"
 DESCRIPTION = "todo"
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
-URL = "https://github.com/JHoelli/TSInterpret"
+URL = "https://ipe-wim-gitlab.fzi.de/hoellig/interpretabilitytimeseries"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
-REQUIRES_PYTHON = "==3.6.0"
+REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
@@ -28,16 +28,20 @@ base_packages = [
     "lime==0.2.0.1",
     "Markdown==3.3.4",
     "matplotlib==3.3.4",
+    "pandas==1.1.5",
     "partd==1.2.0",
     "pytz==2021.3",
     "scikit-learn==0.24.2",
     "shap==0.39.0",
+    "Shapely==1.7.1",
+    "sktime==0.8.0",
+    "tensorflow==2.6.0",
+    "keras==2.6",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
     "wildboar==1.0.10",
-    "tensorflow",
-    "keras",
     "tslearn",
+    "torch",
     "seaborn",
     "scikit_optimize",
     "mlrose",
@@ -47,15 +51,6 @@ base_packages = [
     "captum",
     "pyts",
     "deprecated"
-    
-]
-
-torch_packages = base_packages + [
-    "torch",
-]
-
-tensorflow_packages = base_packages + [
-    "tensorflow"
 ]
 
 dev_packages = base_packages + [
@@ -66,7 +61,6 @@ dev_packages = base_packages + [
 ]
 
 docs_packages = [
-    "numpy==1.19.3",
     "flask==2.0.2",
     "ipykernel==6.9.0",
     "mike==0.5.3",
@@ -110,8 +104,6 @@ setuptools.setup(
         "dev": dev_packages,
         "test": dev_packages,
         "docs": docs_packages,
-        "torch": torch_packages,
-        "tensorflow" : tensorflow_packages,
         "all": dev_packages,# + docs_packages,
         ":python_version == '3.6'": ["dataclasses"],
     },
