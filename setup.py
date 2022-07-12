@@ -38,7 +38,6 @@ base_packages = [
     "keras",
     "tqdm==4.62.3",
     "tsfresh==0.18.0",
-    "wildboar==1.0.10",
     "tslearn",
     "torch",
     "seaborn",
@@ -46,7 +45,7 @@ base_packages = [
     "mlrose",
     "torchcam",
     "tf_explain",
-    "opencv-python",
+    "opencv-python==4.6.0.66",
     "captum",
     "pyts",
     "deprecated"
