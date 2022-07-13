@@ -1,7 +1,7 @@
 # TSInterpret
 
 TSInterpret is a Python library for interpreting time series classification.
-The ambition is to faciliate the usage of times series interpretability methods. 
+The ambition is to faciliate the usage of times series interpretability methods. The Frameworks supports Sklearn, Tensorflow, Torch and in some cases predict functions. A listing of implemented algorithms and supported frameworks can be found in our <a href="https://jhoelli.github.io/TSInterpret/InterpretabilityMethods/">Documentation</a>.
 
 ## 💈 Installation
 ```shell
@@ -19,8 +19,9 @@ pip install git@github.com:jhoelli/TSInterpret.git --upgrade
 
 
 ## 🍫 Quickstart
-The following example creates a simple Supported Vector Classifer based on tslearn and interprets the Classfier by creating a counterfactual.
-For further examples check out the <a href="">Documentation</a>.
+The following example creates a simple Neural Network based on tensorflow and interprets the Classfier with Integrated Gradients and Temporal Saliency Rescaling [1].
+For further examples check out the <a href="https://jhoelli.github.io/TSInterpret/">Documentation</a>.
+[1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
 
 ### Import
 ```python
