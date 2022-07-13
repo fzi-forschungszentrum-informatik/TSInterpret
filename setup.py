@@ -70,6 +70,7 @@ docs_packages = [
     "mkdocstrings==0.18.0",
     "ipython_genutils==0.1.0",
     "mkdocs-jupyter==0.20.0",
+    "mkdocs-bibtex==.8.1",
     "nbconvert==6.4.2",
     "numpydoc==1.2",
     "spacy==3.2.2",
