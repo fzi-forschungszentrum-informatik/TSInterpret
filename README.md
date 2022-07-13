@@ -21,6 +21,7 @@ pip install git@github.com:jhoelli/TSInterpret.git --upgrade
 ## 🍫 Quickstart
 The following example creates a simple Neural Network based on tensorflow and interprets the Classfier with Integrated Gradients and Temporal Saliency Rescaling [1].
 For further examples check out the <a href="https://jhoelli.github.io/TSInterpret/">Documentation</a>.
+
 [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
 
 ### Import

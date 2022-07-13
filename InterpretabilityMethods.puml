@@ -1,0 +1,134 @@
+@startuml
+
+interface InterpretabilityBase {
+    model
+    mode
+    init(model,mode)
+    <<abstract>> explain()
+    <<abstract>> plot()
+}
+class FeatureAttribution {
+model
+mode
+super(model, mode)
+<<abstract>> explain()
+plot(item, exp, figsize,heatmap, normelize_saliency,vmin,vmax,save)
+}
+class Saliency_Base {
+model
+NumTimeSteps
+NumFeatures
+method
+mode
+super(model,mode)
+<<abstract>> explain()
+plot(item, exp, figsize,heatmap, save)
+    
+}
+class SaliencyMethods_PYT {
+model
+NumTimeSteps
+NumFeatures
+method
+mode
+device
+super(model, NumTimeSteps, NumFeatures, method,mode)
+explain(item,labels, TSR)
+
+    
+}
+class SaliencyMethods_TF {
+model
+NumTimeSteps
+NumFeatures
+method
+mode
+device
+super(model, NumTimeSteps, NumFeatures, method,mode)
+explain(item,labels, TSR)
+    
+}
+class Perturbation {
+
+}
+class Surrogate {
+
+}
+class LEFTIST{
+model_to_explain
+reference_set
+mode
+backend
+transform_name
+segmentator_name
+learning_process_name
+nb_interpretable_feature=10
+super(model_to_explain, mode)
+explain(instance,nb_neighbors, idx_label, explanation_size, random_state)
+}
+class InstanceBase {
+model 
+mode 
+super(model,mode)
+plot()
+<<abstract>> explain()
+<<abstract>> plot()
+}
+
+class Counterfactual {
+mlmodel
+mode
+super(mlmodel, mode)
+<<abstract>> explain()
+plot (original,org_label, exp,exp_label, vis_change,all_in_one, save_fig)
+plot_multi(item,org_label,exp,cf_label,figsize, save_fig)
+}
+class AtesCF{
+model
+ref
+backend
+mode
+method
+number_distractors
+max_attempts
+max_iter
+silent
+super(model,mode)
+explain(x,orig_class, target)
+}
+
+class NativeGuideCF{
+model
+shape
+reference_set
+backend
+mode
+method
+distance_measure
+n_neighbors
+max_iter
+super(model,mode)
+explain(x,  y)
+}
+
+class CEM {
+
+}
+class Anchor {
+}
+
+InterpretabilityBase --> FeatureAttribution
+InterpretabilityBase --> InstanceBase
+FeatureAttribution --> Saliency_Base
+Saliency_Base --> SaliencyMethods_PYT
+Saliency_Base --> SaliencyMethods_TF
+FeatureAttribution --> Perturbation
+FeatureAttribution --> Surrogate
+InstanceBase --> Counterfactual 
+InstanceBase -->  CEM
+InstanceBase --> Anchor
+Perturbation --> LEFTIST
+Counterfactual --> AtesCF
+Counterfactual --> NativeGuideCF
+
+@enduml

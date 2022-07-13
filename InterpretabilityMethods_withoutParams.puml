@@ -1,0 +1,72 @@
+@startuml
+
+interface InterpretabilityBase {
+    <<abstract>> explain()
+    <<abstract>> plot()
+}
+class FeatureAttribution {
+<<abstract>> explain()
+plot()
+}
+class Saliency_Base {
+<<abstract>> explain()
+plot()
+    
+}
+class SaliencyMethods_PYT {
+explain()
+
+    
+}
+class SaliencyMethods_TF {
+explain()
+    
+}
+class Perturbation {
+
+}
+class Surrogate {
+
+}
+class LEFTIST{
+explain()
+}
+class InstanceBase {
+<<abstract>> explain()
+plot()
+}
+
+class Counterfactual {
+<<abstract>> explain()
+plot ()
+plot_multi()
+}
+class AtesCF{
+explain()
+}
+
+class NativeGuideCF{
+explain()
+}
+
+class CEM {
+
+}
+class Anchor {
+}
+
+InterpretabilityBase --> FeatureAttribution
+InterpretabilityBase --> InstanceBase
+FeatureAttribution --> Saliency_Base
+Saliency_Base --> SaliencyMethods_PYT
+Saliency_Base --> SaliencyMethods_TF
+FeatureAttribution --> Perturbation
+FeatureAttribution --> Surrogate
+InstanceBase --> Counterfactual 
+InstanceBase -->  CEM
+InstanceBase --> Anchor
+Perturbation --> LEFTIST
+Counterfactual --> AtesCF
+Counterfactual --> NativeGuideCF
+
+@enduml

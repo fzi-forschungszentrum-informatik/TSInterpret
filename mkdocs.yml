@@ -14,17 +14,27 @@ copyright: Copyright &copy; 2019 - 2022
 theme:
   name: "material"
 
+markdown_extensions:
+  - def_list
+  - footnotes
+  - attr_list
+  - md_in_html
+
 plugins:
 - search
 - autorefs
 - mkdocstrings
 - mkdocs-jupyter
+- bibtex:
+      bib_file: "library.bib"
+
 
 
 nav:
   - Home: index.md
-  - Interpretability: InterpretabilityMethods.md
-  - Usage:
+  - Getting Started: GettingStarted.md
+  - Interpretability: AlgorithmOverview.md
+  - How-To:
     - Instance-Based Methods: 
       - Counterfactuals:
         - Ates: ./Notebooks/Ates_torch.ipynb
