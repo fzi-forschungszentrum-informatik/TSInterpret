@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="./docs/img/logo.png" alt="TSInterpret Logo" height="500"/>
+</p>
+
 <h1 align="center"><b>Welcome to TSInterpret</b></h1>
 <p align="left">
     TSInterpret is a Python library for interpreting time series classification.
