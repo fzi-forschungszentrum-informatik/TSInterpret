@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./docs/img/logo.png" alt="TSInterpret Logo" height="500"/>
+    <img src="img/logo.png" alt="TSInterpret Logo" height="300"/>
 </p>
 
 <h1 align="center"><b>Welcome to TSInterpret</b></h1>

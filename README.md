@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="./docs/img/logo.png" alt="TSInterpret Logo" height="500"/>
+    <img src="./docs/img/logo.png" alt="TSInterpret Logo" height="300"/>
 </p>
 
 TSInterpret is a Python library for interpreting time series classification.
