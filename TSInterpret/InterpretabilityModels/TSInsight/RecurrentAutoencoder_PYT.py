@@ -38,9 +38,7 @@ class Encoder(nn.Module):
     )
 
   def forward(self, x):
-
-    x = x.reshape((1, self.seq_len, self.n_features))
-
+    x = x.reshape(( self.seq_len, self.n_features))
     x, (_, _) = self.rnn1(x)
 
     x, (hidden_n, _) = self.rnn2(x)
@@ -93,7 +91,7 @@ class Decoder(nn.Module):
 
     x, (hidden_n, cell_n) = self.rnn2(x)
 
-    x = x.reshape((self.seq_len, self.hidden_dim))
+    x = x.reshape((-1,self.seq_len, self.hidden_dim))
 
     return self.output_layer(x)
 

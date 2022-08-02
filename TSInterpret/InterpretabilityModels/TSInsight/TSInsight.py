@@ -25,16 +25,20 @@ class TSInsight(FeatureAttribution):
 
     def plot(self,original,exp,all_in_one=True,vis_change=False,save=None ):
         if all_in_one:
-            ax011 = plt.subplot(1,1,1)
-            ax012 = ax011.twinx()
-            sal_02= np.abs(original.reshape(-1)-np.array(exp).reshape(-1)).reshape(1,-1)
-            if vis_change:
-                sns.heatmap(sal_02, fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
-            else: 
-                sns.heatmap(np.zeros_like(sal_02),fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
-            sns.lineplot(x=range(0,len(original.reshape(-1))), y=original.flatten(), color='white', ax=ax012,legend=False, label='Original')
-            sns.lineplot(x=range(0,len(original.reshape(-1))), y=exp.flatten(), color='black', ax=ax012,legend=False, label='Supressed')
-            plt.legend()
+            i=0
+            for a in original:
+
+                ax011 = plt.subplot(1,1,1)
+                #ax012 = ax011.twinx()
+                #sal_02= np.abs(original[i].reshape(-1)-np.array(exp).reshape(-1)).reshape(1,-1)
+                #if vis_change:
+                #    sns.heatmap(sal_02, fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
+                #else: 
+                #    sns.heatmap(np.zeros_like(sal_02),fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
+                sns.lineplot(x=range(0,len(original.reshape(-1))), y=original[i].flatten(), color='red',legend=False, label='Original')
+                sns.lineplot(x=range(0,len(original.reshape(-1))), y=exp[i].flatten(), color='blue', legend=False, label='Supressed')
+                plt.legend()
+                i=i+1
        
         else:
             ax011 = plt.subplot(2,1,1)
