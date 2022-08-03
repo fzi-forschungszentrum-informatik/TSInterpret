@@ -1,7 +1,5 @@
-from telnetlib import RCP
-from zmq import device
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 from TSInterpret.InterpretabilityModels.TSInsight.TSInsight import TSInsight
+from TSInterpret.InterpretabilityModels.TSInsight.TF_AE.Vanilla_TF import Vanilla_Autoencoder
 from tensorflow.keras import layers, losses
 from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.models import Model
@@ -12,48 +10,11 @@ import seaborn as sns
 import numpy as np 
 from tf_explain.core.gradients_inputs import GradientsInputs
 from tensorflow.python.ops.numpy_ops import np_config
+#from tensorflow.keras.callbacks import ReduceLROnPlateau
+from TSInterpret.InterpretabilityModels.TSInsight.TF_AE.LROnPlateau import CustomReduceLROnPlateau as ReduceLROnPlateau
 #from alibi.explainers import IntegratedGradients
 np_config.enable_numpy_behavior()
 #TODO ALibi, Deep explain , Skater
-class Vanilla_Autoencoder(Model):
-    def __init__(self, input_size, latent_dim=128,architecture_fully=None):
-        super(Vanilla_Autoencoder, self).__init__()
-        self.latent_dim = latent_dim   
-        if architecture_fully== None: 
-            self.encoder = tf.keras.Sequential([
-            layers.InputLayer(input_shape=input_size),
-            layers.Reshape((-1,input_size[0]*input_size[1])),
-            layers.Dense(input_size[0]*input_size[1], activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01)),
-            layers.Dense(512, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01)),
-            layers.Dense(latent_dim, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01))])
-
-            self.decoder = tf.keras.Sequential([
-            layers.Dense(512, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01)),
-            #layers.Dense(32, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01)),
-            layers.Dense(input_size[0]*input_size[1], activation="tanh",activity_regularizer=tf.keras.regularizers.L2(0.01)),
-            layers.Dense(input_size[0]*input_size[1], activation="linear"), 
-            layers.Reshape(input_size)])
-        else: 
-            #TODO This needs testing 
-            architecture_encoder= [
-            layers.InputLayer(input_shape=input_size),
-            layers.Reshape((-1,input_size[0]*input_size[1])),
-            layers.Dense(input_size[0]*input_size[1], activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01))]
-            architecture_encoder.extend([layers.Dense(x, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01))for x in architecture_fully])
-            architecture_encoder.extend([layers.Dense(latent_dim, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01))])
-
-            architecture_decoder=[layers.Dense(x, activation="relu",activity_regularizer=tf.keras.regularizers.L2(0.01))for x in architecture_fully.reverse()]
-            architecture_decoder.extend([  layers.Dense(input_size[0]*input_size[1], activation="tanh",activity_regularizer=tf.keras.regularizers.L2(0.01)),
-            layers.Dense(input_size[0]*input_size[1], activation="linear"), 
-            layers.Reshape(input_size)])
-            self.encoder = tf.keras.Sequential(architecture_encoder)
-            self.decoder = tf.keras.Sequential(architecture_decoder)
-
-
-    def call(self, x):
-        encoded = self.encoder(x)
-        decoded = self.decoder(encoded)
-        return decoded
 
 class TSInsightTF(TSInsight):
     '''
@@ -64,19 +25,27 @@ class TSInsightTF(TSInsight):
         autoencode: None or instance of an implemented and traine AE 
         data: In case of TF a Tuple, in case of PYT a DataLoader 
     '''
-    def __init__(self, mlmodel,shape,data, test_data=None, mode='time', backend='TF',autoencoder = None, device = 'cpu',**kwargs):
+    def __init__(self,  mlmodel,shape,data, test_data=None, backend='TF',autoencoder = None, device = 'cpu',loss_fn='mse', lr=0.001,**kwargs):
+        mode ='time'
         super().__init__(mlmodel,shape, mode, backend)
         self.device=device
         self.model.trainable = False
         self.saliency=IntegratedGradients()
+        x_train,y_train=data
+        self.shape=(x_train.shape[-2], x_train.shape[-1])
 
-        if autoencoder == None:
+        if autoencoder is None:
             self.autoencoder=Vanilla_Autoencoder(shape)
             self._train(data,test_data,**kwargs)
-            self.fine_step(data,**kwargs)
+        elif autoencoder =='cnn':
+            #TODO
+            pass
+        elif autoencoder =='recurrent':
+            #TODO
+            pass
         else: 
             self.autoencoder=autoencoder
-            self._fine_tuning(data,**kwargs)
+        self._fine_tuning(data,test_data,**kwargs)
         
 
 
@@ -85,30 +54,17 @@ class TSInsightTF(TSInsight):
             item = item.reshape(-1,self.shape[0],self.shape[1])
         output= self.autoencoder.predict(item)
         return output
-    
-    #def l1_penalty(self,batch):
-    #    layers= list(self.autoencoder.children())
-    #    loss = 0
-    #    values = batch.float()
-    #    for i in range(len(layers)):
-    #        values = F.relu((layers[i](values)))
-    #        loss += torch.mean(torch.abs(values))
-    #    return loss
 
 
-    def _train(self, dataloader, test_dataloader=None, epochs=1000, flatten=True, loss_fn='mse', lr=0.01, reduction_factor=0.9, reduction_tolerance=4, patience=10, lam = 0.2,l2 = True, batch_size=32):
+    def _train(self, dataloader, test_dataloader=None, epochs=1000, loss_fn='mse', lr=0.001, patience=20,weight_decay=1e-5,batch_size=1):
         #TODO restore best weights
         #TODO L1 = False is correct
 
         x_train,_=dataloader
-        print('here',x_train.shape)
         x_test,_=test_dataloader
         callback=tf.keras.callbacks.EarlyStopping( monitor='val_loss', patience=patience,restore_best_weights=True)
-
-        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=lr, decay_steps=10000,  decay_rate=reduction_factor)
-
-
-        opt=tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+        #lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=lr, decay_steps=10000,  decay_rate=weight_decay)
+        opt=tf.keras.optimizers.Adam(learning_rate=lr)
 
         self.autoencoder.compile(optimizer=opt, loss=loss_fn)
         self.autoencoder.fit(x_train,x_train, epochs=epochs,batch_size=batch_size, shuffle=True,  validation_data=(x_test, x_test),callbacks=[callback])
@@ -118,8 +74,7 @@ class TSInsightTF(TSInsight):
     def _hyperparameter(self,batch,target):
         '''
         #TODO check Calc
-        #TODO More Efficiency?
-    #   '''
+        '''
         gamma=[]
         ßeta=[]
         #for x,y in zip(batch, target):
@@ -139,17 +94,16 @@ class TSInsightTF(TSInsight):
     
 
     
-    def _fine_tuning(self, dataloader, epochs=50, flatten=True, lr=0.0001, reduction_factor=0.9, reduction_tolerance=4, patience=10,l1=True,ß=0.0001,om=4.0,lam=0.2, C=10, self_tune = True, batch_size=32):
-        pass
-        #loss_fn1=tf.keras.losses.CategoricalCrossentropy()
+    #def _fine_tuning(self, dataloader, epochs=50, flatten=True, lr=0.0001, reduction_factor=0.9, reduction_tolerance=4, patience=10,l1=True,ß=0.0001,om=4.0,lam=0.2, C=10, self_tune = False, batch_size=32):
+    #    loss_fn1=tf.keras.losses.CategoricalCrossentropy()#
 
-        #loss_fn2='mse'
-        
-        #x_train,_=dataloader
-        #print('here',x_train.shape)
-        #callback=tf.keras.callbacks.EarlyStopping( monitor='val_loss', patience=patience,restore_best_weights=True)
+     #   loss_fn2='mse'
+     #   
+     #   x_train,_=dataloader
+     #   #TODO 
+     #   callback=tf.keras.callbacks.EarlyStopping( monitor='val_loss', patience=patience,restore_best_weights=True)#
 
-        #lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=lr, decay_steps=10000,  decay_rate=reduction_factor)
+     #   lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=lr, decay_steps=10000,  decay_rate=reduction_factor)
 
 
         #opt=tf.keras.optimizers.Adam(learning_rate=lr)
@@ -158,58 +112,116 @@ class TSInsightTF(TSInsight):
         #self.autoencoder.compile(optimizer=opt, loss=loss_fn)
         #self.autoencoder.fit(x_train,x_train, epochs=epochs,batch_size=batch_size, shuffle=True,  validation_data=(x_test, x_test),callbacks=[callback])
     
-    #def _hyperparameter(self,batch,target):#
-
-    #    gamma=[]
-     #   ßeta=[]
-     #   for x,y in zip(batch, target):
-            #x=x.reshape(-1,self.shape[0],self.shape[1]).float()
-            #TODO Attribution Method
-     #       print(np.argmax(y))
-     #       #TODO weights from AE or Classificator ? --> Classifcator 1D - Conv --> Classical methods should not be an issue 
-     #       print(self.model.layers[1].weights)
-     #       sal= self.model.layers[1].weights[0][1]#self.saliency.explain((x,None),model = self.model,class_index= np.argmax(y))#.attribute(x,np.argmax(y))
-     #       #sal=sal[0].detach().numpy()
-      #      I= (sal- np.ones_like(sal)*np.min(sal))/( np.ones_like(sal)*np.max(sal)- np.ones_like(sal)*np.min(sal))
-     #       gamma.append(I)
-     #       ßeta.append(np.ones_like(I)-I)
-     #   return np.array(ßeta),np.array(gamma)
 
 
-    def fine_step(self, data,C=10,lr=0.0001, reduction_factor=0.9, reduction_tolerance=4, patience=10,epochs= 2):
-        #TODO Batch enable
-        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=lr, decay_steps=10000,  decay_rate=reduction_factor)
+    def _fine_tuning(self, dataloader,test_data, epochs=50, lr=0.0001, patience=10,l1=True,ß=0.0001,om=4.0,lam=0.2, C=10, self_tune = False):
+        #TODO use Corect Scheduler
+        #lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(initial_learning_rate=lr, decay_steps=10000,  decay_rate=reduction_factor)
+        opt=tf.keras.optimizers.Adam(learning_rate=lr)
+        reduce_rl_plateau = ReduceLROnPlateau(patience=4,  
+                              factor=0.9,
+                              verbose=1, 
+                              optim_lr=opt.learning_rate)
 
-
-        opt=tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+        
         loss_fn1=tf.keras.losses.CategoricalCrossentropy()
 
         loss_fn2=tf.keras.losses.MeanSquaredError()
-        data,labels = data
+        data,labels = dataloader
         train_dataset = tf.data.Dataset.from_tensor_slices((data, labels))
+        data, labels= test_data
+        test_dataset = tf.data.Dataset.from_tensor_slices((data, labels))
+        trigger_times=0
+        best_model=self.autoencoder
+        best_loss=1000
 
         for epoch in range(epochs):
             print("\nStart of epoch %d" % (epoch,))
 
             # Iterate over the batches of the dataset.
+            reduce_rl_plateau.on_train_begin()
             for step, (x, labels) in enumerate(train_dataset):
-                print('X',x.shape)
+                #print('X',x.shape)
                 x=x.reshape(-1,x.shape[0],x.shape[1])
 
                 ßeta,gamma =self._hyperparameter(x,labels)
 
+
+
                 with tf.GradientTape() as tape:
                     #TODO Calculation data vs x 
                     reconstruction = self.autoencoder(np.array(x).reshape(-1,self.shape[0],self.shape[1]), training=True)
-                    reconstruction_loss = tf.reduce_mean(loss_fn2(reconstruction*gamma,x*gamma))
-                    print('reconstruction_loss',reconstruction_loss)
-                    classification_loss = loss_fn1(self.model(reconstruction).reshape(-1),labels)
-                    print('classification_loss',classification_loss)
-                    total_loss = classification_loss+reconstruction_loss+ C*np.sum(np.abs(self.autoencoder(x,training=True)*ßeta))
-                    print('totel',total_loss)
+                    l2_reg=tf.add_n([ tf.nn.l2_loss(v) for v in self.autoencoder.weights
+                    if 'bias' not in v.name ])
+                    
+                    if self_tune:
+                        
+                        reconstruction_loss = tf.reduce_mean(loss_fn2(reconstruction*gamma,x*gamma))
+                        #print('reconstruction_loss',reconstruction_loss)
+                        classification_loss = loss_fn1(self.model(reconstruction).reshape(-1),labels)
+                        #print('classification_loss',classification_loss)
+                        total_loss = classification_loss+reconstruction_loss+ C*np.sum(np.abs(self.autoencoder(x,training=True)*ßeta))
+                        #print('totel',total_loss)
+                    else:
+                        reconstruction_loss = tf.reduce_mean(loss_fn2(reconstruction,x))*om
+                        #print('reconstruction_loss',reconstruction_loss)
+                        classification_loss = loss_fn1(self.model(reconstruction).reshape(-1),labels)
+                        #print('classification_loss',classification_loss)
+                        loss3= ß* tf.reduce_sum(np.abs( reconstruction)) 
+                        #l2= lam* l2_reg
+                        l2=0
+                        total_loss = classification_loss+reconstruction_loss+ loss3 +l2
+                        #print('totel',total_loss)
                 grads = tape.gradient(total_loss, self.autoencoder.trainable_weights)
-                print('Grads',grads)
 
                 opt.apply_gradients(zip(grads, self.autoencoder.trainable_weights))
 
+            #DO THE Testing 
+            for step, (x, labels) in enumerate(test_dataset):
+                #print('X',x.shape)
+                x=x.reshape(-1,x.shape[0],x.shape[1])
+
+                ßeta,gamma =self._hyperparameter(x,labels)
+
+
+                #TODO Calculation data vs x 
+                reconstruction = self.autoencoder(np.array(x).reshape(-1,self.shape[0],self.shape[1]), training=True)
+                l2_reg=tf.add_n([ tf.nn.l2_loss(v) for v in self.autoencoder.weights
+                    if 'bias' not in v.name ])
+                    
+                if self_tune:
+                        
+                    reconstruction_loss_val = tf.reduce_mean(loss_fn2(reconstruction*gamma,x*gamma))
+                    #print('reconstruction_loss',reconstruction_loss)
+                    classification_loss_val = loss_fn1(self.model(reconstruction).reshape(-1),labels)
+                    #print('classification_loss',classification_loss)
+                    total_loss_val = classification_loss_val+reconstruction_loss_val+ C*np.sum(np.abs(self.autoencoder(x,training=True)*ßeta))
+                    #print('totel',total_loss)
+                else:
+                    reconstruction_loss_val = tf.reduce_mean(loss_fn2(reconstruction,x))*om
+                    #print('reconstruction_loss',reconstruction_loss)
+                    classification_loss_val = loss_fn1(self.model(reconstruction).reshape(-1),labels)
+                    #print('classification_loss',classification_loss)
+                    loss3_val= ß* tf.reduce_sum(np.abs( reconstruction))
+                    #l2_val= lam* l2_reg
+                    l2_val=0
+                    total_loss_val = classification_loss_val+reconstruction_loss_val+ loss3_val +l2_val
+                    #print('totel',total_loss_val)
+            reduce_rl_plateau.on_epoch_end(epoch, total_loss_val)
+            print(f'Epoch: {epoch}, '
+                  f'Fine Tune Loss: {total_loss}, consits of {reconstruction_loss}, {classification_loss}, {loss3}, {l2}')
+            print(f'Epoch: {epoch}, '
+                  f'Fine Tune Loss: {total_loss_val}, consits of {reconstruction_loss_val}, {classification_loss_val}, {loss3_val}, {l2}')
+            
+            if total_loss_val> best_loss:
+                trigger_times += 1
+            else:
+                best_model=self.autoencoder
+                best_loss=total_loss_val
+                trigger_times =0
+            if trigger_times >= patience:
+                self.autoencoder=best_model
+                print('Early Stopping')
+                return 
+        self.autoencoder=best_model
 

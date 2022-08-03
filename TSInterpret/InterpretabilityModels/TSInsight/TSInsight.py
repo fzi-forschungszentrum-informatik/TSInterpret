@@ -24,6 +24,8 @@ class TSInsight(FeatureAttribution):
         pass
 
     def plot(self,original,exp,all_in_one=True,vis_change=False,save=None ):
+        print(exp.shape)
+        print(original.shape)
         if all_in_one:
             i=0
             for a in original:
@@ -35,8 +37,8 @@ class TSInsight(FeatureAttribution):
                 #    sns.heatmap(sal_02, fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
                 #else: 
                 #    sns.heatmap(np.zeros_like(sal_02),fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
-                sns.lineplot(x=range(0,len(original.reshape(-1))), y=original[i].flatten(), color='red',legend=False, label='Original')
-                sns.lineplot(x=range(0,len(original.reshape(-1))), y=exp[i].flatten(), color='blue', legend=False, label='Supressed')
+                sns.lineplot(x=range(0,len(original.reshape(-1))), y=original.flatten(), color='red',legend=False, label='Original')
+                sns.lineplot(x=range(0,len(original.reshape(-1))), y=exp.flatten(), color='blue', legend=False, label='Supressed')
                 plt.legend()
                 i=i+1
        
@@ -57,7 +59,7 @@ class TSInsight(FeatureAttribution):
             if vis_change:
                 sns.heatmap(sal_02, fmt="g", cmap='viridis', cbar=False, ax=ax031, yticklabels=False)
             else: 
-                sns.heatmap(np.zeros_like(sal_02),fmt="g", cmap='viridis', cbar=False, ax=ax011, yticklabels=False)
+                sns.heatmap(np.zeros_like(sal_02),fmt="g", cmap='viridis', cbar=False, ax=ax031, yticklabels=False)
             p=sns.lineplot(x=range(0,len(original.reshape(-1))), y=exp.flatten(), color='white', ax=ax032)
             p.set_ylabel(f"Supressed")
         if save== None:
