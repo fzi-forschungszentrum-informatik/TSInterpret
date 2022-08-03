@@ -4,29 +4,54 @@ import torch.nn.functional as F
 from typing import cast, Any, Dict, List, Tuple, Optional
 import numpy as np
 from ClassificationModels.CNN_T import ResNetBaseline, get_all_preds, fit, UCRDataset
+class LinearBaseline(nn.Module):
+    """A PyTorch implementation of the Linear Baseline
+    From https://arxiv.org/abs/1909.04939
+    Attributes
+    ----------
+    sequence_length:
+        The size of the input sequence
+    num_pred_classes:
+        The number of output classes
+    """
 
-class LSTMClassifier(nn.Module):
-    """Very simple implementation of LSTM-based time-series classifier."""
-    
-    def __init__(self, input_dim, hidden_dim, layer_dim, output_dim):
+    def __init__(self, num_inputs: int, num_pred_classes: int = 1) -> None:
         super().__init__()
-        self.hidden_dim = hidden_dim
-        self.layer_dim = layer_dim
-        self.rnn = nn.LSTM(input_dim, hidden_dim, layer_dim, batch_first=True)
-        self.fc = nn.Linear(hidden_dim, output_dim)
-        self.batch_size = None
-        self.hidden = None
-    
-    def forward(self, x):
-        h0, c0 = self.init_hidden(x)
-        out, (hn, cn) = self.rnn(x, (h0, c0))
-        out = self.fc(out[:, -1, :])
-        return out
-    
-    def init_hidden(self, x):
-        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim)
-        c0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim)
-        return [t.cpu() for t in (h0, c0)]
+
+        # for easier saving and loading
+        self.input_args = {
+            'num_inputs': num_inputs,
+            'num_pred_classes': num_pred_classes
+        }
+
+        self.layers = nn.Sequential(
+            nn.Dropout(0.1),
+            LinearBlock(num_inputs, 500, 0.2),
+            LinearBlock(500, 500, 0.2),
+            LinearBlock(500, num_pred_classes, 0.3),
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:  # type: ignore
+        return self.layers(x.view(x.shape[0], -1))
+
+
+class LinearBlock(nn.Module):
+
+    def __init__(self, input_size: int, output_size: int,
+                 dropout: float) -> None:
+        super().__init__()
+
+        self.layers = nn.Sequential(
+            nn.Linear(input_size, output_size),
+            nn.ReLU(),
+            nn.Dropout(p=dropout)
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:  # type: ignore
+
+        return self.layers(x)
+
+
 
 
 def fit(model, train_loader, val_loader, num_epochs: int = 1500,
@@ -109,18 +134,10 @@ def fit(model, train_loader, val_loader, num_epochs: int = 1500,
 if __name__=='__main__':
     from tslearn.datasets import UCR_UEA_datasets
     import pickle
-    
     dataset='ElectricDevices'
     train_x,train_y, test_x, test_y=UCR_UEA_datasets().load_dataset(dataset)
     train_x = train_x.reshape(-1,  train_x.shape[-2],1)
     test_x = test_x.reshape(-1, test_x.shape[-2],1)
-
-    input_dim = 1   
-    hidden_dim = 256
-    layer_dim = 1
-    output_dim = len(np.unique(test_y))
-
-
     enc1=pickle.load(open(f'./models/{dataset}/OneHotEncoder.pkl','rb'))
     train_y=enc1.transform(train_y.reshape(-1,1))
     test_y=enc1.transform(test_y.reshape(-1,1))
@@ -137,6 +154,10 @@ if __name__=='__main__':
     train_loader = torch.utils.data.DataLoader(train_dataset,batch_size=256,shuffle=True)
     test_loader = torch.utils.data.DataLoader(test_dataset,batch_size=256,shuffle=False)
     val_loader = torch.utils.data.DataLoader(val_dataset,batch_size=1,shuffle=False)
-    model = LSTMClassifier(input_dim, hidden_dim, layer_dim, output_dim)
+    model = LinearBaseline(train_x.shape[-2],y_train.shape[-1])
     fit(model,train_loader, test_loader)
-    torch.save(model.state_dict(), f'./models/{dataset}/LSTM')
+    torch.save(model.state_dict(), f'./models/{dataset}/FeedForward')
+
+ 
+
+
