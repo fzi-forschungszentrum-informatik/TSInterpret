@@ -27,7 +27,7 @@ plugins:
     handlers:
       python:
         options:
-          docstring_style: numpy
+          docstring_style: google
           docstring_section_style: spacy
           show_source: False
           merge_init_into_class: True
