@@ -13,6 +13,18 @@ copyright: Copyright &copy; 2019 - 2022
 
 theme:
   name: "material"
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
 
 markdown_extensions:
   - def_list
@@ -31,7 +43,8 @@ plugins:
           docstring_section_style: spacy
           show_source: False
           merge_init_into_class: True
-- mkdocs-jupyter
+- mkdocs-jupyter:
+    execute: False
 - bibtex:
       bib_file: "library.bib"
 
