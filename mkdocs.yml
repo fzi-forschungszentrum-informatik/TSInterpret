@@ -23,7 +23,14 @@ markdown_extensions:
 plugins:
 - search
 - autorefs
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          docstring_style: google
+          docstring_section_style: spacy
+          show_source: False
+          merge_init_into_class: True
 - mkdocs-jupyter
 - bibtex:
       bib_file: "library.bib"
