@@ -3,6 +3,7 @@
 import numpy as np 
 from TSInterpret.Models.base_model import BaseModel
 from typing import List
+import torch
 
 class PyTorchModel(BaseModel):
     def __init__(self,model,change = False) -> None:
