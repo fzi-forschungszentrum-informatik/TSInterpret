@@ -1,7 +1,8 @@
-from . import SaliencyMethods_PTY, SaliencyMethods_TF, Saliency_Base
+from . import SaliencyMethods_PTY, SaliencyMethods_TF, Saliency_Base,TSR
 
 __all__ = [
     "Saliency_Base",
     "SaliencyMethods_PTY", 
-    "SaliencyMethods_TF"
+    "SaliencyMethods_TF",
+    "TSR"
 ] 

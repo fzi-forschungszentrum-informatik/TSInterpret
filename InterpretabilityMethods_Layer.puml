@@ -1,0 +1,90 @@
+@startuml
+skinparam pageMargin 10
+skinparam pageExternalColor gray
+skinparam pageBorderColor black
+skinparam SameClassWidth true
+skinparam SamePackageWidth true
+skinparam package {
+    backgroundColor Gray
+}
+
+interface InterpretabilityBase {
+    <<abstract>> explain()
+    <<abstract>> plot()
+}
+
+class Output.FeatureAttribution {
+<<abstract>> explain()
+plot()
+}
+class Output.InstanceBase {
+<<abstract>> explain()
+plot()
+}
+class Mechanism.Saliency_Base {
+<<abstract>> explain()
+plot()
+    
+}
+
+class Mechanism.Perturbation {
+
+}
+class Mechanism.Surrogate {
+
+}
+class Algorithm.LEFTIST{
+explain()
+}
+class Algorithm.TSR{
+explain()
+}
+
+
+
+class Mechanism.Counterfactual {
+<<abstract>> explain()
+plot ()
+plot_multi()
+}
+class Algorithm.AtesCF{
+explain()
+}
+
+class Algorithm.NativeGuideCF{
+explain()
+}
+
+class Mechanism.CEM {
+
+}
+class Mechanism.Anchor {
+}
+
+
+
+package Output <<Rectangle>>  {
+.InterpretabilityBase --> InstanceBase
+.InterpretabilityBase --> FeatureAttribution
+}
+package Mechanism <<Rectangle>> {
+Output.InstanceBase --> Mechanism.Counterfactual
+Mechanism.Anchor -[hidden] Mechanism.CEM 
+Mechanism.CEM -[hidden] Mechanism.Counterfactual
+Output.FeatureAttribution --> Mechanism.Surrogate
+Output.FeatureAttribution --> Mechanism.Saliency_Base
+Output.FeatureAttribution --> Mechanism.Perturbation
+Mechanism.Saliency_Base -[hidden] Mechanism.Perturbation
+Mechanism.Perturbation -[hidden] Mechanism.Surrogate
+Output.InstanceBase -->  Mechanism.CEM
+Output.InstanceBase --> Mechanism.Anchor
+
+}
+package Algorithm <<Rectangle>>  {
+Mechanism.Counterfactual --> Algorithm.AtesCF
+Mechanism.Counterfactual --> Algorithm.NativeGuideCF
+Mechanism.Saliency_Base --> Algorithm.TSR
+Mechanism.Perturbation --> Algorithm.LEFTIST
+
+}
+@enduml
