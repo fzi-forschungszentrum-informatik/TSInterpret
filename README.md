@@ -48,8 +48,8 @@ model_to_explain = tf.keras.models.load_model(f'../../ClassificationModels/model
 ```
 Explain & Visualize Model
 ```python
-from TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF import Saliency_TF
-int_mod=Saliency_TF(model_to_explain, train_x.shape[-2],train_x.shape[-1], method='IG',mode='time')
+from TSInterpret.InterpretabilityModels.Saliency.TSR import TSR
+int_mod=TSR(model_to_explain, train_x.shape[-2],train_x.shape[-1], method='IG',mode='time')
 item= np.array([test_x[0,:,:]])
 label=int(np.argmax(test_y[0]))
 
