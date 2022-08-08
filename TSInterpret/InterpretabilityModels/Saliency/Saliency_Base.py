@@ -75,9 +75,9 @@ class Saliency(FeatureAttribution):
                 
 
                 sns.heatmap(exp[i].reshape(1,-1), fmt="g",cmap='viridis', cbar=i == 0 ,cbar_ax=None if i else cbar_ax, ax=axn[i], yticklabels=False, vmin=0,vmax=1)
-                sns.lineplot(x=range(0,len(channel.reshape(-1))), y=channel.flatten(),ax=axn012)
+                sns.lineplot(x=range(0,len(channel.reshape(-1))), y=channel.flatten(),ax=axn012,color='white')
                 plt.xlabel('Time', fontweight = 'bold', fontsize='large')
-                plt.ylabel('Value', fontweight = 'bold', fontsize='large')
+                plt.ylabel(f'Feature {i}', fontweight = 'bold', fontsize='large')
                 i=i+1
             fig.tight_layout(rect=[0, 0, .9, 1])
         if save == None: 
