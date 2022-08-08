@@ -1,5 +1,4 @@
 @startuml
-
 interface InterpretabilityBase {
     <<abstract>> explain()
     <<abstract>> plot()
@@ -13,15 +12,7 @@ class Saliency_Base {
 plot()
     
 }
-class SaliencyMethods_PYT {
-explain()
 
-    
-}
-class SaliencyMethods_TF {
-explain()
-    
-}
 class Perturbation {
 
 }
@@ -29,6 +20,9 @@ class Surrogate {
 
 }
 class LEFTIST{
+explain()
+}
+class TSR{
 explain()
 }
 class InstanceBase {
@@ -58,8 +52,7 @@ class Anchor {
 InterpretabilityBase --> FeatureAttribution
 InterpretabilityBase --> InstanceBase
 FeatureAttribution --> Saliency_Base
-Saliency_Base --> SaliencyMethods_PYT
-Saliency_Base --> SaliencyMethods_TF
+Saliency_Base --> TSR
 FeatureAttribution --> Perturbation
 FeatureAttribution --> Surrogate
 InstanceBase --> Counterfactual 
@@ -68,5 +61,4 @@ InstanceBase --> Anchor
 Perturbation --> LEFTIST
 Counterfactual --> AtesCF
 Counterfactual --> NativeGuideCF
-
 @enduml

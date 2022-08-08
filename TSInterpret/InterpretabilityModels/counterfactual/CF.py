@@ -94,6 +94,7 @@ class CF(InstanceBase):
         if self.mode == 'time':
             item = item.reshape(item.shape[0],item.shape[2],item.shape[1]) 
         #TODO This is new and needs to be testes
+        ind=''
         if item.shape[-2]>1:
             res = (item != exp).any(-1)
             ind=np.where(res[0])
@@ -132,7 +133,10 @@ class CF(InstanceBase):
 
         ax.grid(color='#2A3459')
         plt.xlabel('Time', fontweight = 'bold', fontsize='large')
-        plt.ylabel('Value', fontweight = 'bold', fontsize='large')
+        if ind != '':
+            plt.ylabel(f'Feature {ind[0][0]}', fontweight = 'bold', fontsize='large')
+        else:
+            plt.ylabel('Value', fontweight = 'bold', fontsize='large')
         if save_fig is None: 
             plt.show()
         else:
@@ -190,10 +194,9 @@ class CF(InstanceBase):
                 legend=False,
                 ax=ax[i],
                 color=colors)
-
             ax[i].grid(color='#2A3459')
             plt.xlabel('Time', fontweight = 'bold', fontsize='large')
-            plt.ylabel('Value', fontweight = 'bold', fontsize='large')
+            ax[i].set_ylabel(f'Feature {channel}', fontweight = 'bold', fontsize='large')
             i=i+1
         if save_fig is None: 
             plt.show()
