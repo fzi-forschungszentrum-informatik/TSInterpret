@@ -29,7 +29,7 @@ base_packages = [
     "pandas~=1.3.2",
     "numpy>=1.21.6",
     "tqdm~=4.61.2",
-    "h5py", # todo add version
+    "h5py==3.7.0", # todo add version
     "joblib==1.0.1",
     "kaggle==1.5.12",
     "lime==0.2.0.1",
@@ -38,19 +38,19 @@ base_packages = [
     "partd==1.2.0",
     "pytz==2021.3",
     "shap==0.39.0",
-    "tensorflow",
-    "keras",
+    "tensorflow==2.9.1",
+    "keras==2.9.0",
     "tsfresh==0.18.0",
-    "tslearn",
-    "seaborn",
-    "scikit_optimize",
-    "mlrose",
-    "torchcam",
-    "tf_explain",
+    "tslearn== 0.5.2",
+    "seaborn==0.11.2",
+    "scikit_optimize==0.9.0",
+    "mlrose==1.3.0",
+    "torchcam==0.3.1",
+    "tf_explain==0.3.1",
     "opencv-python==4.6.0.66",
-    "captum",
-    "pyts",
-    "deprecated"
+    "captum== 0.5.0",
+    "pyts==0.12.0",
+    "deprecated==1.2.13"
 ]
 
 dev_packages = base_packages + [
