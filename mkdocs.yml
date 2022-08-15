@@ -2,12 +2,12 @@
 site_name: TSInterpret
 site_description: TSInterpret is a Python library for interpretable time series classification.
 site_author: Jacqueline Höllig
-site_url: https://github.com/jhoelli/TSInterpret
+site_url:  https://fzi-forschungszentrum-informatik.github.io/TSInterpret/
 
 # Repository
 repo_name: TSInterpret
-repo_url: https://github.com/jhoelli/TSInterpret
-edit_uri: "https://github.com/jhoelli/TSInterpret"
+repo_url:  https://fzi-forschungszentrum-informatik.github.io/TSInterpret/
+edit_uri: "https://fzi-forschungszentrum-informatik.github.io/TSInterpret/"
 
 copyright: Copyright &copy; 2019 - 2022
 
