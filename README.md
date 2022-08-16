@@ -3,7 +3,7 @@
 </p>
 
 TSInterpret is a Python library for interpreting time series classification.
-The ambition is to faciliate the usage of times series interpretability methods. The Framework supports Sklearn, Tensorflow, Torch and in some cases predict functions. A listing of implemented algorithms and supported frameworks can be found in our <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/AlgorithmOverview/">Documentation</a>.
+The ambition is to faciliate the usage of times series interpretability methods. The Framework supports Sklearn, Tensorflow, Torch and in some cases predict functions. A listing of implemented algorithms and supported frameworks can be found in our <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/AlgorithmOverview/">Documentation</a>. More information on our framework can be found in our <a href="https://arxiv.org/abs/2208.05280"> paper<a>.
 
 ## 💈 Installation
 ```shell
@@ -68,4 +68,26 @@ int_mod.plot(np.array([test_x[0,:,:]]),exp)
     <img src="https://upload.wikimedia.org/wikipedia/de/thumb/4/44/Fzi_logo.svg/1200px-Fzi_logo.svg.png?raw=true" alt="FZI Logo" height="200"/>
 </p>
 
-## Aknowledgement
+## Citation
+
+If you use TSInterpret in your research, please consider citing it and the methods authors' original papers. The methods authors' original papers are cited in the documentation and the paper below.
+
+```
+@misc{https://doi.org/10.48550/arxiv.2208.05280,
+  doi = {10.48550/ARXIV.2208.05280},
+  
+  url = {https://arxiv.org/abs/2208.05280},
+  
+  author = {Höllig, Jacqueline and Kulbach, Cedric and Thoma, Steffen},
+  
+  keywords = {Machine Learning (cs.LG), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  
+  title = {TSInterpret: A unified framework for time series interpretability},
+  
+  publisher = {arXiv},
+  
+  year = {2022},
+  
+  copyright = {Creative Commons Attribution 4.0 International}
+}
+```
