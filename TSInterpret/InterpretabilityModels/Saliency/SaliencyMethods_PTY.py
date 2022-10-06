@@ -92,8 +92,17 @@ class Saliency_PTY(Saliency):
             mask[i,:]=i
         rescaledGrad= np.zeros((item.shape))
         idx=0
-        item = np.array(item.tolist(), dtype=np.float64)
+        #item = np.array(item.tolist())#, dtype=np.float64)
         input=torch.from_numpy(item)
+        float_flag=False
+        try: 
+            #TODO This is only a QuickFix
+            res=self.model(input)
+        except: 
+            float_flag=True
+            item = np.array(item.tolist())#, dtype=np.float64)
+            
+            input=torch.from_numpy(item).float()
 
         input = input.reshape(-1, self.NumTimeSteps, self.NumFeatures).to(self.device)
         input = Variable(input,  volatile=False, requires_grad=True)
@@ -106,9 +115,14 @@ class Saliency_PTY(Saliency):
         mask_single= torch.from_numpy(mask).to(self.device)
         mask_single=mask_single.reshape(1,self.NumTimeSteps, self.NumFeatures).to(self.device)
         input=input.reshape(-1, self.NumFeatures, self.NumTimeSteps)
-        baseline_single=torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
-        baseline_multiple=torch.from_numpy(np.random.random((input.shape[0]*5,input.shape[1],input.shape[2]))).float().to(self.device)
-        input = input.float()
+        if float_flag:
+            baseline_single=torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
+            baseline_multiple=torch.from_numpy(np.random.random((input.shape[0]*5,input.shape[1],input.shape[2]))).float().to(self.device)
+            input=input.float()
+        else:
+            baseline_single=torch.from_numpy(np.random.random(input.shape)).to(self.device)
+            baseline_multiple=torch.from_numpy(np.random.random((input.shape[0]*5,input.shape[1],input.shape[2]))).to(self.device)
+            input = input
         base=None
         has_sliding_window = None
         if(self.method=='GRAD'):
