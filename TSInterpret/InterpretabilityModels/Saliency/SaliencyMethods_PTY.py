@@ -18,10 +18,10 @@ import torch
 from torch.autograd import Variable 
 import seaborn as sns
 import matplotlib.pyplot as plt 
-from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
+from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency as Sal
 
 
-class Saliency_PTY(Saliency):
+class Saliency_PTY(Sal):
     '''
     PyTorch Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library captum [2].
     For PyTorch the following saliency methods are available: 
@@ -50,10 +50,15 @@ class Saliency_PTY(Saliency):
             mode str: Second dimension 'time' or 'feat'
             backend str: 'PYT'  
         '''
+        print('Before Super Call')
         super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
+        print('After super call')
         self.method = method
         if method == 'GRAD':
+            print('After Before Sal')
+            print(type(model))
             self.Grad = Saliency(model)
+            print('After Sal')
         elif method == 'IG':
             self.Grad= IntegratedGradients(model)
         elif method == 'GS':
