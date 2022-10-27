@@ -7,7 +7,7 @@
     TSInterpret is a Python library for interpreting time series classification.
     The ambition is to facilitate the usage of time series interpretability methods. 
     Thereby TSInterpret implements various interpretability algorithms specifically for time series classification on various frameworks (PYT, tf, sklearn). 
-    Furthermore, it provides unified visualizations of the results of the implemented algorithms. Wherever possible, TSInterpret is built on existing interpretability libraries like <a href="https://shap.readthedocs.io/en/latest/index.html">shap</a>, <a href="https://captum.ai/">captum</a> and <a href="https://github.com/sicara/tf-explain/">tf-explain</a>. 
+    Furthermore, it provides unified visualizations of the results of the implemented algorithms. Wherever possible, TSInterpret is built on existing interpretability libraries like <a href="https://shap.readthedocs.io/en/latest/index.html">shap</a>, <a href="https://captum.ai/">captum</a> and <a href="https://github.com/sicara/tf-explain/">tf-explain</a>.  
 </p>
 
 <style>

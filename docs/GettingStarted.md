@@ -31,7 +31,7 @@ Next, we initialize it by passing it a model (or in this case also possible a pr
 exp_model=NativeGuideCF(model,shape,(train_x,train_y), backend='PYT', mode='feat',method='dtw_bary_center')
 ```
 
-Finally, we can call the explainer on a test instance which will return an Tuple or a list containing the explanation:
+Finally, we can call the explainer on a test instance which will return an Tuple or a list containing the explanation: 
 
 ``` py
 exp,label=exp_model.explain(item, np.argmax(y_target,axis=1))
