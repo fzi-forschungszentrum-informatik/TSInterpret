@@ -32,8 +32,7 @@ class Saliency_PTY(Sal):
         + DeepLiftShap (DLS)
         + SmoothGrad (SG)
         + Shapley Value Sampling(SVS)
-        + Feature Permutation (FP)
-        + Feature Sampling (FS)
+        + Feature Ablatiom (FA)
         + Occlusion (FO)
 
     [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
@@ -50,15 +49,10 @@ class Saliency_PTY(Sal):
             mode str: Second dimension 'time' or 'feat'
             backend str: 'PYT'  
         '''
-        print('Before Super Call')
         super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
-        print('After super call')
         self.method = method
         if method == 'GRAD':
-            print('After Before Sal')
-            print(type(model))
             self.Grad = Saliency(model)
-            print('After Sal')
         elif method == 'IG':
             self.Grad= IntegratedGradients(model)
         elif method == 'GS':
@@ -72,8 +66,8 @@ class Saliency_PTY(Sal):
             self.Grad = NoiseTunnel(Grad_)
         elif method == 'SVS':
             self.Grad = ShapleyValueSampling(model)
-        elif method == 'FP':
-            self.Grad = FeaturePermutation(model)
+        #elif method == 'FP':
+        #    self.Grad = FeaturePermutation(model)
         elif method == 'FA':
             self.Grad = FeatureAblation(model)
         elif method == 'FO':
@@ -110,6 +104,7 @@ class Saliency_PTY(Sal):
         inputMask =torch.from_numpy(inputMask).to(self.device)
         mask_single= torch.from_numpy(mask).to(self.device)
         mask_single=mask_single.reshape(1,self.NumTimeSteps, self.NumFeatures).to(self.device)
+        #input = samples.reshape(-1, args.NumTimeSteps, args.NumFeatures).to(device)
         input=input.reshape(-1, self.NumFeatures, self.NumTimeSteps)
         baseline_single=torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
         baseline_multiple=torch.from_numpy(np.random.random((input.shape[0]*5,input.shape[1],input.shape[2]))).float().to(self.device)
@@ -134,9 +129,10 @@ class Saliency_PTY(Sal):
             attributions = self.Grad.attribute(input,target=labels)
         elif(self.method=='SVS'):
             base=baseline_single
+            inputMask=inputMask.reshape(-1, baseline_single.shape[1],baseline_single.shape[2])
             attributions = self.Grad.attribute(input, baselines=baseline_single, target=labels, feature_mask=inputMask)
-        elif(self.method=='FP'):
-            attributions = self.Grad.attribute(input, target=labels, perturbations_per_eval= input.shape[0],feature_mask=mask_single)
+        #elif(self.method=='FP'):
+        #    attributions = self.Grad.attribute(input, target=labels, perturbations_per_eval= input.shape[0],feature_mask=mask_single)
         elif(self.method=='FA'):
             attributions = self.Grad.attribute(input, target=labels)
         elif(self.method=='FO'):
@@ -149,6 +145,7 @@ class Saliency_PTY(Sal):
             TSR_saliency=self._givenAttGetRescaledSaliency(TSR_attributions,isTensor=False)
             return TSR_saliency
         else:
+            #TODO attributions does not exist for SVS and Fo
             rescaledGrad[idx:idx+batch_size,:,:]=self._givenAttGetRescaledSaliency(attributions)
             return rescaledGrad
 
