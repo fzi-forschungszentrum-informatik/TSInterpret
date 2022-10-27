@@ -61,9 +61,8 @@ nav:
         - Nun-CF: ./Notebooks/NunCF_torch.ipynb
     - Feature Attribution Methods:
       - Leftist: ./Notebooks/Leftist_torch.ipynb
-      - Saliency: ./Notebooks/Ismail_torch.ipynb
+      - Saliency: ./Notebooks/TSR_torch.ipynb
   - API References: 
-    - Models: Model_Interface.md
     - InterpretabilityMethods: 
       - Counterfactual: ./Methods/CF.md
       - Saliency: ./Methods/Saliency.md

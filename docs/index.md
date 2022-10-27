@@ -28,7 +28,7 @@
   <tr>
     <td class="left"> <a href="Notebooks/Ates_torch"><img src="img/Ates.png" height=300 width=300 /></a> </td>
      <td >   </td>
-    <td class="right"> <a href="Notebooks/NUNCF_torch"><img src="img/Nun_CF2.png" height=300 width=300 /> </a></td>
+    <td class="right"> <a href="Notebooks/NubCF_torch"><img src="img/Nun_CF2.png" height=300 width=300 /> </a></td>
   </tr>
   <tr>
     <td  class="left">LEFTIST [@guilleme_agnostic_2019]</td>
@@ -38,7 +38,7 @@
    <tr>
     <td class="left"> <a href="Notebooks/Leftist_torch"><img src="img/Leftist.png" height=300 width=300 /></a> </td>
      <td>   </td>
-    <td class="right"> <a href="Notebooks/Ismail_torch"><img src="img/Ismail.png" height=300 width=300 /></a> <td>
+    <td class="right"> <a href="Notebooks/TSR_torch"><img src="img/Ismail.png" height=300 width=300 /></a> <td>
   </tr>
 </table> 
 </center>
