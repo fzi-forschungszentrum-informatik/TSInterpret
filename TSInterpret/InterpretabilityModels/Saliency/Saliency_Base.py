@@ -55,10 +55,16 @@ class Saliency(FeatureAttribution):
             print('NOT Time mode')
 
         if heatmap:
-            pass 
             ax011 = plt.subplot(1,1,1)
             ax012 = ax011.twinx()
             sns.heatmap(exp, fmt="g", cmap='viridis', cbar=True, ax=ax011, yticklabels=False,vmin=0,vmax=1)
+        elif len(item[0])==1:
+            # if only onedimensional input 
+            fig, axn = plt.subplots(len(item[0]), 1, sharex=True, sharey=True)
+            #cbar_ax = fig.add_axes([.91, .3, .03, .4])
+            axn012=axn.twinx()
+            sns.heatmap(exp.reshape(1,-1), fmt="g",cmap='viridis',  ax=axn, yticklabels=False, vmin=0,vmax=1)
+            sns.lineplot(x=range(0,len(item[0][0].reshape(-1))), y=item[0][0].flatten(),ax=axn012,color='white')
         else: 
             ax011=[]
             ax012=[]

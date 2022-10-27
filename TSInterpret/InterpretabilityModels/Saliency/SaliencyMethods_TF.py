@@ -11,7 +11,7 @@ import tensorflow as tf
 from TSInterpret.InterpretabilityModels import utils
 import seaborn as sns
 import matplotlib.pyplot as plt 
-import shap
+#import shap
 from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 class Saliency_TF(Saliency):
     '''

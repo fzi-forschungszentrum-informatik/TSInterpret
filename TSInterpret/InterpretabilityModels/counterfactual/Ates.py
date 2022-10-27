@@ -288,8 +288,8 @@ class BruteForceSearch(BaseExplanation):
             while True:
                 input_ = modified.reshape(1,-1,self.window_size)
                 probas= self.clf(input_)
-                print('Current may',np.argmax(probas))
-                print(to_maximize)
+                #print('Current may',np.argmax(probas))
+                #print(to_maximize)
                 if np.argmax(probas) == to_maximize:
                     current_best = np.max(probas)
                     if current_best > best_explanation_score:
@@ -431,8 +431,8 @@ class OptimizedSearch(BaseExplanation):
         if to_maximize is None:
             to_maximize =  np.argsort(orig_preds)[0][-2:-1][0]
         
-        print('Current may',np.argmax(orig_preds))
-        print(to_maximize)
+        #print('Current may',np.argmax(orig_preds))
+        #print(to_maximize)
       
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
@@ -447,8 +447,8 @@ class OptimizedSearch(BaseExplanation):
             explanation = self.backup.explain(x_test, num_features=num_features,
                                        to_maximize=to_maximize)
         best, other = explanation
-        print('Other',np.array(other).shape)
-        print('Best',np.array(best).shape)
+        #print('Other',np.array(other).shape)
+        #print('Best',np.array(best).shape)
         target = np.argmax(self.clf(best),axis=1)
         
         return best, target
