@@ -109,7 +109,7 @@ setuptools.setup(
         "test": dev_packages,
         "docs": docs_packages,
         "all": dev_packages + docs_packages,
-        ":python_version == '3.6'": ["dataclasses"],
+        ":python_version == '3.7'": ["dataclasses"],
     },
     include_package_data=True,
     license="BSD-3",
