@@ -1,30 +1,24 @@
 import re
-from captum.attr import (
-    GradientShap,
-    DeepLift,
-    DeepLiftShap,
-    IntegratedGradients,
-    Saliency,
-    NoiseTunnel,
-    ShapleyValueSampling,
-    FeaturePermutation,
-    FeatureAblation,
-    Occlusion
 
-)
-import numpy as np 
-from  sklearn import preprocessing
-import torch
-from torch.autograd import Variable 
+import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt 
-from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency as Sal
+import torch
+from captum.attr import (DeepLift, DeepLiftShap, FeatureAblation,
+                         FeaturePermutation, GradientShap, IntegratedGradients,
+                         NoiseTunnel, Occlusion, Saliency,
+                         ShapleyValueSampling)
+from sklearn import preprocessing
+from torch.autograd import Variable
+
+from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import \
+    Saliency as Sal
 
 
 class Saliency_PTY(Sal):
     '''
     PyTorch Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library captum [2].
-    For PyTorch the following saliency methods are available: 
+    For PyTorch the following saliency methods are available:
         + Gradients (GRAD)
         + Integrated Gradients (IG)
         + Gradient Shap (GS)
@@ -36,18 +30,18 @@ class Saliency_PTY(Sal):
         + Occlusion (FO)
 
     [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
-    
+
     [2] Kokhlikyan, Narine, et al. "Captum: A unified and generic model interpretability library for pytorch." arXiv preprint arXiv:2009.07896 (2020).
     '''
     def __init__(self, model, NumTimeSteps, NumFeatures, method='GRAD',mode='time',backend= 'torch',device='cpu') -> None:
         ''' Initialization
         Arguments:
             model: model to be explained
-            NumTimeStep int : Number of Time Step 
+            NumTimeStep int : Number of Time Step
             NumFetaures int : Number Features
             method str: Saliency Methode to be used
             mode str: Second dimension 'time' or 'feat'
-            backend str: 'PYT'  
+            backend str: 'PYT'
         '''
         super().__init__(model, NumTimeSteps, NumFeatures, method,mode)
         self.method = method
@@ -76,20 +70,20 @@ class Saliency_PTY(Sal):
             self.device='cpu'
 
     def explain(self,item,labels, TSR = True) :
-        '''Method to explain the model based on the item. 
+        '''Method to explain the model based on the item.
         Arguments:
             item np.array: item to get feature attribution for
-            labels np.array: labels 
+            labels np.array: labels
             TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
-        Returns: 
+        Returns:
             List: feature attribution weights
-        
+
         '''
         mask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)
         featureMask=np.zeros((self.NumTimeSteps, self.NumFeatures),dtype=int)
         for i in  range (self.NumTimeSteps):
             mask[i,:]=i
-        rescaledGrad= np.zeros((item.shape))
+        rescaledGrad= np.zeros(item.shape)
         idx=0
         item = np.array(item.tolist(), dtype=np.float64)
         input=torch.from_numpy(item)
@@ -98,8 +92,8 @@ class Saliency_PTY(Sal):
         input = Variable(input,  volatile=False, requires_grad=True)
 
         batch_size = input.shape[0]
-       
-        inputMask= np.zeros((input.shape))
+
+        inputMask= np.zeros(input.shape)
         inputMask[:,:,:]=mask
         inputMask =torch.from_numpy(inputMask).to(self.device)
         mask_single= torch.from_numpy(mask).to(self.device)
@@ -156,11 +150,11 @@ class Saliency_PTY(Sal):
         timeGrad=np.zeros((1,sequence_length))
         inputGrad=np.zeros((input_size,1))
         newGrad=np.zeros((input_size, sequence_length))
-        if(hasBaseline==None):  
+        if(hasBaseline==None):
             ActualGrad = self.Grad.attribute(input,target=TestingLabel).data.cpu().numpy()
         else:
             if(hasFeatureMask!=None):
-                ActualGrad = self.Grad.attribute(input,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()    
+                ActualGrad = self.Grad.attribute(input,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()
             elif(hasSliding_window_shapes!=None):
                 ActualGrad = self.Grad.attribute(input,sliding_window_shapes=hasSliding_window_shapes, baselines=hasBaseline, target=TestingLabel).data.cpu().numpy()
             else:
@@ -169,11 +163,11 @@ class Saliency_PTY(Sal):
             newInput = input.clone()
             newInput[:,:,t]=assignment
 
-            if(hasBaseline==None):  
+            if(hasBaseline==None):
                 timeGrad_perTime = self.Grad.attribute(newInput,target=TestingLabel).data.cpu().numpy()
             else:
                 if(hasFeatureMask!=None):
-                    timeGrad_perTime = self.Grad.attribute(newInput,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()    
+                    timeGrad_perTime = self.Grad.attribute(newInput,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()
                 elif(hasSliding_window_shapes!=None):
                     timeGrad_perTime = self.Grad.attribute(newInput,sliding_window_shapes=hasSliding_window_shapes, baselines=hasBaseline, target=TestingLabel).data.cpu().numpy()
                 else:
@@ -186,20 +180,20 @@ class Saliency_PTY(Sal):
 
 
         timeContibution=preprocessing.minmax_scale(timeGrad, axis=1)
-        meanTime = np.quantile(timeContibution, .55)    
+        meanTime = np.quantile(timeContibution, .55)
 
-    
+
         for t in range(sequence_length):
             if(timeContibution[0,t]>meanTime):
                 for c in range(input_size):
                     newInput = input.clone()
                     newInput[:,c,t]=assignment
 
-                    if(hasBaseline==None):  
+                    if(hasBaseline==None):
                         inputGrad_perInput = self.Grad.attribute(newInput,target=TestingLabel).data.cpu().numpy()
                     else:
                         if(hasFeatureMask!=None):
-                            inputGrad_perInput = self.Grad.attribute(newInput,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()    
+                            inputGrad_perInput = self.Grad.attribute(newInput,baselines=hasBaseline, target=TestingLabel,feature_mask=hasFeatureMask).data.cpu().numpy()
                         elif(hasSliding_window_shapes!=None):
                             inputGrad_perInput = self.Grad.attribute(newInput,sliding_window_shapes=hasSliding_window_shapes, baselines=hasBaseline, target=TestingLabel).data.cpu().numpy()
                         else:
@@ -226,4 +220,3 @@ class Saliency_PTY(Sal):
         rescaledSaliency=preprocessing.minmax_scale(saliency,axis=1)
         rescaledSaliency=rescaledSaliency.reshape(attributions.shape)
         return rescaledSaliency
-

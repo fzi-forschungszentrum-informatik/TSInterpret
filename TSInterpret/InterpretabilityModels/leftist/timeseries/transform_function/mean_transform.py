@@ -1,7 +1,8 @@
+import matplotlib.pyplot as plt
 import numpy as np
 
-from TSInterpret.InterpretabilityModels.leftist.timeseries.utils_timeseries import start_stop
-import matplotlib.pyplot as plt
+from TSInterpret.InterpretabilityModels.leftist.timeseries.utils_timeseries import \
+    start_stop
 from TSInterpret.InterpretabilityModels.leftist.transform import Transform
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'

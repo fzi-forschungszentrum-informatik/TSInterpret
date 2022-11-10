@@ -40,4 +40,3 @@ class RandTransform(Transform):
         for segment_interval in segments_interval_to_replace:
             neighbor_values[segment_interval[0]:segment_interval[1] + 1] = [random.uniform(v_min,v_max) for i in range(segment_interval[1]-segment_interval[0]+1)]
         return neighbor_values
-

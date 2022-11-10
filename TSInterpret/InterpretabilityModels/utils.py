@@ -1,15 +1,12 @@
-from scipy.fft import fft, ifft, fftfreq, rfft, irfft, rfftfreq
-import numpy as np
-import pandas as pd 
 import random
+
+import numpy as np
+import pandas as pd
 import torch
-from pyts.utils import windowed_view
-
-from  sklearn.preprocessing import minmax_scale
-
 from deprecated import deprecated
-
-
+from pyts.utils import windowed_view
+from scipy.fft import fft, fftfreq, ifft, irfft, rfft, rfftfreq
+from sklearn.preprocessing import minmax_scale
 
 
 class functionCall_wrapper():
@@ -81,7 +78,7 @@ def fourier_transform(timeseries,reference_set=None, return_fourier = False):
     ----------
     timeseries: np.array
         timeseries to be transformed
-    reference_set: np.array 
+    reference_set: np.array
         Reference set of size (#items, #MVariate, Time)
     return_fourier: bool
         True if only fourier transformed data is supposed to be returned, else manipulated timeseries is returned
@@ -94,23 +91,23 @@ def fourier_transform(timeseries,reference_set=None, return_fourier = False):
         Fourier Transformed Timeseries
     fourier_reference_set: np.array
         Fourier Transformed Timeseries
-    
 
 
-    TODO: 
-    * Number of Pertued Series currently only returns one 
+
+    TODO:
+    * Number of Pertued Series currently only returns one
     '''
-    fourier_timeseries = rfft(np.array(timeseries)) 
-    
+    fourier_timeseries = rfft(np.array(timeseries))
+
     if reference_set!=None:
         fourier_reference_set = rfft(np.array(reference_set))
 
     if return_fourier:
         return fourier_timeseries, fourier_reference_set
-    
-    #Manipulate Series 
+
+    #Manipulate Series
     len_fourier = fourier_timeseries.shape[-1] #lentgh of fourier
-    
+
     #Define variables
     length = 1
     num_slices = 1
@@ -127,16 +124,16 @@ def fourier_transform(timeseries,reference_set=None, return_fourier = False):
         start_idx = length   #Start value
         end_idx = start_idx + num_slices**2 #End value
         end_idx = min(end_idx, len_fourier)
-        
+
         new_row = {'Slice_number': num_slices, 'Start':start_idx, 'End':end_idx}
         #append row to the dataframe
         slices_start_end_value = slices_start_end_value.append(new_row, ignore_index=True)
-        
+
         length = length + end_idx - start_idx
         num_slices = num_slices + 1
-           
+
     tmp_fourier_series = np.array(fourier_timeseries.copy()) # timeseries.copy()
-    max_row_idx = fourier_reference_set.shape[-1] 
+    max_row_idx = fourier_reference_set.shape[-1]
     rand_idx = np.random.randint(0, max_row_idx)
     idx=random.randint(0, len (slices_start_end_value))
     start_idx = slices_start_end_value['Start'][idx]
@@ -154,20 +151,20 @@ def authentic_opposing_information(timeseries, reference_set, window_size):
     ----------
     timeseries: np.array
         timeseries to be transformed
-    reference_set: np.array 
+    reference_set: np.array
         Reference set of size (#items, #MVariate, Time)
     window_size: int
-        Window size to be oberated on 
+        Window size to be oberated on
 
     Returns
     ----------
     ind1: np.array
             manipulated time series
-    
 
-    TODO: 
+
+    TODO:
     * MultiVariate TimeSeries
-    * Cope with more than one change ? 
+    * Cope with more than one change ?
     '''
     window=window_size
     shape= np.array(timeseries).shape[-1]
@@ -175,7 +172,7 @@ def authentic_opposing_information(timeseries, reference_set, window_size):
     if (shape/window).is_integer():
         ind1 = windowed_view(np.array(timeseries).reshape(1,-1), window, window_step= window)[0]
         sample_series=windowed_view(sample_series.reshape(1,-1), window, window_step= window)[0]
-    else: 
+    else:
         shape_new = window*(int(shape/window)+1)
         padded= np.zeros((1,shape_new))
         sample_padded= np.zeros((1,shape_new))
@@ -188,11 +185,11 @@ def authentic_opposing_information(timeseries, reference_set, window_size):
     ind1[index]=sample_series[index]
     new_shape = ind1.reshape(1,-1).shape[1]
     if new_shape>shape:
-        diff= shape_new-shape 
+        diff= shape_new-shape
         ind1= np.array(ind1).reshape(-1)[0:shape_new-diff]
-       
+
     ind1=ind1.reshape(1,-1)
-    return ind1 
+    return ind1
 
 def perturb_global_mean(m, dataframe_set, start_idx, end_idx):
     """
@@ -214,10 +211,10 @@ def perturb_global_mean(m, dataframe_set, start_idx, end_idx):
     None.
 
     """
-    
+
     m[start_idx:end_idx] = dataframe_set.mean() #Mean of all points in test set
     return m
-    
+
 def perturb_local_mean(m, dataframe_set, start_idx, end_idx):
     """
     Perturbes timeseries with local mean
@@ -240,7 +237,7 @@ def perturb_local_mean(m, dataframe_set, start_idx, end_idx):
     """
     m[start_idx:end_idx] = dataframe_set[:, start_idx: end_idx].mean() #Mean of all points in test set in that slice
     return m
-    
+
 def perturb_local_noise(m, dataframe_set, start_idx, end_idx):
     """
     Perturbes timeseries with local noise
@@ -261,13 +258,13 @@ def perturb_local_noise(m, dataframe_set, start_idx, end_idx):
     None.
 
     """
-    
+
     mean = dataframe_set[:, start_idx: end_idx].mean() #Mean of points in that slice of all test sets
     std = dataframe_set[:, start_idx: end_idx].std() #Standard deviation of that points
     m[start_idx:end_idx] = np.random.normal(mean, std,end_idx - start_idx) #Draw points in this slice of normal distribution with mean and std
     #print(m)
     return m
-    
+
 def perturb_global_noise(m, dataframe_set, start_idx, end_idx):
     """
     Perturbes timeseries with global noise
@@ -288,7 +285,7 @@ def perturb_global_noise(m, dataframe_set, start_idx, end_idx):
     None.
 
     """
-    
+
     mean = dataframe_set.mean() #Mean of all points in test set
     std = dataframe_set.std() #Standard deviation of all points in test set
     m[start_idx:end_idx] = np.random.normal(mean, std,
@@ -318,5 +315,5 @@ def perturb_authentic_mean(m, dataframe_set, start_idx, end_idx, rand_idx):
 
     """
     #Copy slice of other timeseries
-    m[start_idx:end_idx] = dataframe_set[rand_idx, start_idx:end_idx].copy()   
+    m[start_idx:end_idx] = dataframe_set[rand_idx, start_idx:end_idx].copy()
     return m

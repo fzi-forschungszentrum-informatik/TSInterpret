@@ -1,9 +1,10 @@
 import numpy as np
-
 from sklearn.linear_model import LassoLarsIC, lars_path
 
-from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import LearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.SHAP_neighbors_generator import SHAPNeighborsGenerator
+from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import \
+    LearningProcess
+from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.SHAP_neighbors_generator import \
+    SHAPNeighborsGenerator
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 
@@ -87,7 +88,7 @@ class SHAPLearningProcess(LearningProcess):
         if len(predictions[0]) == 1:
             predictions = np.array([np.array([el[0],1-el[0]]) for el in predictions])
         return np.mean(predictions, axis=0)
-    
+
     def _classify_explained_instance(self,model_to_explain,explained_instance):
         """
         Classify the instance to explain by the model to explain.

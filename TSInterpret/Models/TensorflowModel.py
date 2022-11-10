@@ -10,7 +10,7 @@ class TensorFlowModel(BaseModel):
         """ Wrapper for Tensorflow Models that unifiy the prediction function for a classifier.
         Arguments:
             model : Trained TF Model.
-            change bool: if swapping of dimension is necessary = True 
+            change bool: if swapping of dimension is necessary = True
         """
         super().__init__(model,change, model_path='', backend='TF')
     def predict(self,item):

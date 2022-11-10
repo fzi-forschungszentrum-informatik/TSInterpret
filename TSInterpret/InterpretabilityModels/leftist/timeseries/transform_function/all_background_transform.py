@@ -64,4 +64,3 @@ class AllBackgroundTransform(Transform):
                 neighbor_representation[:,segment_interval[0]:segment_interval[1]+1 ] = self.explained_instance[segment_interval[0]:segment_interval[1] + 1]
 
         return neighbor_representation
-

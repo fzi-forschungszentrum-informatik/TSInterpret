@@ -1,4 +1,6 @@
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
+    InterpretabilityBase
+
 
 class InstanceBase(InterpretabilityBase):
     def __init__(self, mlmodel, mode):

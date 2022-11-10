@@ -54,10 +54,13 @@ base_packages = [
 ]
 
 dev_packages = base_packages + [
+    "flake8>=5.0.4",
+    "isort==5.9.3",
     "mypy>=0.761",
     "pre-commit>=2.9.2",
     "pytest>=4.5.0",
     "pytest-cov>=2.6.1",
+    "pyupgrade>=3.2.0"
 ]
 
 docs_packages = [
@@ -109,7 +112,7 @@ setuptools.setup(
         "test": dev_packages,
         "docs": docs_packages,
         "all": dev_packages + docs_packages,
-        ":python_version == '3.6'": ["dataclasses"],
+        ":python_version == '3.8'": ["dataclasses"],
     },
     include_package_data=True,
     license="BSD-3",
@@ -121,6 +124,8 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
