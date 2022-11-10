@@ -19,7 +19,7 @@ LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://ipe-wim-gitlab.fzi.de/hoellig/interpretabilitytimeseries"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.7.0"
 
 # Package requirements.
 base_packages = [
@@ -119,7 +119,6 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
