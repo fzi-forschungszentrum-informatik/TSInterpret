@@ -12,8 +12,8 @@ edit_uri: "https://fzi-forschungszentrum-informatik.github.io/TSInterpret/"
 copyright: Copyright &copy; 2019 - 2022
 
 theme:
-  font: false
   name: "material"
+  font: false
   palette:
     # Palette toggle for light mode
     - scheme: default
