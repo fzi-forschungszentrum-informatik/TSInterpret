@@ -19,7 +19,7 @@ LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://ipe-wim-gitlab.fzi.de/hoellig/interpretabilitytimeseries"
 EMAIL = "hoellig@fzi.de"
 AUTHOR = "Jacqueline Hoellig"
-REQUIRES_PYTHON = ">=3.7.0"
+REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
@@ -27,7 +27,7 @@ base_packages = [
     # "scikit-surprise==1.1.1",
     "torch",
     "pandas~=1.3.2",
-    "numpy",#>=1.21.6",
+    "numpy>=1.21.6",
     "tqdm~=4.61.2",
     "h5py==3.7.0", # todo add version
     "joblib==1.0.1",
@@ -38,7 +38,7 @@ base_packages = [
     "partd==1.2.0",
     "pytz==2021.3",
     #"shap==0.39.0",
-    "tensorflow",#==2.9.1",
+    "tensorflow==2.9.1",
     "keras==2.9.0",
     "tsfresh==0.18.0",
     "tslearn== 0.5.2",
@@ -109,7 +109,7 @@ setuptools.setup(
         "test": dev_packages,
         "docs": docs_packages,
         "all": dev_packages + docs_packages,
-        ":python_version == '3.7'": ["dataclasses"],
+        ":python_version == '3.6'": ["dataclasses"],
     },
     include_package_data=True,
     license="BSD-3",
