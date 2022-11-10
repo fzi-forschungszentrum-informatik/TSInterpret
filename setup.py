@@ -38,7 +38,7 @@ base_packages = [
     "partd==1.2.0",
     "pytz==2021.3",
     #"shap==0.39.0",
-    "tensorflow==2.9.1",
+    "tensorflow",#==2.9.1",
     "keras==2.9.0",
     "tsfresh==0.18.0",
     "tslearn== 0.5.2",
