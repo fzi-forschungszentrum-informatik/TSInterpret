@@ -1,4 +1,3 @@
-
 from TSInterpret.Models.base_model import BaseModel
 
 
@@ -8,7 +7,7 @@ class SklearnModel(BaseModel):
         """ Wrapper for Sklearn Models that unifiy the prediction function for a classifier.
         Arguments:
             model : Trained Sklearn Model.
-            change bool: if swapping of dimension is necessary = True 
+            change bool: if swapping of dimension is necessary = True
         """
 
         super().__init__(model,change, model_path='', backend='SK')

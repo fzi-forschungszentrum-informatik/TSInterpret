@@ -1,6 +1,7 @@
 import numpy as np
 
-from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.segmentator import Segmentator
+from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.segmentator import \
+    Segmentator
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 
@@ -43,5 +44,3 @@ class UniformSegmentator(Segmentator):
             segments_interval.append((start_position_current_segment, start_position_current_segment + len_segment - 1))
             start_position_current_segment = start_position_current_segment + len_segment - 1
         return self.nb_segments, np.array(segments_interval)
-
-

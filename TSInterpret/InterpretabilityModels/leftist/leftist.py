@@ -1,18 +1,30 @@
 from email import header
-from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import LearningProcess
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
-from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
-from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.mean_transform import MeanTransform
-from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.rand_background_transform import RandBackgroundTransform
-from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.straightline_transform import StraightlineTransform
-from TSInterpret.InterpretabilityModels.leftist.learning_process.SHAP_learning_process import SHAPLearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.LIME_learning_process import LIMELearningProcess
-from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.uniform_segmentator import UniformSegmentator
-import matplotlib.pyplot as plt 
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from TSInterpret.InterpretabilityModels.FeatureAttribution import \
+    FeatureAttribution
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
+    InterpretabilityBase
+from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import \
+    LearningProcess
+from TSInterpret.InterpretabilityModels.leftist.learning_process.LIME_learning_process import \
+    LIMELearningProcess
+from TSInterpret.InterpretabilityModels.leftist.learning_process.SHAP_learning_process import \
+    SHAPLearningProcess
+from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.uniform_segmentator import \
+    UniformSegmentator
+from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.mean_transform import \
+    MeanTransform
+from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.rand_background_transform import \
+    RandBackgroundTransform
+from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.straightline_transform import \
+    StraightlineTransform
 from TSInterpret.Models.PyTorchModel import PyTorchModel
-from TSInterpret.Models.TensorflowModel import TensorFlowModel
 from TSInterpret.Models.SklearnModel import SklearnModel
-import numpy as np 
+from TSInterpret.Models.TensorflowModel import TensorFlowModel
+
 
 class LEFTIST(FeatureAttribution):
     """
@@ -26,15 +38,15 @@ class LEFTIST(FeatureAttribution):
             model_to_explain: classification model to explain
             reference_set: reference set
             mode: time or Feature
-            backend: TF, PYT or SK 
+            backend: TF, PYT or SK
             transform_name str: Name of transformer
-            learning_process_name str: 'Lime' or 'Shap' 
+            learning_process_name str: 'Lime' or 'Shap'
             nb_interpretable_feature int: number of desired features
         '''
         super().__init__(model_to_explain, mode)
 
         self.neighbors = None
- 
+
         self.test_x, _=reference_set
         self.backend=backend
         self.mode = mode
@@ -44,20 +56,20 @@ class LEFTIST(FeatureAttribution):
         self.learning_process_name=learning_process_name
         self.nb_interpretable_feature=nb_interpretable_feature
         if mode == 'feat':
-            self.change=True 
+            self.change=True
             self.test_x=self.test_x.reshape (-1,self.test_x.shape[-1], self.test_x.shape[-2])
 
         if backend == 'PYT':
             self.predict=PyTorchModel(self.model, self.change).predict
-            
+
         elif backend== 'TF':
             self.predict=TensorFlowModel(self.model, self.change).predict
-            #Parse test data into torch format : 
-            
-        elif backend=='SK': 
+            #Parse test data into torch format :
+
+        elif backend=='SK':
             self.predict=SklearnModel(self.model,self.change).predict
         else:
-            #Assumption this is already a predict Function 
+            #Assumption this is already a predict Function
             print('The Predict Function was given directly')
             self.predict=self.model
 
@@ -76,7 +88,7 @@ class LEFTIST(FeatureAttribution):
         Returns:
             List: Attribution weight
         """
-        
+
         if self.segmentator_name=='uniform':
             self.segmentator = UniformSegmentator(self.nb_interpretable_feature)
 
@@ -97,7 +109,7 @@ class LEFTIST(FeatureAttribution):
         nb_interpretable_features, segments_interval = self.segmentator.segment(instance)
 
         self.transform.segments_interval = segments_interval
-        
+
         # generate the neighbors around the instance to explain
         self.neighbors = self.learning_process.neighbors_generator.generate(nb_interpretable_features, nb_neighbors,self.transform)
         self.neighbors.values=np.array(self.neighbors.values).reshape(-1,instance.shape[0],1)
@@ -124,9 +136,9 @@ class LEFTIST(FeatureAttribution):
         for i in range(0, len(explanations)):
             heatmap = np.zeros_like(series).reshape(-1)
             for value in explanations[i][0]:
-                heatmap[i:values_per_slice+i]=np.ones_like((values_per_slice))*value
+                heatmap[i:values_per_slice+i]=np.ones_like(values_per_slice)*value
                 i=values_per_slice+i
-                
+
             heatmaps.append(heatmap)
-      
+
         return heatmaps

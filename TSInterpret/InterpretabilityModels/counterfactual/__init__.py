@@ -1,9 +1,9 @@
-from . import Ates, CF , NativeGuideCF
+from . import CF, Ates, NativeGuideCF
 
-__all__ = [ 
+__all__ = [
 
-"Ates", 
-"CF" , 
+"Ates",
+"CF" ,
 "NativeGuideCF"
 
 ]

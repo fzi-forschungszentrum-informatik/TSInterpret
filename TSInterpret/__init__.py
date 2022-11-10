@@ -1,11 +1,5 @@
-from .__version__ import __version__ 
-from . import (
-  Models,
-  constants,
-  InterpretabilityModels
-
-
-)
+from . import InterpretabilityModels, Models, constants
+from .__version__ import __version__
 
 __all__ = [
     "InterpretabilityModels",

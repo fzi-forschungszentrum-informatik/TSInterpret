@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-import numpy as np
 
+import numpy as np
 
 
 class InterpretabilityBase(ABC):
@@ -25,7 +25,7 @@ class InterpretabilityBase(ABC):
     @abstractmethod
     def explain(self):
         """
-        Explains instance or model. 
+        Explains instance or model.
         Parameters
         ----------
         instance: np.array
@@ -40,13 +40,13 @@ class InterpretabilityBase(ABC):
     @abstractmethod
     def plot(self):
         """
-        Plots expalantion on the explained Sample. 
+        Plots expalantion on the explained Sample.
 
         Parameters
         ----------
         instance: np.array
             timeseries instance in two-dimensional shape (m, n).
-        exp: expalantaion 
+        exp: expalantaion
 
         Returns
         -------

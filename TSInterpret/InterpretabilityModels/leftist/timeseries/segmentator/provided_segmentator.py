@@ -1,4 +1,5 @@
-from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.segmentator import Segmentator
+from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.segmentator import \
+    Segmentator
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 
@@ -26,5 +27,3 @@ class ProvidedSegmentator(Segmentator):
         """
 
         return len(self.segments), self.segments
-
-

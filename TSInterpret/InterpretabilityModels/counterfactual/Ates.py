@@ -1,29 +1,32 @@
-from cProfile import label
 import logging
-from operator import mod
-import random
-import torch
-import numbers
 import multiprocessing
+import numbers
+import random
+import sys
 import uuid
-from typing import List, Optional,Tuple
+from cProfile import label
+from operator import mod
+from typing import List, Optional, Tuple
 
-from skopt import gp_minimize, gbrt_minimize
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
-from sklearn.neighbors import KDTree
+import pandas as pd
 #Workaround for mlrose package
 import six
-import sys
+import torch
+from sklearn.neighbors import KDTree
+from skopt import gbrt_minimize, gp_minimize
+
 sys.modules['sklearn.externals.six'] = six
 import mlrose
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
+    InterpretabilityBase
 #from InterpretabilityModels.utils import torch_wrapper, tensorflow_wrapper,sklearn_wrapper
 from TSInterpret.Models.PyTorchModel import PyTorchModel
-from TSInterpret.Models.TensorflowModel import TensorFlowModel
 from TSInterpret.Models.SklearnModel import SklearnModel
+from TSInterpret.Models.TensorflowModel import TensorFlowModel
 
 
 class BaseExplanation:
@@ -36,7 +39,7 @@ class BaseExplanation:
         self.silent = silent
         self.num_distractors = num_distractors
         self.dont_stop = dont_stop
-        self.window_size =timeseries.shape[-1] 
+        self.window_size =timeseries.shape[-1]
         self.channels=timeseries.shape[-2]
         self.ts_min = np.repeat(timeseries.min(), self.window_size)
         self.ts_max = np.repeat(timeseries.max(), self.window_size)
@@ -59,7 +62,7 @@ class BaseExplanation:
         preds = np.argmax(self.clf(input_),axis=1)
         true_positive_node_ids = {c: [] for c in np.unique(self.labels)}
         for pred, (idx, row) in zip(preds, self.labels.iterrows()):
-            
+
             if row['label'] == pred:
                 true_positive_node_ids[pred].append(idx)
         for c in  np.unique(self.labels):
@@ -70,7 +73,7 @@ class BaseExplanation:
                 self.per_class_node_indices[c].append(node_id)
             if len(dataset)!=0:
                 self.per_class_trees[c] = KDTree(np.stack(dataset))
-            else: 
+            else:
                 self.per_class_trees[c]=[]
                 logging.warning(f'Due to lack of true postitives for class {c} no kd-tree could be build.')
 
@@ -228,7 +231,7 @@ def _eval_one(tup):
     x_test = X_TEST.copy()
     x_test[0][column] = DISTRACTOR[0][column]
     input_ = x_test.reshape(1,-1,x_test.shape[-1])
-    
+
     return CLASSIFIER(input_)[0][label_idx] #CLASSIFIER.predict_proba(x_test)[0][label_idx]
 
 
@@ -269,9 +272,9 @@ class BruteForceSearch(BaseExplanation):
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds= self.clf(input_)
         if to_maximize is None:
-            to_maximize =  np.argsort(orig_preds)[0][-2:-1][0] 
-        
-        orig_label = np.argmax(self.clf(input_)) 
+            to_maximize =  np.argsort(orig_preds)[0][-2:-1][0]
+
+        orig_label = np.argmax(self.clf(input_))
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
             return None, None
@@ -284,7 +287,7 @@ class BruteForceSearch(BaseExplanation):
             explanation = []
             modified = x_test.copy()
             prev_best = 0
-            #best_dist = dist 
+            #best_dist = dist
             while True:
                 input_ = modified.reshape(1,-1,self.window_size)
                 probas= self.clf(input_)
@@ -340,7 +343,7 @@ class LossDiscreteState:
         new_case = self.x_test.copy()
         assert len(self.cols_swap) == len(feature_matrix)
 
-    
+
         for col_replace, a in zip(self.cols_swap, feature_matrix):
             if a == 1:
                 new_case[0][col_replace] = self.distractor[0][col_replace]
@@ -422,18 +425,18 @@ class OptimizedSearch(BaseExplanation):
         return short_explanation
 
     def explain(self, x_test, num_features=None, to_maximize=None)-> Tuple[np.array, int]:
-        
+
         input_ = x_test.reshape(1,-1,self.window_size)
         orig_preds = self.clf(input_)
- 
+
         orig_label = np.argmax(orig_preds)
 
         if to_maximize is None:
             to_maximize =  np.argsort(orig_preds)[0][-2:-1][0]
-        
+
         #print('Current may',np.argmax(orig_preds))
         #print(to_maximize)
-      
+
         if orig_label == to_maximize:
             print('Original and Target Label are identical !')
             return None, None
@@ -450,7 +453,7 @@ class OptimizedSearch(BaseExplanation):
         #print('Other',np.array(other).shape)
         #print('Best',np.array(best).shape)
         target = np.argmax(self.clf(best),axis=1)
-        
+
         return best, target
 
     def _get_explanation(self, x_test, to_maximize, num_features):
@@ -510,17 +513,17 @@ class OptimizedSearch(BaseExplanation):
                     best_dist = dist
         if len(best_explanation) == 0:
             return None, None
-        
+
         return best_modified, best_explanation
-       
+
 
 
 
 class AtesCF(CF):
     """Calculates and Visualizes Counterfactuals for Multivariate Time Series in accordance to the paper [1].
-     
+
      [1] Ates, Emre, et al. "Counterfactual Explanations for Multivariate Time Series." 2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
-     
+
     """
     def __init__(self,model, ref, backend, mode, method= 'opt', number_distractors=2, max_attempts=1000, max_iter=1000, silent=False) -> None:
         """
@@ -534,7 +537,7 @@ class AtesCF(CF):
             silent bool: logging.
 
         """
-        super().__init__(model,mode) 
+        super().__init__(model,mode)
         self.backend=backend
         test_x,test_y=ref
         shape=test_x.shape
@@ -548,7 +551,7 @@ class AtesCF(CF):
             self.ts_length= shape[-1]
 
         if backend=='PYT':
-            
+
             self.predict=PyTorchModel(model,change).predict
         elif backend == 'TF':
             self.predict=TensorFlowModel(model,change).predict
@@ -558,10 +561,10 @@ class AtesCF(CF):
         self.referenceset=(test_x,test_y)
         self.method=method
         self.silent=silent
-        self.number_distractors=number_distractors 
+        self.number_distractors=number_distractors
         self.max_attemps= max_attempts
         self.max_iter=max_iter
-         
+
 
     def explain(self, x: np.ndarray,orig_class:int=None, target: int=None)-> Tuple[np.array, int]:
         '''
@@ -569,12 +572,12 @@ class AtesCF(CF):
         Arguments:
             x (np.array): The instance to explain.
             target (np.array): target class. If no target class is given, the class with the secon heighest classification probability is selected.
-           
+
         Returns:
             ([np.array], int): Tuple of Counterfactual and Label
-    
-        '''        
-        
+
+        '''
+
         if self.mode != 'feat':
             x=x.reshape(-1, x.shape[-1], x.shape[-2])
         train_x,train_y=self.referenceset
@@ -587,4 +590,3 @@ class AtesCF(CF):
             #TODO Currently not Threadable as TF Model does not support
             opt=BruteForceSearch(self.predict, train_x,train_y, threads=1)
             return opt.explain(x,to_maximize=target)
-        

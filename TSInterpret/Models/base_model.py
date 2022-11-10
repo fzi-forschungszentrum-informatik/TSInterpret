@@ -1,12 +1,16 @@
 import pickle
-from TSInterpret.constants import BackEndTypes
 from abc import ABC, abstractmethod
-import numpy as np 
 from typing import List
+
+import numpy as np
+
+from TSInterpret.constants import BackEndTypes
+
+
 class BaseModel(ABC):
 
     def __init__(self, model=None, change= False,model_path='', backend='Func') -> None:
-        """Initialize Base Model. 
+        """Initialize Base Model.
         Arguments:
             model: trained ML Model, either the model or the direct function call for returning the probability distribution.
             change bool:  True if dimension change is necessary.
@@ -23,17 +27,17 @@ class BaseModel(ABC):
     def load_model(self,path):
         """Loads the model provided at the given path.
         Arguments:
-            path str: Path to the trained model- 
+            path str: Path to the trained model-
          Returns:
             loaded model.
-        
+
         """
         pass
     @abstractmethod
     def predict(self, item)-> List:
         """ Unified prediction function.
         Arguments:
-            item np.array: item to be classified 
+            item np.array: item to be classified
          Returns:
             an array of output scores for a classifier, and a singleton array of predicted value for a regressor.
         """

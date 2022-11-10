@@ -1,48 +1,52 @@
-#TODO 
+#TODO
 '''Implementation after Delaney et al . https://github.com/e-delaney/Instance-Based_CFE_TSC'''
-from cProfile import label
 import imp
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
+import os
+import pickle
+import platform
+import warnings
+from cProfile import label
 from itertools import count
 from operator import sub
-from tslearn.neighbors import KNeighborsTimeSeries
-from torchcam.methods import SmoothGradCAMpp, GradCAM
+from pathlib import Path
+from typing import Tuple
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import tensorflow as tf
+import torch
 from tf_explain.core.grad_cam import GradCAM
 from tf_explain.core.vanilla_gradients import VanillaGradients
-from torchcam.methods import CAM
-import numpy as np 
-from pathlib import Path
-import platform
-import os 
-import pandas as pd
-from TSInterpret.InterpretabilityModels.GradCam.GradCam_1D import grad_cam, GradCam1D
-import numpy as np
-import numpy as np
-import pickle
-import torch
-import matplotlib.pyplot as plt 
-import seaborn as sns 
-import warnings
-import tensorflow as tf
-from typing import Tuple
+from torchcam.methods import CAM, GradCAM, SmoothGradCAMpp
+from tslearn.neighbors import KNeighborsTimeSeries
+
+from TSInterpret.InterpretabilityModels.GradCam.GradCam_1D import (GradCam1D,
+                                                                   grad_cam)
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
+    InterpretabilityBase
+
 warnings.filterwarnings('ignore')
 warnings.simplefilter('ignore')
 from tslearn.barycenters import dtw_barycenter_averaging
+
+from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 #from InterpretabilityModels.utils import torch_wrapper, tensorflow_wrapper
 from TSInterpret.Models.PyTorchModel import PyTorchModel
-from TSInterpret.Models.TensorflowModel import TensorFlowModel
 from TSInterpret.Models.SklearnModel import SklearnModel
-from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
+from TSInterpret.Models.TensorflowModel import TensorFlowModel
+
 
 class NativeGuideCF(CF):
     '''
-    NUN_CF according to [1] for both torch and tensorflow. 
+    NUN_CF according to [1] for both torch and tensorflow.
 
     [1] Delaney, E., Greene, D., Keane, M.T.: Instance-Based Counterfactual Explanations
         for Time Series Classification. In: Sanchez-Ruiz, A.A., Floyd, M.W. (eds.) Case-
         Based Reasoning Research and Development, vol. 12877, pp. 32–47. Springer
         International Publishing, Cham (2021), series Title: Lecture Notes in Computer
-        Science. 
+        Science.
     '''
     def __init__(self, model,shape, reference_set, backend='torch', mode ='feat', method= 'NUN-CF',distance_measure='dtw',n_neighbors=1,max_iter=500) -> None:
         '''
@@ -71,7 +75,7 @@ class NativeGuideCF(CF):
             self.ts_length= shape[-1]
 
         if backend == 'PYT':
-            
+
             try:
                 self.cam_extractor =CAM(self.model,input_shape=(shape[1],shape[2]) )
             except:
@@ -81,12 +85,12 @@ class NativeGuideCF(CF):
                 change= True
             self.predict=PyTorchModel(self.model,change).predict
             y_pred = np.argmax(self.predict(test_x), axis=1)
-            
+
         elif backend== 'TF':
             self.cam_extractor =GradCam1D() #VanillaGradients()#GradCam1D()
             y_pred = np.argmax(self.model.predict(test_x.reshape(-1,self.ts_length,1)), axis=1)
-            self.predict=TensorFlowModel(self.model,change=True).predict            
-        else: 
+            self.predict=TensorFlowModel(self.model,change=True).predict
+        else:
             print('Only Compatible with Tensorflow (TF) or Pytorch (PYT)!')
 
         self.reference_set=(test_x,y_pred)
@@ -94,8 +98,8 @@ class NativeGuideCF(CF):
         self.distance_measure=distance_measure
         self.max_iter=max_iter
         self.n_neighbors=n_neighbors
-        #Manipulate reference set replace original y with predicted y 
-        
+        #Manipulate reference set replace original y with predicted y
+
     def _native_guide_retrieval(self,query, predicted_label, distance, n_neighbors):
         '''
         This gets the nearest unlike neighbors.
@@ -103,15 +107,15 @@ class NativeGuideCF(CF):
             query (np.array): The instance to explain.
             predicted_label (np.array): Label of instance.
             reference_set (np.array): Set of addtional labeled data (could be training or test set)
-            distance (str): 
+            distance (str):
             num_neighbors (int):number nearest neighbors to return
         Returns:
             [np.array]: Returns K_Nearest_Neighbors of input query with different classification label.
-    
+
         '''
         if type(predicted_label) != int:
             predicted_label=np.argmax(predicted_label)
-    
+
         x_train, y=self.reference_set
         if len(y.shape)==2:
             y=np.argmax(y,axis=1)
@@ -129,21 +133,21 @@ class NativeGuideCF(CF):
         return nun,np.argmax(out)
 
     def _findSubarray(self, a, k): #used to find the maximum contigious subarray of length k in the explanation weight vector
-    
+
         n = len(a)
-    
-        vec=[] 
 
-        # Iterate to find all the sub-arrays 
-        for i in range(n-k+1): 
-            temp=[] 
+        vec=[]
 
-            # Store the sub-array elements in the array 
-            for j in range(i,i+k): 
-                temp.append(a[j]) 
+        # Iterate to find all the sub-arrays
+        for i in range(n-k+1):
+            temp=[]
 
-            # Push the vector in the container 
-            vec.append(temp) 
+            # Store the sub-array elements in the array
+            for j in range(i,i+k):
+                temp.append(a[j])
+
+            # Push the vector in the container
+            vec.append(temp)
 
         sum_arr = []
         for v in vec:
@@ -161,7 +165,7 @@ class NativeGuideCF(CF):
         train_x=test_x
         individual = np.array(nun.tolist(), dtype=np.float64)
         out=self.predict(individual)
-        if self.backend=='PYT': 
+        if self.backend=='PYT':
             training_weights = self.cam_extractor(out.squeeze(0).argmax().item(), out)[0].detach().numpy()
         elif self.backend=='TF':
             data = (instance.reshape(1,-1,1), None)
@@ -172,11 +176,11 @@ class NativeGuideCF(CF):
 
 
         most_influencial_array=self._findSubarray((training_weights), subarray_length)
-    
+
         starting_point = np.where(training_weights==most_influencial_array[0])[0][0]
-    
+
         X_example = instance.copy().reshape(1,-1)
-        
+
         nun=nun.reshape(1,-1)
         X_example[0,starting_point:subarray_length+starting_point] =nun[0,starting_point:subarray_length+starting_point]
         individual = np.array(X_example.reshape(-1,1,train_x.shape[-1]).tolist(), dtype=np.float64)
@@ -184,8 +188,8 @@ class NativeGuideCF(CF):
         prob_target =  out[0][label] #torch.nn.functional.softmax(model(torch.from_numpy(test_x))).detach().numpy()[0][y_pred[instance]]
         counter= 0
         while prob_target > 0.5 and counter <max_iter:
-        
-            subarray_length +=1        
+
+            subarray_length +=1
             most_influencial_array=self._findSubarray((training_weights), subarray_length)
             starting_point = np.where(training_weights==most_influencial_array[0])[0][0]
             X_example = instance.copy().reshape(1,-1)
@@ -197,11 +201,11 @@ class NativeGuideCF(CF):
             if counter==max_iter or subarray_length==self.ts_length:
                 print('No Counterfactual found')
                 return None, None
-        
+
         return X_example,np.argmax(out,axis=1)[0]
 
     def _instance_based_cf(self,query,label,target=None, distance='dtw', max_iter=500):
-    
+
         d,nan=self._native_guide_retrieval(query, label, distance, 1)
         beta = 0
         insample_cf = nan.reshape(1,1,-1)
@@ -210,7 +214,7 @@ class NativeGuideCF(CF):
 
         output=self.predict(individual)
         pred_treshold = 0.5
-        target = np.argsort(output)[0][-2:-1][0] 
+        target = np.argsort(output)[0][-2:-1][0]
         query=query.reshape(-1)
         insample_cf=insample_cf.reshape(-1)
         generated_cf = dtw_barycenter_averaging([query, insample_cf], weights=np.array([(1-beta), beta]))
@@ -220,7 +224,7 @@ class NativeGuideCF(CF):
         counter=0
 
         while prob_target < pred_treshold and counter<max_iter:
-            beta +=0.01 
+            beta +=0.01
             generated_cf= dtw_barycenter_averaging([query, insample_cf], weights=np.array([(1-beta), beta]))
             generated_cf = generated_cf.reshape(1,1,-1)
             individual = np.array(generated_cf.tolist(), dtype=np.float64)
@@ -230,7 +234,7 @@ class NativeGuideCF(CF):
         if counter==max_iter:
             print('No Counterfactual found')
             return None, None
-    
+
         return generated_cf, target
 
     def explain(self, x: np.ndarray,  y: int)-> Tuple[np.array, int]:
@@ -238,10 +242,10 @@ class NativeGuideCF(CF):
         Explains a specific instance x.
         Arguments:
             x np.array : instance to be explained.
-            y int: predicted label for instance x. 
+            y int: predicted label for instance x.
         Returns:
             Tuple: (counterfactual, counterfactual label)
-        
+
         '''
         if self.mode =='time':
             x=x.reshape(x.shape[0], x.shape[2],x.shape[1])
@@ -253,6 +257,5 @@ class NativeGuideCF(CF):
         elif self.method=='NUN_CF':
             self.distance_measure='euclidean'
             return  self._counterfactual_generator_swap(x, y,max_iter=self.max_iter)
-        else: 
+        else:
             print('Unknown Method selected.')
-

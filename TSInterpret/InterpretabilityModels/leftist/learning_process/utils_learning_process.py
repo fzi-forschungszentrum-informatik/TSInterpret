@@ -1,10 +1,15 @@
 import imp
+
 import numpy as np
-from TSInterpret.Models.SklearnModel import SklearnModel
+
 from TSInterpret.Models.PyTorchModel import PyTorchModel
+from TSInterpret.Models.SklearnModel import SklearnModel
 from TSInterpret.Models.TensorflowModel import TensorFlowModel
+
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
-from TSInterpret.InterpretabilityModels.utils import tensorflow_wrapper, torch_wrapper,sklearn_wrapper
+from TSInterpret.InterpretabilityModels.utils import (sklearn_wrapper,
+                                                      tensorflow_wrapper,
+                                                      torch_wrapper)
 
 
 def reconstruct(neighbors, transform):
@@ -28,5 +33,3 @@ def reconstruct(neighbors, transform):
     neighbors.values = dict_neighbors_value
 
     return neighbors_values
-
-

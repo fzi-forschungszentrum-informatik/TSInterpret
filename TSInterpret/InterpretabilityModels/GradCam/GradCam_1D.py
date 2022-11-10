@@ -1,6 +1,8 @@
+import numpy as np
 import tensorflow as tf
-import numpy as np 
 from tf_explain.core.grad_cam import GradCAM
+
+
 def grad_cam( model, data,layer_name="<last conv layer name>"):
     grad_model = tf.keras.models.Model(
         [model.inputs], [model.get_layer(layer_name).output, model.output]

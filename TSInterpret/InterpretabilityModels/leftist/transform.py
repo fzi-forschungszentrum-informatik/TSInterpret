@@ -1,4 +1,4 @@
-from abc import ABC,abstractmethod
+from abc import ABC, abstractmethod
 
 __author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
 

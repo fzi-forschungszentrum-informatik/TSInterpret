@@ -1,4 +1,3 @@
-
 class BackEndTypes:
     Sklearn = 'sklearn'
     Tensorflow1 = 'TF1'

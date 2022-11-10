@@ -77,4 +77,3 @@ class StraightlineTransform(Transform):
         slope = (y1 - y2) / (x1 - x2)
         b = y1-slope*x1
         return np.array([(slope*x)+b for x in range(x1,x2+1)])
-

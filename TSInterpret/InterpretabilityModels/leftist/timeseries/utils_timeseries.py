@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def start_stop(sequence, value, len_thresh=2):
     """
     Retrieve the interval of a consecutive value in a sequence superior to the specified length.
