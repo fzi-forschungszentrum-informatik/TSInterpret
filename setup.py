@@ -27,7 +27,7 @@ base_packages = [
     # "scikit-surprise==1.1.1",
     "torch",
     "pandas~=1.3.2",
-    "numpy>=1.21.6",
+    "numpy",#>=1.21.6",
     "tqdm~=4.61.2",
     "h5py==3.7.0", # todo add version
     "joblib==1.0.1",
