@@ -13,7 +13,13 @@ from tf_explain.core.smoothgrad import SmoothGrad
 from tf_explain.core.vanilla_gradients import VanillaGradients
 
 from TSInterpret.InterpretabilityModels import utils
+<<<<<<< HEAD
+import seaborn as sns
+import matplotlib.pyplot as plt 
+import shap
+=======
 #import shap
+>>>>>>> fzi/main
 from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 
 
@@ -131,7 +137,7 @@ class Saliency_TF(Saliency):
         elif self.method== 'DLS' or self.method== 'GS':
             ActualGrad =self.Grad.shap_values(input)
             ActualGrad=np.array(ActualGrad)
-            print(ActualGrad.shape)
+            #print(ActualGrad.shape)
         else:
             ActualGrad = self.Grad.explain((input,None), self.model,class_index=TestingLabel)#.data.cpu().numpy()
 
@@ -168,7 +174,7 @@ class Saliency_TF(Saliency):
                     elif self.method== 'DLS' or self.method== 'GS':
                         inputGrad_perInput =self.Grad.shap_values(newInput)
                         inputGrad_perInput= np.array(inputGrad_perInput)
-                        print(inputGrad_perInput.shape)
+                        #print(inputGrad_perInput.shape)
                     else:
                         newInput = newInput.reshape(1,sequence_length, input_size,1)
                         inputGrad_perInput = self.Grad.explain((newInput,None),self.model,class_index=TestingLabel)#.data.cpu().numpy()
