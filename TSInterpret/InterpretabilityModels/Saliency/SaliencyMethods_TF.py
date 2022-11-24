@@ -11,15 +11,10 @@ from tf_explain.core.integrated_gradients import IntegratedGradients
 from tf_explain.core.occlusion_sensitivity import OcclusionSensitivity
 from tf_explain.core.smoothgrad import SmoothGrad
 from tf_explain.core.vanilla_gradients import VanillaGradients
-
 from TSInterpret.InterpretabilityModels import utils
-<<<<<<< HEAD
 import seaborn as sns
 import matplotlib.pyplot as plt 
 import shap
-=======
-#import shap
->>>>>>> fzi/main
 from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 
 
