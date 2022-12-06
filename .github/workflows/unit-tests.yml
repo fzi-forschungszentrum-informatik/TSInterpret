@@ -43,3 +43,4 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: 2b898413-82cb-4304-9ce2-a51eb8b7b2c0
+          f: ./coverage.xml
