@@ -1,6 +1,11 @@
 <p align="center">
     <img src="./docs/img/logo.png" alt="TSInterpret Logo" height="300"/>
 </p>
+<p align="center">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/tsinterpret">
+    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/tsinterpret">
+    <img alt="GitHub" src="https://img.shields.io/github/license/fzi-forschungszentrum-informatik/TSInterpret">
+</p>
 
 TSInterpret is a Python library for interpreting time series classification.
 The ambition is to faciliate the usage of times series interpretability methods. The Framework supports Sklearn, Tensorflow, Torch and in some cases predict functions. A listing of implemented algorithms and supported frameworks can be found in our <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/AlgorithmOverview/">Documentation</a>. More information on our framework can be found in our <a href="https://arxiv.org/abs/2208.05280"> paper<a>.
@@ -11,12 +16,12 @@ pip install TSInterpret
 ```
 You can install the latest development version from GitHub as so:
 ```shell
-pip install https://github.com/jhoelli/TSInterpret.git --upgrade
+pip install https://github.com/fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
 ```
 
 Or, through SSH:
 ```shell
-pip install git@github.com:jhoelli/TSInterpret.git --upgrade
+pip install git@github.com:fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
 ```
 
 

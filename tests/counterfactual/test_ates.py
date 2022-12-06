@@ -38,19 +38,19 @@ def cnn_gunPoint_tensorflow():
     model = tf.keras.models.load_model(f'./ClassificationModels/models/BasicMotions/cnn/BasicMotionsbest_model.hdf5')
     return X_train, train_y, model
 
-@pytest.fixture
-def cnn_gunPoint_sklearn():
-    X_train,y_train, X_test, y_test=UCR_UEA_datasets().load_dataset('BasicMotions')
-    sh=X_train.shape
-    train_y=y_train
-    test_y=y_test
-    train_x=X_train
-    test_x=X_test
-    train_x = TimeSeriesScalerMinMax().fit_transform(train_x)
-    test_x = TimeSeriesScalerMinMax().fit_transform(test_x)
-    model = TimeSeriesSVC(kernel="gak", gamma="auto", probability=True)
-    model.fit(train_x, train_y)
-    return train_x, train_y, model
+#@pytest.fixture
+#def cnn_gunPoint_sklearn():
+#    X_train,y_train, X_test, y_test=UCR_UEA_datasets().load_dataset('BasicMotions')
+#    sh=X_train.shape
+#    train_y=y_train
+#    test_y=y_test
+#    train_x=X_train
+#    test_x=X_test
+#    train_x = TimeSeriesScalerMinMax().fit_transform(train_x)
+#    test_x = TimeSeriesScalerMinMax().fit_transform(test_x)
+#    model = TimeSeriesSVC(kernel="gak", gamma="auto", probability=True)
+#    model.fit(train_x, train_y)
+#    return train_x, train_y, model
 
 
 @pytest.fixture
@@ -65,11 +65,11 @@ def cf_ates_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
     X, y, model = cnn_gunPoint_tensorflow
     cf_explainer =AtesCF(model,(X,y),backend='TF',method= request.param,mode='time')
     yield X, y, model, cf_explainer
-@pytest.fixture
-def cf_ates_sklearn_explainer( request, cnn_gunPoint_sklearn):
-    X, y, model = cnn_gunPoint_sklearn
-    cf_explainer =AtesCF(model,(X,y),backend='SK',method= request.param,mode='time')
-    yield X, y, model, cf_explainer
+#@pytest.fixture
+#def cf_ates_sklearn_explainer( request, cnn_gunPoint_sklearn):
+#    X, y, model = cnn_gunPoint_sklearn
+#    cf_explainer =AtesCF(model,(X,y),backend='SK',method= request.param,mode='time')
+#    yield X, y, model, cf_explainer
 
 @pytest.mark.parametrize('cf_ates_torch_explainer',['brute','opt'],ids='method={}'.format,
                          indirect=True)
@@ -119,24 +119,24 @@ def test_cf_ates_tensorflow_explainer(cf_ates_tensorflow_explainer,target):
         assert y_label == ta
 
 
-@pytest.mark.parametrize('cf_ates_sklearn_explainer',['brute','opt'],ids='method={}'.format,
-                         indirect=True)
-@pytest.mark.parametrize('target',[None,0,1])
-def test_cf_ates_sklearn_explainer(cf_ates_sklearn_explainer,target):
+#@pytest.mark.parametrize('cf_ates_sklearn_explainer',['brute','opt'],ids='method={}'.format,
+#                         indirect=True)
+#@pytest.mark.parametrize('target',[None,0,1])
+#def test_cf_ates_sklearn_explainer(cf_ates_sklearn_explainer,target):
  
-    X, y, model, cf = cf_ates_sklearn_explainer
-    x = X[0].reshape(1,X.shape[1],X.shape[2])
-    probas = model.predict_proba(x)
-    pred_class = np.argmax(probas,axis=1)[0]
+#    X, y, model, cf = cf_ates_sklearn_explainer
+#    x = X[0].reshape(1,X.shape[1],X.shape[2])
+#    probas = model.predict_proba(x)
+#    pred_class = np.argmax(probas,axis=1)[0]
 
-    exp,ta = cf.explain(x, target=target)
-    assert exp.shape == (1,X.shape[-1], X.shape[-2])
-    item=exp.reshape(1,X.shape[-2],-1)
-    y_pred = model.predict_proba(item)
-    y_label= np.argmax(y_pred,axis=1)[0]
+#    exp,ta = cf.explain(x, target=target)
+#    assert exp.shape == (1,X.shape[-1], X.shape[-2])
+#    item=exp.reshape(1,X.shape[-2],-1)
+#    y_pred = model.predict_proba(item)
+#    y_label= np.argmax(y_pred,axis=1)[0]
 
     # check if target_class condition is met
-    if ta is None:
-        assert pred_class != y_label
-    elif isinstance(ta, int):
-        assert y_label == ta
+#    if ta is None:
+#        assert pred_class != y_label
+#    elif isinstance(ta, int):
+#        assert y_label == ta

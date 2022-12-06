@@ -21,19 +21,19 @@ ALL_NOTEBOOKS = {Path(x).name for x in glob.glob(str(Path(NOTEBOOK_DIR).joinpath
 # The following set includes notebooks which are not to be executed during notebook tests.
 # These are typically those that would take too long to run in a CI environment or impractical
 # due to other dependencies (e.g. downloading large datasets
-EXECUTE_NOTEBOOKS = {
+#EXECUTE_NOTEBOOKS = {
     # the following are all long-running
-    'Ates_sklearn.ipynb',  
-    'Ates_tensorflow.ipynb',  
-    'Ates_torch.ipynb',
-    'Leftist_sklearn.ipynb',  
-    'Leftist_tensorflow.ipynb',  
-    'Leftist_torch.ipynb',
-    'NunCF_tensorflow.ipynb',  
-    'NunCF_torch.ipynb',
-    'TSR_tensorflow.ipynb',  
-    'TSR_torch.ipynb',
-}
+#    'Ates_sklearn.ipynb',  
+#    'Ates_tensorflow.ipynb',  
+#    'Ates_torch.ipynb',
+#    'Leftist_sklearn.ipynb',  
+#    'Leftist_tensorflow.ipynb',  
+#    'Leftist_torch.ipynb',
+#    'NunCF_tensorflow.ipynb',  
+#    'NunCF_torch.ipynb',
+#    'TSR_tensorflow.ipynb',  
+#    'TSR_torch.ipynb',
+#}
 
 @pytest.mark.timeout(600)
 @pytest.mark.parametrize("notebook", ALL_NOTEBOOKS)
