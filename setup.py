@@ -50,7 +50,9 @@ base_packages = [
     "opencv-python==4.6.0.66",
     "captum>= 0.5.0",
     "pyts>=0.12.0",
-    "deprecated==1.2.13"
+    "deprecated==1.2.13",
+    "pymop",
+    "deap"
 ]
 
 dev_packages = base_packages + [
