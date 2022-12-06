@@ -3,6 +3,9 @@
 </p>
 <p align="center">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/tsinterpret">
+    <a href="https://codecov.io/gh/fzi-forschungszentrum-informatik/TSInterpret" > 
+        <img src="https://codecov.io/gh/fzi-forschungszentrum-informatik/TSInterpret/branch/master/graph/badge.svg?token=ZKUIISZAYA"/> 
+    </a>
     <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/tsinterpret">
     <img alt="GitHub" src="https://img.shields.io/github/license/fzi-forschungszentrum-informatik/TSInterpret">
 </p>
