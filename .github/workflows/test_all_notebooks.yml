@@ -41,4 +41,4 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
       - name: Run notebooks
         run: |
-          pytest --suppress-no-test-exit-code --no-cov -rA --durations=0 -vv testing/test_notebooks.py
+          pytest --suppress-no-test-exit-code --no-cov -rA --durations=0 -vv tests/test_notebooks.py

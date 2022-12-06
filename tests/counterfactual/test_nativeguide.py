@@ -56,11 +56,11 @@ def cf_ng_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
 
 
 
-@pytest.mark.parametrize('cf_ng_torch_explainer',['dtw_bary_center','NG','NUN_CF'],ids='method={}'.format,
+@pytest.mark.parametrize('cf_ng_torch_explainer',['dtw_bary_center','NG'],ids='method={}'.format,
                          indirect=True)
 def test_cf_ng_torch_explainer(cf_ng_torch_explainer):
 
-    # TODO 
+    # TODO ,'NUN_CF'
     X, y, model, cf = cf_ng_torch_explainer
     x = X[0].reshape(1,X.shape[-2], -1)
 
