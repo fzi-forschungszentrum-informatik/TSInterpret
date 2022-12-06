@@ -38,6 +38,6 @@ jobs:
           pip install wheel
           pip install -e ".[dev]" codecov
       - name: pytest
-        run: pytest --cov=tsinterpret -m 
+        run: pytest --cov=tsinterpret 
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v2
