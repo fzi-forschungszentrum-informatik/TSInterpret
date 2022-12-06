@@ -2,6 +2,9 @@
     <img src="./docs/img/logo.png" alt="TSInterpret Logo" height="300"/>
 </p>
 <p align="center">
+  <a href="https://github.com/fzi-forschungszentrum-informatik/TSInterpret/actions/workflows/unit-tests.yml">
+    <img src="https://github.com/fzi-forschungszentrum-informatik/TSInterpret/actions/workflows/unit-tests.yml/badge.svg" alt="tests">
+  </a>
     <img alt="PyPI" src="https://img.shields.io/pypi/v/tsinterpret">
     <a href="https://codecov.io/gh/fzi-forschungszentrum-informatik/TSInterpret" > 
         <img src="https://codecov.io/gh/fzi-forschungszentrum-informatik/TSInterpret/branch/master/graph/badge.svg?token=ZKUIISZAYA"/> 
