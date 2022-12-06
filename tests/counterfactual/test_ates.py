@@ -71,6 +71,7 @@ def cf_ates_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
 #    cf_explainer =AtesCF(model,(X,y),backend='SK',method= request.param,mode='time')
 #    yield X, y, model, cf_explainer
 
+#TODO ADD OPT
 @pytest.mark.parametrize('cf_ates_torch_explainer',['brute'],ids='method={}'.format,indirect=True)
 @pytest.mark.parametrize('target',[None])#0,1
 def test_cf_ates_torch_explainer(cf_ates_torch_explainer,target):
@@ -95,6 +96,7 @@ def test_cf_ates_torch_explainer(cf_ates_torch_explainer,target):
     elif isinstance(ta, int):
         assert y_label == ta
 
+#TODO ADD OPT
 @pytest.mark.parametrize('cf_ates_tensorflow_explainer',['brute'],ids='method={}'.format,
                          indirect=True)
 @pytest.mark.parametrize('target',[None])#0,1

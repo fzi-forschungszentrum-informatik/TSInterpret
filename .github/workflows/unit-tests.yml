@@ -41,3 +41,5 @@ jobs:
         run: pytest --cov=tsinterpret 
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v2
+        with:
+          token: 2b898413-82cb-4304-9ce2-a51eb8b7b2c0
