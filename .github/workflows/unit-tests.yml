@@ -3,7 +3,10 @@ name: unit-tests
 on:
   push:
     branches:
-      - main
+      - unit_test
+  pull_request:
+    branches:
+      - unit_test
 
 jobs:
   test:
@@ -11,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.7', '3.8', '3.9', '3.10']
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ['3.9'] #, '3.9', '3.10']
+        os: [ubuntu-latest ] #, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -34,8 +37,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install -e ".[dev]" codecov
-          
       - name: pytest
-        run: pytest --cov=DeepRiver -m "not datasets"
+        run: pytest --cov=tsinterpret --cov-report=xml
       - name: Upload coverage reports to Codecov with GitHub Action
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
+        with:
+          token: 2b898413-82cb-4304-9ce2-a51eb8b7b2c0
