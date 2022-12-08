@@ -20,23 +20,11 @@ affiliations:
 date: 13 August 2017
 bibliography: paper.bib
 
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
 
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
+`TSInterpret` is a python package that enables the post-hoc interpretability and explanation of black-box time series classifiers with three lines of code. Due to the specific structure of time serie (- i.e., non-independent features `[@ismail_benchmarking_2020]`, unintuitve visualizations `[@siddiqui_tsviz_2019]`), traditional interpretability and explainability libraries (e.g., `[@kokhlikyan_captum_2020;@klaise_alibi_2021;@meudec_raphael_tf-explain_2021]` ) find limit usage and do not not address time-series. `TSInterpret` specifically addresses the issue of black-box time-serie classification by providing a unified interface to state-of-the-art interpretation algorithms in combination with default plots. In addition the package provides a framework for developing additional easy-to-use interpretability methods.
 
 # Statement of need
 
