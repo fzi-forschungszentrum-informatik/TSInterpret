@@ -4,7 +4,7 @@ tags:
     - Python
 
 authors:
-    - name: Jacqueline Höllig
+    - name: Jacqueline Hoellig
         orcid: 0000-0000-0000-0000
         equal-contrib: true
         corresponding: true
