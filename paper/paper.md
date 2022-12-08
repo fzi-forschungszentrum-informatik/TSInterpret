@@ -28,69 +28,25 @@ bibliography: paper.bib
 
 # Statement of need
 
-`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
+Temporal data is ubiquitous and encountered in many real-world applications ranging from electronic health records `[@rajkomar_scalable_2018]` to cyber security `[@susto_time-series_2018]`. Although deep learning methods have been successful in the field of Computer Vision (CV) and Natural Language Processing (NLP) for almost a decade, application on time series has only occurred in the past few years (e.g.,`[@fawaz_deep_2019;@rajkomar_scalable_2018;@susto_time-series_2018;@ruiz_great_2021]`. Deep learning models have been shown to achieve state-of-art results on time series classification (e.g., `[@fawaz_deep_2019]`). However, those methods are black-boxes due to their complexity which limits their application to high-stake scenarios (e.g., in medicine or autonomous driving), where user trust and understandability of the decision process are crucial. Much work has been done on interpretability in CV and NLP, most developed approaches are not directly applicable to time series data. The time component impedes the usage of existing methods `[@ismail_benchmarking_2020]`. Thus, increasing effort is put into adapting existing methods to time series (e.g., LEFTIST based on SHAP / Lime `[@guilleme_agnostic_2019]`, Temporal Saliency Rescaling for Saliency Methods `[@ismail_benchmarking_2020]`, Counterfactuals `[@ates_counterfactual_2021;sanchez-ruiz_instance-based_2021]`), and developing new methods specifically for time series interpretability (e.g., TSInsight based on autoencoders (Siddiqui et al. (2021)), TSViz for interpreting CNN (Siddiqui et al. (2019))). Compared to images or textual data, humans cannot intuitively and instinctively understand the underlying information contained in time series data. Therefore, time series data, both uni- and multivariate, have an unintuitive nature, lacking an understanding at first sight  `[@siddiqui_tsviz_2019]`. Hence, providing suitable isualizations of time series interpretability becomes crucial.
 
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
+# Features
 
-# Mathematics
+Explanations can take on various form (see Figure  \autoref{fig:Example}). Different use cases or users need different types of explanations. While for a domain expert counterfactuals might be useful, a data scientist or machine learning engineet prefere gradient based approaches `[@ismail_benchmarking_2020]` to evaluate the models feature attribution.
+![Explanations.\label{fig:Example}](ECG.png)
 
-Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
+Counterfactual approches calculate counter examples by finding a time series close to the original time series that is classified differently, thereby showing decision boundries. `TSInterpret` implements `@ates_counterfactual_2021` a perturbation based approach for multivariate data and `@sanchez-ruiz_instance-based_2021` for univartiate time series.
+Gradient-based approaches (e.g., GradCam ) were adapted to time series by `[@ismail_benchmarking_2020]` that proposed rescaling according to XXXX.
+LEFTIST by `[@guilleme_agnostic_2019]` XXXX
 
-Double dollars make self-standing equations:
-
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
-
-You can also use plain \LaTeX for equations
-\begin{equation}\label{eq:fourier}
-\hat f(\omega) = \int_{-\infty}^{\infty} f(x) e^{i\omega x} dx
-\end{equation}
-and refer to \autoref{eq:fourier} from text.
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
-# Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
+`TSInterpret` implements these algorithms, according to the taxonomy shown in \autoref{fig:Architecture}. The interpretability methods are sorted according to a) accoring to the model output (e.g., is a feature map returned or an example time series) and b) the used mechanism (e.g., XXX) . Thereby, all implemented objects share a consistent interface to ensure that all methods contain a method explain and a plot function. The plot function is implemented on the level below based on the output structure provided by the interpretability algorithm to provide a unified visualization experience (e.g., in the case of Feature Attribution, the plot function visualizes a heatmap on the original sample). If necessary, those plots are refined by the Mechanism layer. The explain function is implemented on the method level.
+This ensures the consistency extensiability of the framework.
+XXX TODO High reuseability 
+![Architecture of TSInterpret.\label{fig:Architecture}](Taxonomy.png)
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+This work was carried out with the support of the German Federal Ministry of Education
+and Research (BMBF) within the project ”MetaLearn” (Grant 02P20A013).
 
 # References
