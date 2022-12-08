@@ -1,24 +1,24 @@
 --
 title: 'TSInterpret: A Python package for the interpretability of time series classification'
 tags:
-    - Python
+  - Python
 
 authors:
-    - name: Jacqueline Hoellig
-        orcid: 0000-0000-0000-0000
-        equal-contrib: true
-        corresponding: true
-        affiliation: 1
-    - name: Cedric Kulbach
-        equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
-        affiliation: 1
-    - name:Steffen Thoma
-        equal-contrib: true
-        affiliation: 1
+  - name: Jacqueline Hoellig
+    orcid: 0000-0000-0000-0000
+    equal-contrib: true
+    corresponding: true
+    affiliation: 1
+  - name: Cedric Kulbach
+    equal-contrib: true 
+    affiliation: 1
+  - name:Steffen Thoma
+    equal-contrib: true
+    affiliation: 1
 affiliations:
-    - name: FZI Forschungszentrum Informatik, Germany
-        index: 1
-date: 13 August 2017
+ - name: FZI Forschungszentrum Informatik, Germany
+   index: 1
+date: 08 December 20ww
 bibliography: ./paper/paper.bib
 
 ---
