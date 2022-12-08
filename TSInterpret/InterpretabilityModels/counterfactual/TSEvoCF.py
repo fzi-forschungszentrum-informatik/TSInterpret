@@ -25,7 +25,7 @@ class TSEvo(CF):
             print('Dataset is no Tuple ')
         pass
 
-    def explain_instance(self,original_x,original_y, target_y= None,transformer = 'authentic_opposing_information'):
+    def explain(self,original_x,original_y, target_y= None,transformer = 'authentic_opposing_information'):
         """
         Entry Point to explain a instance.
         Args:
@@ -35,7 +35,7 @@ class TSEvo(CF):
         Returns:
             [deap.Individual, deap.logbook]: Return the Best Individual and Logbook Info.
         """
-        
+        print(len(original_y.shape))
         if len(original_x.shape) <3:
             original_x=np.array([original_x])
         if self.backend == 'tf':
@@ -45,23 +45,30 @@ class TSEvo(CF):
             if not type(target_y)==int:
                 target_y=np.argmax(original_y,axis=1)[0]
             reference_set = self.x[np.where(self.y==target_y)]
-        else: 
+        elif len(original_y)>1:
             reference_set = self.x[np.where(self.y!=np.argmax(original_y,axis=1)[0])]
+        else: 
+            reference_set = self.x[np.where(self.y!=original_y)]
         if len(reference_set.shape)==2:
             reference_set= reference_set.reshape(-1,1,reference_set.shape[-1])
             
         window= original_x.shape[-1]
         channels = original_x.shape[-2]
         e=EvolutionaryOptimization(self.model, original_x,original_y,target_y,reference_set, neighborhood, window,channels, self.backend,transformer,verbose=self.verbose)
-        return e.run()
+        ep, logbook = e.run()
+        return np.array(ep)[0][0], 
 
-    def explain(self,original_x,original_y, target_y= None):
-        explanation = []
-        logbook =[]
+    #def explain(self,original_x,original_y, target_y= None):
+    #    explanation = []
+    #    logbook =[]
+    #    
+    #    for i, item in enumerate(original_x):
+    #        print(original_y[i])
+    #        exp, log = self.explain_instance(item, original_y[i], target_y)
+    #        print(exp)
+    #       print(log)
+    #        explanation = explanation.append(exp)
+    #        logbook= logbook.append(log)
+    #        #TODO Return Explanation / Lable
         
-        for i, item in enumerate(original_x):
-            exp, log = self.explain_instance(item, original_y[i], target_y)
-            explanation = explanation.append(exp)
-            logbook= logbook.append(log)
-        
-        return explanation, logbook
+    #    return explanation, logbook

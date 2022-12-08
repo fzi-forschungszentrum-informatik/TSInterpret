@@ -22,7 +22,10 @@ class MultiObjectiveCounterfactuals(Problem):
         print(self.observation.shape)
         self.target = target
         self.original_y =original_y
-        self.original_label=np.argmax(original_y,axis=1)[0]
+        if len(original_y)>1: 
+            self.original_label=np.argmax(original_y,axis=1)[0]
+        else:
+            self.original_label=original_y
 
         self.reference_set = reference_set
         #self.max= max(reference_set)
@@ -32,7 +35,7 @@ class MultiObjectiveCounterfactuals(Problem):
         if self.backend =='PYT': 
             self.model.eval()
         #print(type(original_y))
-        if type(original_y)==np.int64 or original_y.shape[1]==2 :
+        if type(original_y)==np.int64:# or original_y.shape[1]==2 :
             print('Binary Case')
             if self.backend =='PYT':
                 print('Predict Torch')
