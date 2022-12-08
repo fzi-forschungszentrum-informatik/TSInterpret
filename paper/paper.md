@@ -1,30 +1,26 @@
 --
 title: 'TSInterpret: A Python package for the interpretability of time series classification'
 tags:
-  - Python
+    - Python
 
 authors:
-  - name: Jacqueline Höllig
-    orcid: 0000-0000-0000-0000
-    equal-contrib: true
-    corresponding: true
-    affiliation: 1
-  - name: Cedric Kulbach
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
-    affiliation: 1
-  - name:Steffen Thoma
-    equal-contrib: true
-    affiliation: 1
+    - name: Jacqueline Höllig
+        orcid: 0000-0000-0000-0000
+        equal-contrib: true
+        corresponding: true
+        affiliation: 1
+    - name: Cedric Kulbach
+        equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
+        affiliation: 1
+    - name:Steffen Thoma
+        equal-contrib: true
+        affiliation: 1
 affiliations:
- - name: FZI Forschungszentrum Informatik, Germany
-   index: 1
+    - name: FZI Forschungszentrum Informatik, Germany
+        index: 1
 date: 13 August 2017
 bibliography: ./paper/paper.bib
 
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
