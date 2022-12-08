@@ -35,14 +35,16 @@ Temporal data is ubiquitous and encountered in many real-world applications rang
 Explanations can take on various form (see Figure  \autoref{fig:Example}). Different use cases or users need different types of explanations. While for a domain expert counterfactuals might be useful, a data scientist or machine learning engineet prefere gradient based approaches `[@ismail_benchmarking_2020]` to evaluate the models feature attribution.
 ![Explanations.\label{fig:Example}](ECG.png)
 
-Counterfactual approches calculate counter examples by finding a time series close to the original time series that is classified differently, thereby showing decision boundries. `TSInterpret` implements `@ates_counterfactual_2021` a perturbation based approach for multivariate data and `@sanchez-ruiz_instance-based_2021` for univartiate time series.
-Gradient-based approaches (e.g., GradCam ) were adapted to time series by `[@ismail_benchmarking_2020]` that proposed rescaling according to XXXX.
-LEFTIST by `[@guilleme_agnostic_2019]` XXXX
+Counterfactual approches calculate counter examples by finding a time series close to the original time series that is classified differently, thereby showing decision boundries. The intuition is to answer the question 'What if ?'. `TSInterpret` implements `@ates_counterfactual_2021` a perturbation based approach for multivariate data and `@sanchez-ruiz_instance-based_2021` for univartiate time series.
+Gradient-based approaches (e.g., GradCam ) were adapted to time series by `[@ismail_benchmarking_2020]` that proposed rescaling according to time step importande and feature importance. It is applicaple to both gradient and perturbation based methods and based on tf-explain and captum. 
+LEFTIST by `[@guilleme_agnostic_2019]` calculates feature importance based on a variety of Lime based on shapelets.
+
+![Architecture of TSInterpret.\label{fig:Architecture}](Taxonomy.png){ width=20% }
 
 `TSInterpret` implements these algorithms, according to the taxonomy shown in \autoref{fig:Architecture}. The interpretability methods are sorted according to a) accoring to the model output (e.g., is a feature map returned or an example time series) and b) the used mechanism (e.g., XXX) . Thereby, all implemented objects share a consistent interface to ensure that all methods contain a method explain and a plot function. The plot function is implemented on the level below based on the output structure provided by the interpretability algorithm to provide a unified visualization experience (e.g., in the case of Feature Attribution, the plot function visualizes a heatmap on the original sample). If necessary, those plots are refined by the Mechanism layer. The explain function is implemented on the method level.
 This ensures the consistency extensiability of the framework.
 XXX TODO High reuseability 
-![Architecture of TSInterpret.\label{fig:Architecture}](Taxonomy.png)
+
 
 # Acknowledgements
 
