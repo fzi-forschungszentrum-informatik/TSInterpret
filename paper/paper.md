@@ -8,19 +8,15 @@ authors:
     equal-contrib: true
     corresponding: true
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
-  - name: Author Without ORCID
+  - name: Cedric Kulbach
     equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
-    affiliation: 2
-  - name: Author with no affiliation
-    corresponding: true # (This is how to denote the corresponding author)
-    affiliation: 3
+    affiliation: 1
+  - name: Steffen Thoma
+    equal-contrib: true # (This is how to denote the corresponding author)
+    affiliation: 1
 affiliations:
  - name: FZI Forschungszentrum Informatik, Germany
    index: 1
- - name: Institution Name, Country
-   index: 2
- - name: Independent Researcher, Country
-   index: 3
 date: 13 August 2017
 bibliography: paper.bib
 
