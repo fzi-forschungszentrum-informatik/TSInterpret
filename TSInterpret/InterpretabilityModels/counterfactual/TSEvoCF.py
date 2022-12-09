@@ -7,7 +7,6 @@ class TSEvo(CF):
     def __init__(self, model, data, backend='PYT', verbose=0):
         self.model = model 
         self.backend = backend 
-        self.transformer = 'Mean_Stand '
         self.verbose=verbose
         if type(data) == tuple:
             self.x,self.y =data
@@ -25,7 +24,7 @@ class TSEvo(CF):
             print('Dataset is no Tuple ')
         pass
 
-    def explain(self,original_x,original_y, target_y= None,transformer = 'authentic_opposing_information'):
+    def explain(self,original_x,original_y, target_y= None,transformer = 'authentic_opposing_information',epochs=500):
         """
         Entry Point to explain a instance.
         Args:
@@ -54,9 +53,9 @@ class TSEvo(CF):
             
         window= original_x.shape[-1]
         channels = original_x.shape[-2]
-        e=EvolutionaryOptimization(self.model, original_x,original_y,target_y,reference_set, neighborhood, window,channels, self.backend,transformer,verbose=self.verbose)
-        ep, logbook = e.run()
-        return np.array(ep)[0][0], 
+        e=EvolutionaryOptimization(self.model, original_x,original_y,target_y,reference_set, neighborhood, window,channels, self.backend,transformer,verbose=self.verbose,epochs=epochs)
+        ep, output = e.run()
+        return np.array(ep)[0][0], output
 
     #def explain(self,original_x,original_y, target_y= None):
     #    explanation = []

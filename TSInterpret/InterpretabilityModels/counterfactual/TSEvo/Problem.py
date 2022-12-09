@@ -109,7 +109,7 @@ class MultiObjectiveCounterfactuals(Problem):
         return idx, output[0][idx]
     def get_prediction_tensorflow(self, individual, full =False):
         individual = np.array(individual.tolist(), dtype=np.float64)
-        output = self.model.predict(individual.reshape(1,self.window,-1))
+        output = self.model.predict(individual.reshape(1,self.window,-1), verbose=0)
         idx = output.argmax()
         
         if full: 
@@ -128,7 +128,7 @@ class MultiObjectiveCounterfactuals(Problem):
 
     def get_prediction_target_tensorflow(self, individual,full =False):
         individual = np.array(individual.tolist(), dtype=np.float64)
-        output = self.model.predict(individual.reshape(1,self.window,-1))
+        output = self.model.predict(individual.reshape(1,self.window,-1), verbose=0)
         idx = output.argmax()
         if full: 
             return idx, output[0]

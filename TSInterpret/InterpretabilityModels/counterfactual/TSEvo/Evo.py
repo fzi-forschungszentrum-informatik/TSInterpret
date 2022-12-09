@@ -15,7 +15,7 @@ log = False
 
 MUT_TYPES=['freq','auth','mean']
 class EvolutionaryOptimization():
-    def __init__(self,model, observation_x,original_y,target_y,reference_set, neighborhood, window,channels, backend,transformer = 'authentic_opposing_information',verbose=0):
+    def __init__(self,model, observation_x,original_y,target_y,reference_set, neighborhood, window,channels, backend,transformer = 'authentic_opposing_information',epochs=500,verbose=0):
         '''
         Initialization of Optimization Algorithm
         Args:
@@ -34,7 +34,7 @@ class EvolutionaryOptimization():
         # number of individuals to select for the next generation
         self.MU = 100
         # number of generations
-        self.NGEN = 500#500
+        self.NGEN = epochs#500
         # number of children to produce at each generation
         #TODO not in use 
         #self.LAMBDA = 200
@@ -177,4 +177,4 @@ class EvolutionaryOptimization():
         if self.verbose==2:
             return best, logbook, window, mutation
         
-        return best, logbook
+        return best, best[0].output
