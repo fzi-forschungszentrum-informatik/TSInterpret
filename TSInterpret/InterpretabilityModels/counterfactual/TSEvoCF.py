@@ -1,30 +1,39 @@
 import numpy as np
+
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
-from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Evo import EvolutionaryOptimization
+from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Evo import \
+    EvolutionaryOptimization
 
 
 class TSEvo(CF):
-    def __init__(self, model, data, backend='PYT', verbose=0):
+    def __init__(self, model, data, backend="PYT", verbose=0):
         self.model = model
         self.backend = backend
-        self.verbose=verbose
+        self.verbose = verbose
         if type(data) == tuple:
-            self.x,self.y =data
-            #print('Len Reference Set ', len(self.x.shape))
+            self.x, self.y = data
+            # print('Len Reference Set ', len(self.x.shape))
             print(type(self.y[0]))
-            if not type(self.y[0])==int and not type(self.y[0])==np.int64:
-                print('y was one Hot Encoded')
-                self.y=np.argmax(self.y,axis=1)
-            if len(self.x.shape)==2:
-                print('Reshape Reference Set')
-                self.x.reshape(-1,1,self.x.shape[-1])
-            #print('Reference Set Constructor',self.x.shape)
+            if not type(self.y[0]) == int and not type(self.y[0]) == np.int64:
+                print("y was one Hot Encoded")
+                self.y = np.argmax(self.y, axis=1)
+            if len(self.x.shape) == 2:
+                print("Reshape Reference Set")
+                self.x.reshape(-1, 1, self.x.shape[-1])
+            # print('Reference Set Constructor',self.x.shape)
         else:
-            self.x,self.y = None, None
-            print('Dataset is no Tuple ')
+            self.x, self.y = None, None
+            print("Dataset is no Tuple ")
         pass
 
-    def explain(self,original_x,original_y, target_y= None,transformer = 'authentic_opposing_information',epochs=500):
+    def explain(
+        self,
+        original_x,
+        original_y,
+        target_y=None,
+        transformer="authentic_opposing_information",
+        epochs=500,
+    ):
         """
         Entry Point to explain a instance.
         Args:
@@ -35,29 +44,44 @@ class TSEvo(CF):
             [deap.Individual, deap.logbook]: Return the Best Individual and Logbook Info.
         """
         print(len(original_y.shape))
-        if len(original_x.shape) <3:
-            original_x=np.array([original_x])
-        if self.backend == 'tf':
-            original_x=original_x.reshape(original_x.shape[0], original_x.shape[2],original_x.shape[1])
-        neighborhood =[]
+        if len(original_x.shape) < 3:
+            original_x = np.array([original_x])
+        if self.backend == "tf":
+            original_x = original_x.reshape(
+                original_x.shape[0], original_x.shape[2], original_x.shape[1]
+            )
+        neighborhood = []
         if target_y != None:
-            if not type(target_y)==int:
-                target_y=np.argmax(original_y,axis=1)[0]
-            reference_set = self.x[np.where(self.y==target_y)]
-        elif len(original_y)>1:
-            reference_set = self.x[np.where(self.y!=np.argmax(original_y,axis=1)[0])]
+            if not type(target_y) == int:
+                target_y = np.argmax(original_y, axis=1)[0]
+            reference_set = self.x[np.where(self.y == target_y)]
+        elif len(original_y) > 1:
+            reference_set = self.x[np.where(self.y != np.argmax(original_y, axis=1)[0])]
         else:
-            reference_set = self.x[np.where(self.y!=original_y)]
-        if len(reference_set.shape)==2:
-            reference_set= reference_set.reshape(-1,1,reference_set.shape[-1])
+            reference_set = self.x[np.where(self.y != original_y)]
+        if len(reference_set.shape) == 2:
+            reference_set = reference_set.reshape(-1, 1, reference_set.shape[-1])
 
-        window= original_x.shape[-1]
+        window = original_x.shape[-1]
         channels = original_x.shape[-2]
-        e=EvolutionaryOptimization(self.model, original_x,original_y,target_y,reference_set, neighborhood, window,channels, self.backend,transformer,verbose=self.verbose,epochs=epochs)
+        e = EvolutionaryOptimization(
+            self.model,
+            original_x,
+            original_y,
+            target_y,
+            reference_set,
+            neighborhood,
+            window,
+            channels,
+            self.backend,
+            transformer,
+            verbose=self.verbose,
+            epochs=epochs,
+        )
         ep, output = e.run()
         return np.array(ep)[0][0], output
 
-    #def explain(self,original_x,original_y, target_y= None):
+    # def explain(self,original_x,original_y, target_y= None):
     #    explanation = []
     #    logbook =[]
     #

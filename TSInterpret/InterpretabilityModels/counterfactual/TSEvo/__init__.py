@@ -1,9 +1,3 @@
-from . import Problem, Evo, EvoUtils
+from . import Evo, EvoUtils, Problem
 
-__all__ = [
-
-"Problem",
-"Evo",
-"EvoUtil"
-
-]
+__all__ = ["Problem", "Evo", "EvoUtil"]
