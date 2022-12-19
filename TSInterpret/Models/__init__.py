@@ -5,5 +5,4 @@ __all__ = [
     "PyTorchModel",
     "SklearnModel",
     "TensorflowModel",
-
 ]

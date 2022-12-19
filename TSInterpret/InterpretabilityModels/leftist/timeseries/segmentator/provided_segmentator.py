@@ -1,7 +1,8 @@
 from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.segmentator import \
     Segmentator
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class ProvidedSegmentator(Segmentator):
     """
@@ -18,7 +19,7 @@ class ProvidedSegmentator(Segmentator):
         Segmentator.__init__(self)
         self.segments = segments
 
-    def segment(self,time_series):
+    def segment(self, time_series):
         """
         Segment the time series.
 

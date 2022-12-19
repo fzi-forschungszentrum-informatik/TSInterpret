@@ -10,7 +10,8 @@ from TSInterpret.InterpretabilityModels.leftist.learning_process.utils_learning_
     reconstruct
 from TSInterpret.InterpretabilityModels.leftist.neighbors import Neighbors
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class SHAPNeighborsGenerator(NeighborsGenerator):
     """
@@ -40,7 +41,7 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
         self.weight_vector = None
         self.neighbors = None
 
-    def generate(self,nb_features,nb_neighbors,transform):
+    def generate(self, nb_features, nb_neighbors, transform):
         """
         Generate neighbors as in SHAP.
 
@@ -67,7 +68,7 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
 
         return self.neighbors
 
-    def _allocate(self,nb_features,nb_neighbors):
+    def _allocate(self, nb_features, nb_neighbors):
         """
         Update the attributes according the number of features and the number of neighbors.
 
@@ -76,18 +77,24 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
             nb_neighbors (int): numbers of neighbors to draw in the interpretable binary space.
         """
         self.num_samples_left = nb_neighbors
-        if self.num_samples_left > 2 ** nb_features - 2:
-            self.num_samples_left = 2 ** nb_features - 2
-        self.neighbors = Neighbors(masks=np.zeros((self.num_samples_left, nb_features)),
-                                   kernel_weights=np.zeros(self.num_samples_left))
+        if self.num_samples_left > 2**nb_features - 2:
+            self.num_samples_left = 2**nb_features - 2
+        self.neighbors = Neighbors(
+            masks=np.zeros((self.num_samples_left, nb_features)),
+            kernel_weights=np.zeros(self.num_samples_left),
+        )
         self.num_subset_sizes = np.int(np.ceil((nb_features - 1) / 2.0))
         self.num_paired_subset_sizes = np.int(np.floor((nb_features - 1) / 2.0))
         self.weight_vector = np.array(
-            [(nb_features - 1.0) / (i * (nb_features - i)) for i in range(1, self.num_subset_sizes + 1)])
-        self.weight_vector[:self.num_paired_subset_sizes] *= 2
+            [
+                (nb_features - 1.0) / (i * (nb_features - i))
+                for i in range(1, self.num_subset_sizes + 1)
+            ]
+        )
+        self.weight_vector[: self.num_paired_subset_sizes] *= 2
         self.weight_vector /= np.sum(self.weight_vector)
 
-    def _enumerate_full_subset(self,nb_features):
+    def _enumerate_full_subset(self, nb_features):
         """
         Enumerate the subset that can be completely filled with the remaining neighbors to draw.
 
@@ -102,10 +109,13 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
 
         # determine how many subsets (and their complements) are of the size 1
         subset_size = 1
-        nsubsets = self._compute_nb_subset(nb_features,subset_size)
+        nsubsets = self._compute_nb_subset(nb_features, subset_size)
 
         # check if we can completely fill the subset size with the remaining neighbors
-        while  (subset_size<self.num_subset_sizes + 1) and (self.num_samples_left * remaining_weight_vector[subset_size - 1] / nsubsets >= 1.0 - 1e-8):
+        while (subset_size < self.num_subset_sizes + 1) and (
+            self.num_samples_left * remaining_weight_vector[subset_size - 1] / nsubsets
+            >= 1.0 - 1e-8
+        ):
 
             # update the counter of full subset and the remaining neighbors to draw
             self.num_full_subsets += 1
@@ -113,17 +123,16 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
 
             # rescale what's left of the remaining weight vector to sum to 1
             if remaining_weight_vector[subset_size - 1] < 1.0:
-                remaining_weight_vector /= (1 - remaining_weight_vector[subset_size - 1])
+                remaining_weight_vector /= 1 - remaining_weight_vector[subset_size - 1]
 
             # generate mask and kernel weight of all the neighbors in this subset size
-            self._generate_neighbors_for_complete_subset(nb_features,subset_size)
+            self._generate_neighbors_for_complete_subset(nb_features, subset_size)
 
             # determine how many subsets (and their complements) are of the next size
             subset_size += 1
-            nsubsets = self._compute_nb_subset(nb_features,subset_size)
+            nsubsets = self._compute_nb_subset(nb_features, subset_size)
 
-
-    def _pick_in_random_subset(self,nb_features):
+    def _pick_in_random_subset(self, nb_features):
         """
         Enumerate the subset that can be completely filled with the remaining neighbors to draw.
 
@@ -135,14 +144,18 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
         """
         nfixed_samples = self.nsamplesAdded
         remaining_weight_vector = copy.copy(self.weight_vector)
-        remaining_weight_vector[:self.num_paired_subset_sizes] /= 2  # because we draw two samples each below
-        remaining_weight_vector = remaining_weight_vector[self.num_full_subsets:]
+        remaining_weight_vector[
+            : self.num_paired_subset_sizes
+        ] /= 2  # because we draw two samples each below
+        remaining_weight_vector = remaining_weight_vector[self.num_full_subsets :]
         remaining_weight_vector /= np.sum(remaining_weight_vector)
         used_masks = {}
         neighbor_mask = np.zeros(nb_features)
         while self.num_samples_left > 0:
             neighbor_mask.fill(0.0)
-            ind = np.random.choice(len(remaining_weight_vector), 1, p=remaining_weight_vector)[0]
+            ind = np.random.choice(
+                len(remaining_weight_vector), 1, p=remaining_weight_vector
+            )[0]
             subset_size = ind + self.num_full_subsets + 1
             neighbor_mask[np.random.permutation(nb_features)[:subset_size]] = 1.0
 
@@ -159,7 +172,10 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
                 self.neighbors.kernel_weights[used_masks[mask_tuple]] += 1.0
 
             # add the compliment sample
-            if self.num_samples_left > 0 and subset_size <= self.num_paired_subset_sizes:
+            if (
+                self.num_samples_left > 0
+                and subset_size <= self.num_paired_subset_sizes
+            ):
 
                 neighbor_mask[:] = np.abs(neighbor_mask - 1)
                 # only add the sample if we have not seen it before, otherwise just
@@ -173,10 +189,12 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
 
         # normalize the kernel weights for the random samples to equal the weight left after
         # the fixed enumerated samples have been already counted
-        weight_left = np.sum(self.weight_vector[self.num_full_subsets:])
-        self.neighbors.kernel_weights[nfixed_samples:] *= weight_left / self.neighbors.kernel_weights[nfixed_samples:].sum()
+        weight_left = np.sum(self.weight_vector[self.num_full_subsets :])
+        self.neighbors.kernel_weights[nfixed_samples:] *= (
+            weight_left / self.neighbors.kernel_weights[nfixed_samples:].sum()
+        )
 
-    def _compute_nb_subset(self,nb_features,subset_size):
+    def _compute_nb_subset(self, nb_features, subset_size):
         """
         Compute the number of subset for subset size provided and the number of features.
 
@@ -192,7 +210,7 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
             nsubsets *= 2
         return nsubsets
 
-    def _add_sample(self,idx,mask,kernel_weight):
+    def _add_sample(self, idx, mask, kernel_weight):
         """
         Add the mask (interpretable representation) and the kernel weight of a drawn neighbor.
 
@@ -205,7 +223,7 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
         self.neighbors.kernel_weights[idx] = kernel_weight
         self.nsamplesAdded += 1
 
-    def _generate_neighbors_for_complete_subset(self,nb_features,subset_size):
+    def _generate_neighbors_for_complete_subset(self, nb_features, subset_size):
         """
         Generate the mask (interpretable representation) and the kernel weight for the neighbors of a complete subset size.
 
@@ -216,19 +234,23 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
         Returns:
             neighbors (Neighbors): add mask and kernel weight of the neighbors that completely filled one subset size.
         """
-        group_inds = np.arange(nb_features, dtype='int64')
+        group_inds = np.arange(nb_features, dtype="int64")
         neighbor_mask = np.zeros(nb_features)
 
         # compute the kernel weight for the neighbor of the current subset size
-        neighbor_kernel_weight = self.weight_vector[subset_size - 1] / binom(nb_features, subset_size)
+        neighbor_kernel_weight = self.weight_vector[subset_size - 1] / binom(
+            nb_features, subset_size
+        )
         if subset_size <= self.num_paired_subset_sizes:
             neighbor_kernel_weight /= 2.0
 
         # generate the mask and add the kernel weight for the neighbor in the current subset size
         for inds in itertools.combinations(group_inds, subset_size):
             neighbor_mask[:] = 0.0
-            neighbor_mask[np.array(inds, dtype='int64')] = 1.0
+            neighbor_mask[np.array(inds, dtype="int64")] = 1.0
             self._add_sample(self.nsamplesAdded, neighbor_mask, neighbor_kernel_weight)
             if subset_size <= self.num_paired_subset_sizes:
                 neighbor_mask[:] = np.abs(neighbor_mask - 1)
-                self._add_sample(self.nsamplesAdded, neighbor_mask, neighbor_kernel_weight)
+                self._add_sample(
+                    self.nsamplesAdded, neighbor_mask, neighbor_kernel_weight
+                )

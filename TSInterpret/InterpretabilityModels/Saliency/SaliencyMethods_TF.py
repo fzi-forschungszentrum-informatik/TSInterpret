@@ -14,7 +14,7 @@ from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 
 class Saliency_TF(Saliency):
     """
-    Tensorflow Implementation for Saliency Calculation based on [1]. 
+    Tensorflow Implementation for Saliency Calculation based on [1].
     The Saliency Methods are based on the library tf-explain [2] and shap [3].
     For Tensorflow the following saliency methods are available:
         + Gradients (GRAD)
@@ -24,11 +24,13 @@ class Saliency_TF(Saliency):
         + SmoothGrad (SG)
         + Occlusion (FO)
 
-    [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions." Advances in neural information processing systems 33 (2020): 6441-6452.
+    [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions."
+    Advances in neural information processing systems 33 (2020): 6441-6452.
 
     [2] Meudec, Raphael: , tf-explain. https://github.com/sicara/tf-explain
 
-    [3] Lundberg, Scott M., and Su-In Lee. "A unified approach to interpreting model predictions." Advances in neural information processing systems 30 (2017).
+    [3] Lundberg, Scott M., and Su-In Lee. "A unified approach to interpreting model predictions."
+    Advances in neural information processing systems 30 (2017).
         https://shap.readthedocs.io/
     """
 
@@ -81,7 +83,7 @@ class Saliency_TF(Saliency):
         Arguments:
             item np.array: item to get feature attribution for
             labels np.array: labels
-            TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened
+            TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened.
         Returns:
             List: feature attributiin weights
 

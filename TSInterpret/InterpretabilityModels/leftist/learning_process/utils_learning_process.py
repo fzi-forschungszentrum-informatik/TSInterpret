@@ -6,7 +6,7 @@ from TSInterpret.Models.PyTorchModel import PyTorchModel
 from TSInterpret.Models.SklearnModel import SklearnModel
 from TSInterpret.Models.TensorflowModel import TensorFlowModel
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
 from TSInterpret.InterpretabilityModels.utils import (sklearn_wrapper,
                                                       tensorflow_wrapper,
                                                       torch_wrapper)

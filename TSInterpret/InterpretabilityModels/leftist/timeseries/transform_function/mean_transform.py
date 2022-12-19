@@ -5,13 +5,14 @@ from TSInterpret.InterpretabilityModels.leftist.timeseries.utils_timeseries impo
     start_stop
 from TSInterpret.InterpretabilityModels.leftist.transform import Transform
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
 
 
 class MeanTransform(Transform):
     """
     Method to create neighbors representation in explained instance data space.
     """
+
     def __init__(self, explained_instance):
         """
         Must inherit Transform class.
@@ -54,12 +55,11 @@ class MeanTransform(Transform):
         """
 
         # get interval of consecutive segment where neighbor mask equal 0
-        zeroes_interval = np.array([(i,i) for i in np.where(neighbor_mask==0)[0]])
+        zeroes_interval = np.array([(i, i) for i in np.where(neighbor_mask == 0)[0]])
         neighbor_values = self.explained_instance.copy().astype(float)
         neighbor_values = neighbor_values.reshape(-1)
-        neighbor_values = self._compute_segment(zeroes_interval,neighbor_values)
+        neighbor_values = self._compute_segment(zeroes_interval, neighbor_values)
         return neighbor_values
-
 
     def _compute_segment(self, zeroes_interval, neighbor_values):
         """
@@ -79,12 +79,14 @@ class MeanTransform(Transform):
         for zero_interval in zeroes_interval:
             first_segment_interval = self.segments_interval[zero_interval[0]]
             end_segment_interval = self.segments_interval[zero_interval[1]]
-            coordinate_start = (first_segment_interval[0],mean_explained_instance)
-            coordinate_end = (end_segment_interval[-1],mean_explained_instance+0.001)
-            neighbor_values[first_segment_interval[0]:end_segment_interval[-1]+1] = self._compute_line_values(coordinate_start, coordinate_end)
+            coordinate_start = (first_segment_interval[0], mean_explained_instance)
+            coordinate_end = (end_segment_interval[-1], mean_explained_instance + 0.001)
+            neighbor_values[
+                first_segment_interval[0] : end_segment_interval[-1] + 1
+            ] = self._compute_line_values(coordinate_start, coordinate_end)
         return neighbor_values
 
-    def _compute_line_values(self,coordinate_start,coordinate_end):
+    def _compute_line_values(self, coordinate_start, coordinate_end):
         """
         Compute the intermediate values of a straight line between two coordinates.
 
@@ -95,8 +97,8 @@ class MeanTransform(Transform):
         Returns:
             intermediate_values (np.ndarray): intermediate values of the straight line between the two coordinates.
         """
-        x1,y1 = coordinate_start
-        x2,y2 = coordinate_end
+        x1, y1 = coordinate_start
+        x2, y2 = coordinate_end
         slope = (y1 - y2) / (x1 - x2)
-        b = y1-slope*x1
-        return np.array([(slope*x)+b for x in range(x1,x2+1)])
+        b = y1 - slope * x1
+        return np.array([(slope * x) + b for x in range(x1, x2 + 1)])

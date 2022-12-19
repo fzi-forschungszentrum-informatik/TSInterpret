@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class Segmentator(ABC):
     """
     Abstract class of the time series segmentator.
     """
+
     @abstractmethod
     def __init__(self):
         """
@@ -13,7 +15,7 @@ class Segmentator(ABC):
         """
 
     @abstractmethod
-    def segment(self,time_series):
+    def segment(self, time_series):
         """
         Segment the time series.
 

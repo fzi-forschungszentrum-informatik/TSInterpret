@@ -3,7 +3,7 @@ import tensorflow as tf
 from tf_explain.core.grad_cam import GradCAM
 
 
-def grad_cam( model, data,layer_name="<last conv layer name>"):
+def grad_cam(model, data, layer_name="<last conv layer name>"):
     grad_model = tf.keras.models.Model(
         [model.inputs], [model.get_layer(layer_name).output, model.output]
     )
@@ -22,12 +22,12 @@ def grad_cam( model, data,layer_name="<last conv layer name>"):
 
     heatmap = last_conv_layer_output * pooled_grads
     heatmap = tf.reduce_mean(heatmap, axis=(1))
-    heatmap = np.expand_dims(heatmap,0)
+    heatmap = np.expand_dims(heatmap, 0)
     return heatmap
 
 
 class GradCam1D(GradCAM):
-    def infer_grad_cam_target_layer(self,model):
+    def infer_grad_cam_target_layer(self, model):
         """
         Search for the last convolutional layer to perform Grad CAM, as stated
         in the original paper.
