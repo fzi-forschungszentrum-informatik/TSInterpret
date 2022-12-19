@@ -54,7 +54,7 @@ def tsr_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
 @pytest.mark.parametrize("tsr_torch_explainer", ['GRAD','IG','GS','DLS','SG'],
                          indirect=True)
 @pytest.mark.parametrize('tsr',[True])
-def test_leftist_torch_explainer(tsr_torch_explainer,tsr):
+def test_tsr_torch_explainer(tsr_torch_explainer,tsr):
     X, y, _, method = tsr_torch_explainer
     x = np.array([X[0,:,:]])
     exp= method.explain(x,labels=int(np.argmax(y[0])),TSR = tsr)
@@ -64,7 +64,7 @@ def test_leftist_torch_explainer(tsr_torch_explainer,tsr):
 @pytest.mark.parametrize("tsr_tensorflow_explainer", ['GRAD','IG','GS','DLS','SG'],
                          indirect=True)
 @pytest.mark.parametrize('tsr',[True])
-def test_leftist_tensorflow_explainer(tsr_tensorflow_explainer,tsr):
+def test_tsr_tensorflow_explainer(tsr_tensorflow_explainer,tsr):
     X, y , _ , method = tsr_tensorflow_explainer
     x = np.array([X[0,:,:]])
     exp= method.explain(x,labels=int(np.argmax(y[0])),TSR = tsr)

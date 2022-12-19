@@ -1,26 +1,24 @@
-from email import header
-
-import matplotlib.pyplot as plt
 import numpy as np
 
-from TSInterpret.InterpretabilityModels.FeatureAttribution import \
-    FeatureAttribution
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
-from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import \
-    LearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.LIME_learning_process import \
-    LIMELearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.SHAP_learning_process import \
-    SHAPLearningProcess
-from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.uniform_segmentator import \
-    UniformSegmentator
-from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.mean_transform import \
-    MeanTransform
-from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.rand_background_transform import \
-    RandBackgroundTransform
-from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.straightline_transform import \
-    StraightlineTransform
+from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
+from TSInterpret.InterpretabilityModels.leftist.learning_process.LIME_learning_process import (
+    LIMELearningProcess,
+)
+from TSInterpret.InterpretabilityModels.leftist.learning_process.SHAP_learning_process import (
+    SHAPLearningProcess,
+)
+from TSInterpret.InterpretabilityModels.leftist.timeseries.segmentator.uniform_segmentator import (
+    UniformSegmentator,
+)
+from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.mean_transform import (
+    MeanTransform,
+)
+from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.rand_background_transform import (
+    RandBackgroundTransform,
+)
+from TSInterpret.InterpretabilityModels.leftist.timeseries.transform_function.straightline_transform import (
+    StraightlineTransform,
+)
 from TSInterpret.Models.PyTorchModel import PyTorchModel
 from TSInterpret.Models.SklearnModel import SklearnModel
 from TSInterpret.Models.TensorflowModel import TensorFlowModel
@@ -30,7 +28,8 @@ class LEFTIST(FeatureAttribution):
     """
     Local explainer for time series classification. Wrapper for LEFTIST from [1].
 
-    [1] Guillemé, Maël, et al. "Agnostic local explanation for time series classification." 2019 IEEE 31st International Conference on Tools with Artificial Intelligence (ICTAI). IEEE, 2019.
+    [1] Guillemé, Maël, et al. "Agnostic local explanation for time series classification."
+    2019 IEEE 31st International Conference on Tools with Artificial Intelligence (ICTAI). IEEE, 2019.
     """
 
     def __init__(

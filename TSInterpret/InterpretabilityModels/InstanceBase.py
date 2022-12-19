@@ -1,5 +1,4 @@
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 
 
 class InstanceBase(InterpretabilityBase):

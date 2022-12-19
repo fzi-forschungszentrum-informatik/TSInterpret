@@ -1,3 +1,3 @@
 from . import CF, Ates, NativeGuideCF, TSEvo, TSEvoCF
 
-__all__ = ["Ates", "CF", "NativeGuideCF" "TSEvoCF", "TSEvo"]
+__all__ = ["CF", "Ates", "NativeGuideCF", "TSEvoCF", "TSEvo"]

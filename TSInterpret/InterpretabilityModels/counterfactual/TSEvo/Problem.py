@@ -1,5 +1,3 @@
-from queue import Full
-
 import numpy as np
 import torch
 from pymop import Problem
@@ -55,7 +53,7 @@ class MultiObjectiveCounterfactuals(Problem):
                 print("Predict TF")
                 self.predict = self.get_prediction_tensorflow
             self.output_distance = self.output_distance_binary
-        elif self.target == None:
+        elif self.target is None:
             print("No Target")
             if self.backend == "PYT":
                 self.predict = self.get_prediction_torch

@@ -1,5 +1,4 @@
 import tensorflow as tf
-from tensorflow import keras
 
 from TSInterpret.Models.base_model import BaseModel
 

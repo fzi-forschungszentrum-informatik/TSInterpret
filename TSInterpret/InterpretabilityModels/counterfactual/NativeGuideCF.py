@@ -1,41 +1,19 @@
-# TODO
 """Implementation after Delaney et al . https://github.com/e-delaney/Instance-Based_CFE_TSC"""
-import imp
-import os
-import pickle
-import platform
 import warnings
-from cProfile import label
-from itertools import count
-from operator import sub
-from pathlib import Path
 from typing import Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sns
-import tensorflow as tf
-import torch
-from tf_explain.core.grad_cam import GradCAM
-from tf_explain.core.vanilla_gradients import VanillaGradients
-from torchcam.methods import CAM, GradCAM, SmoothGradCAMpp
+from torchcam.methods import CAM
+from tslearn.barycenters import dtw_barycenter_averaging
 from tslearn.neighbors import KNeighborsTimeSeries
 
-from TSInterpret.InterpretabilityModels.GradCam.GradCam_1D import (GradCam1D,
-                                                                   grad_cam)
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
+from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
+from TSInterpret.InterpretabilityModels.GradCam.GradCam_1D import GradCam1D
+from TSInterpret.Models.PyTorchModel import PyTorchModel
+from TSInterpret.Models.TensorflowModel import TensorFlowModel
 
 warnings.filterwarnings("ignore")
 warnings.simplefilter("ignore")
-from tslearn.barycenters import dtw_barycenter_averaging
-
-from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
-# from InterpretabilityModels.utils import torch_wrapper, tensorflow_wrapper
-from TSInterpret.Models.PyTorchModel import PyTorchModel
-from TSInterpret.Models.SklearnModel import SklearnModel
-from TSInterpret.Models.TensorflowModel import TensorFlowModel
 
 
 class NativeGuideCF(CF):
@@ -243,9 +221,7 @@ class NativeGuideCF(CF):
 
         return X_example, np.argmax(out, axis=1)[0]
 
-    def _instance_based_cf(
-        self, query, label, target=None, distance="dtw", max_iter=500
-    ):
+    def _instance_based_cf(self, query, label, target, distance="dtw", max_iter=500):
 
         d, nan = self._native_guide_retrieval(query, label, distance, 1)
         beta = 0

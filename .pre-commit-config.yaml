@@ -17,23 +17,24 @@ repos:
         types: [python]
         entry: black
 
-      - id: isort
-        name: isort
-        language: python
-        types: [python]
-        entry: isort
+#      - id: isort
+#        name: isort
+#        language: python
+#        types: [python]
+#        entry: isort
 
       - id: flake8
         name: flake8
         language: python
         types: [python]
         entry: flake8
+        max-line-length: 120
 
-      - id: mypy
-        name: mypy
-        language: python
-        types: [python]
-        entry: mypy
+#      - id: mypy
+#        name: mypy
+#        language: python
+#        types: [python]
+#        entry: mypy
 
       - id: pyupgrade
         name: pyupgrade

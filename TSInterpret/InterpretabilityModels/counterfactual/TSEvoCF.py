@@ -1,8 +1,9 @@
 import numpy as np
 
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
-from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Evo import \
-    EvolutionaryOptimization
+from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Evo import (
+    EvolutionaryOptimization,
+)
 
 
 class TSEvo(CF):
@@ -51,7 +52,7 @@ class TSEvo(CF):
                 original_x.shape[0], original_x.shape[2], original_x.shape[1]
             )
         neighborhood = []
-        if target_y != None:
+        if target_y is not None:
             if not type(target_y) == int:
                 target_y = np.argmax(original_y, axis=1)[0]
             reference_set = self.x[np.where(self.y == target_y)]

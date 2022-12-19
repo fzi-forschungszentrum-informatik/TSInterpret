@@ -1,4 +1,3 @@
-from abc import abstractmethod
 from typing import Tuple
 
 import matplotlib.pyplot as plt
@@ -7,8 +6,6 @@ import pandas as pd
 import seaborn as sns
 
 from TSInterpret.InterpretabilityModels.InstanceBase import InstanceBase
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
 
 
 class CF(InstanceBase):
@@ -127,7 +124,7 @@ class CF(InstanceBase):
                 ax=ax012,
                 label=f"{org_label}",
             )
-            p.set_ylabel(f"Original")
+            p.set_ylabel("Original")
 
             ax031 = plt.subplot(2, 1, 2)
             ax032 = ax031.twinx()
@@ -160,8 +157,8 @@ class CF(InstanceBase):
                 ax=ax032,
                 label=f"{exp_label}",
             )
-            p.set_ylabel(f"Counterfactual")
-        if save_fig == None:
+            p.set_ylabel("Counterfactual")
+        if save_fig is not None:
             plt.show()
         else:
             plt.savefig(save_fig)
@@ -204,7 +201,6 @@ class CF(InstanceBase):
             "#F5D300",  # yellow
             "#00ff41",  # matrix green
         ]
-        indices = np.where(exp[0] != item)
         df = pd.DataFrame(
             {
                 f"Predicted: {org_label}": list(item.flatten()),
@@ -241,7 +237,8 @@ class CF(InstanceBase):
     def plot_multi(
         self, item, org_label, exp, cf_label, figsize=(15, 15), save_fig=None
     ):
-        """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting. Also called via plot_in_one. Preferably, do not use directly.
+        """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting.
+        Also called via plot_in_one. Preferably, do not use directly.
         Arguments:
             item np.array: original instance.
             org_label int: originally predicted label.

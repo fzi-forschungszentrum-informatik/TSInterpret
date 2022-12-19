@@ -1,19 +1,13 @@
 import logging
 import multiprocessing
 import numbers
-import random
 import sys
-import uuid
-from cProfile import label
-from operator import mod
-from typing import List, Optional, Tuple
-
-import matplotlib.pyplot as plt
+from typing import Tuple
 import numpy as np
 import pandas as pd
+
 # Workaround for mlrose package
 import six
-import torch
 from sklearn.neighbors import KDTree
 from skopt import gbrt_minimize, gp_minimize
 
@@ -21,9 +15,6 @@ sys.modules["sklearn.externals.six"] = six
 import mlrose
 
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
-# from InterpretabilityModels.utils import torch_wrapper, tensorflow_wrapper,sklearn_wrapper
 from TSInterpret.Models.PyTorchModel import PyTorchModel
 from TSInterpret.Models.SklearnModel import SklearnModel
 from TSInterpret.Models.TensorflowModel import TensorFlowModel
@@ -557,7 +548,7 @@ class OptimizedSearch(BaseExplanation):
                     best_explanation = explanation
                     best_explanation_score = current_best
                     best_modified = modified
-                    best_dist = dist
+
         if len(best_explanation) == 0:
             return None, None
 
@@ -569,7 +560,9 @@ class AtesCF(CF):
 
     References
     ----------
-     [1] Ates, Emre, et al. "Counterfactual Explanations for Multivariate Time Series." 2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
+     [1] Ates, Emre, et al.
+     "Counterfactual Explanations for Multivariate Time Series."
+     2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
     ----------
     """
 
@@ -626,7 +619,7 @@ class AtesCF(CF):
 
     def explain(
         self, x: np.ndarray, orig_class: int = None, target: int = None
-    ) -> Tuple[np.array, int]:
+    ) -> Tuple[np.ndarray, int]:
         """
         Calculates the Counterfactual according to Ates.
         Arguments:
@@ -656,6 +649,5 @@ class AtesCF(CF):
             )
             return opt.explain(x, to_maximize=target)
         elif self.method == "brute":
-            # TODO Currently not Threadable as TF Model does not support
             opt = BruteForceSearch(self.predict, train_x, train_y, threads=1)
             return opt.explain(x, to_maximize=target)

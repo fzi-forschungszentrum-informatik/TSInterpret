@@ -2,10 +2,12 @@ import numpy as np
 from sklearn.linear_model import Ridge, lars_path
 from sklearn.utils import check_random_state
 
-from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import \
-    LearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.LIME_neighbors_generator import \
-    LIMENeighborsGenerator
+from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import (
+    LearningProcess,
+)
+from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.LIME_neighbors_generator import (
+    LIMENeighborsGenerator,
+)
 
 __author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
 

@@ -1,8 +1,7 @@
-from typing import List
-
 import numpy as np
 import shap
 from sklearn import preprocessing
+
 # from tf_explain.core.grad_cam import GradCAM
 from tf_explain.core.integrated_gradients import IntegratedGradients
 from tf_explain.core.occlusion_sensitivity import OcclusionSensitivity
@@ -24,12 +23,14 @@ class Saliency_TF(Saliency):
         + SmoothGrad (SG)
         + Occlusion (FO)
 
-    [1] Ismail, Aya Abdelsalam, et al. "Benchmarking deep learning interpretability in time series predictions."
+    [1] Ismail, Aya Abdelsalam, et al.
+    "Benchmarking deep learning interpretability in time series predictions."
     Advances in neural information processing systems 33 (2020): 6441-6452.
 
     [2] Meudec, Raphael: , tf-explain. https://github.com/sicara/tf-explain
 
-    [3] Lundberg, Scott M., and Su-In Lee. "A unified approach to interpreting model predictions."
+    [3] Lundberg, Scott M., and Su-In Lee.
+    "A unified approach to interpreting model predictions."
     Advances in neural information processing systems 30 (2017).
         https://shap.readthedocs.io/
     """
@@ -62,7 +63,6 @@ class Saliency_TF(Saliency):
         # elif method == 'DL':
         #    self.Grad = DeepLift(model)
         elif method == "DLS":
-            # According to shap documentation, ehanced Version of DeepLift ( Deep Shap )
             self.Grad = shap.DeepExplainer
         elif method == "GS":
             self.Grad = shap.GradientExplainer
@@ -78,12 +78,13 @@ class Saliency_TF(Saliency):
         elif method == "FO":
             self.Grad = OcclusionSensitivity()
 
-    def explain(self, item, labels, TSR=True) -> List:
+    def explain(self, item, labels, TSR=True):
         """Method to explain the model based on the item.
         Arguments:
             item np.array: item to get feature attribution for
             labels np.array: labels
-            TSR bool: if True time series rescaling according to [1] is used, else plain weights are returened.
+            TSR bool: if True time series rescaling according to [1] is used,
+            else plain weights are returened.
         Returns:
             List: feature attributiin weights
 

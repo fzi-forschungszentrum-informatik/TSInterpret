@@ -1,8 +1,5 @@
-import matplotlib.pyplot as plt
 import numpy as np
 
-from TSInterpret.InterpretabilityModels.leftist.timeseries.utils_timeseries import \
-    start_stop
 from TSInterpret.InterpretabilityModels.leftist.transform import Transform
 
 __author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
@@ -72,7 +69,8 @@ class MeanTransform(Transform):
         Returns:
             neighbor_representation (np.ndarray): representation of the neighbor in the explained instance data space.
 
-        WARNING: mean transform, does not replace with the mean but with a slighty slope with a delta, because FastShapelet doesn't work with subseries of contant values
+        WARNING: mean transform, does not replace with the mean but with a slighty slope with a delta,
+        because FastShapelet doesn't work with subseries of contant values
 
         """
         mean_explained_instance = np.mean(self.explained_instance)

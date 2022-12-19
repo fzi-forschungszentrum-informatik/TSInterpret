@@ -1,10 +1,12 @@
 import numpy as np
-from sklearn.linear_model import LassoLarsIC, lars_path
+from sklearn.linear_model import lars_path
 
-from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import \
-    LearningProcess
-from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.SHAP_neighbors_generator import \
-    SHAPNeighborsGenerator
+from TSInterpret.InterpretabilityModels.leftist.learning_process.learning_process import (
+    LearningProcess,
+)
+from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.SHAP_neighbors_generator import (
+    SHAPNeighborsGenerator,
+)
 
 __author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
 
@@ -51,7 +53,7 @@ class SHAPLearningProcess(LearningProcess):
             explanation (Explanation): the coefficients of the explanation model.
         """
         nb_features = neighbors.masks.shape[1]
-        nb_neighbors = neighbors.masks.shape[0]
+        # nb_neighbors = neighbors.masks.shape[0]
 
         eyAdj = (
             neighbors.proba_labels[:, idx_label]

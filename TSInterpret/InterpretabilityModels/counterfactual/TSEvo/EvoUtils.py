@@ -1,14 +1,11 @@
 import random
-import time
 import warnings
-from re import X
 
 import numpy as np
 import pandas as pd
-from deap import algorithms, base, creator, tools
-from deap.benchmarks.tools import convergence, diversity, hypervolume
+from deap import creator, tools
 from pyts.utils import windowed_view
-from scipy.fft import fft, fftfreq, ifft, irfft, rfft, rfftfreq
+from scipy.fft import irfft, rfft
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -267,7 +264,6 @@ def frequency_band_mapping(ind1, reference_set):
     fourier_reference_set = rfft(
         np.array(reference_set)
     )  # Fourier transformation reference set
-    len_ts = ind1.shape[-1]  # length of timeseries
     len_fourier = fourier_timeseries.shape[-1]  # lentgh of fourier
 
     # Define variables
@@ -295,7 +291,6 @@ def frequency_band_mapping(ind1, reference_set):
 
         length = length + end_idx - start_idx
         num_slices = num_slices + 1
-    original_fourier_data = np.array(fourier_timeseries.copy())[np.newaxis]
 
     feature = np.where(channels == 1)
     if len(feature[0]) != 0:

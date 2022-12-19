@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from locale import normalize
 
 import matplotlib.pyplot as plt
@@ -6,8 +6,7 @@ import numpy as np
 import seaborn as sns
 from sklearn import preprocessing
 
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 
 
 class FeatureAttribution(InterpretabilityBase):
@@ -44,15 +43,6 @@ class FeatureAttribution(InterpretabilityBase):
         """
         pass
 
-    def _normalization(self, exp, vmin, vmax):
-        # Keep zero at zero only normalize not zero values
-        ov_min = np.min(exp)
-        ov_max = np.max(exp)
-        scale = vmax - vmin
-        std = (exp - ov_min) / (ov_max - ov_min)
-        new = exp
-        pass
-
     def plot(
         self,
         item,
@@ -79,12 +69,6 @@ class FeatureAttribution(InterpretabilityBase):
         """
         # TODO normelize on -1 to 1 and color appropriatly
         plt.style.use("classic")
-        colors = [
-            "#08F7FE",  # teal/cyan
-            "#FE53BB",  # pink
-            "#F5D300",  # yellow
-            "#00ff41",  # matrix green
-        ]
         # Figure out number changed channels
         # index= np.where(np.any(item))
         # TODO Positiv8
@@ -106,7 +90,6 @@ class FeatureAttribution(InterpretabilityBase):
         )  # 240, 10, center="dark")#sns.diverging_palette(250, 15, s=75, l=40,
 
         #                   n=9, center="dark")#sns.color_palette("ch:start=.2,rot=-.3", as_cmap=True)
-        # sns.color_palette("coolwarm", as_cmap=True)#'mako'# 'bwr' #sns.diverging_palette(288, 52, s=97, l=16, center="dark", as_cmap=True)# 'mako'#'viridis' #sns.diverging_palette(250, 15, s=75, l=40, n=9, center="dark", as_cmap=True)
         i = 0
         if self.mode == "time":
             print("time mode")
@@ -203,7 +186,7 @@ class FeatureAttribution(InterpretabilityBase):
                 plt.xlabel("Time", fontweight="bold", fontsize="large")
                 plt.ylabel("Value", fontweight="bold", fontsize="large")
                 i = i + 1
-        if save == None:
+        if save is None:
             plt.show()
         else:
             plt.savefig(save)

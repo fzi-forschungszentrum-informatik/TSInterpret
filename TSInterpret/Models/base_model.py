@@ -1,10 +1,5 @@
-import pickle
 from abc import ABC, abstractmethod
 from typing import List
-
-import numpy as np
-
-from TSInterpret.constants import BackEndTypes
 
 
 class BaseModel(ABC):

@@ -1,21 +1,22 @@
-import pickle
 import random
 import time
-from mimetypes import init
-from tabnanny import verbose
-from unittest import mock
 
 import numpy as np
 from deap import algorithms, base, creator, tools
 from deap.benchmarks.tools import convergence, diversity, hypervolume
-from pyexpat import model
 
 import TSInterpret.InterpretabilityModels.counterfactual.TSEvo.EvoUtils as EvoUtils
 from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.EvoUtils import (
-    authentic_opposing_information, create_logbook, create_mstats, eval,
-    evaluate_pop, mutate, pareto_eq, recombine)
-from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Problem import \
-    MultiObjectiveCounterfactuals
+    create_logbook,
+    create_mstats,
+    eval,
+    evaluate_pop,
+    pareto_eq,
+    recombine,
+)
+from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Problem import (
+    MultiObjectiveCounterfactuals,
+)
 
 log = False
 
@@ -132,10 +133,6 @@ class EvolutionaryOptimization:
         # TODO causing issues
         self.toolbox.decorate("evaluate", tools.DeltaPenality(self.mop.feasible, 1.0))
         self.toolbox.register("mate", recombine)
-        # TODO differnetiate replacement strtageies
-        # means = reference_set.mean(axis=0)
-        # sigmas = reference_set.std(axis=0)
-        # self.toolbox.register("mutate", mutate,observation_x=observation_x,means=means,sigmas=sigmas,indpb=0.56, uopb=0.32)#sigmas=sigmas,indpb=0.0, uopb=0.0) #indpb=0.56, uopb=0.32)
         self.toolbox.register(
             "mutate", getattr(EvoUtils, transformer), reference_set=reference_set
         )
@@ -193,13 +190,11 @@ class EvolutionaryOptimization:
                 log_file.write(
                     str(gen)
                     + ","
-                    +
                     # str(f) + ',' +
-                    str(hypervolume(pop, rf))
+                    + str(hypervolume(pop, rf))
                     + ","
-                    +
                     # str(hypervolume(pop)) + ',' +
-                    str(diversity(pop, [0, 0, 0], rf))
+                    + str(diversity(pop, [0, 0, 0], rf))
                     + ","
                     + str(convergence(pop, [[0, 0, 0]]))
                     + "\n"
@@ -213,7 +208,7 @@ class EvolutionaryOptimization:
                 print(logbook.stream)
             gen = gen + 1
 
-            if self.verbose == 2 and pop[0].mutation != None:
+            if self.verbose == 2 and pop[0].mutation is not None:
                 mean = 0
                 freq = 0
                 auth = 0

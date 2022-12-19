@@ -4,10 +4,12 @@ import itertools
 import numpy as np
 from scipy.special import binom
 
-from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.neighbors_generator import \
-    NeighborsGenerator
-from TSInterpret.InterpretabilityModels.leftist.learning_process.utils_learning_process import \
-    reconstruct
+from TSInterpret.InterpretabilityModels.leftist.learning_process.neighbors_generator.neighbors_generator import (
+    NeighborsGenerator,
+)
+from TSInterpret.InterpretabilityModels.leftist.learning_process.utils_learning_process import (
+    reconstruct,
+)
 from TSInterpret.InterpretabilityModels.leftist.neighbors import Neighbors
 
 __author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"

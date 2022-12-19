@@ -1,17 +1,14 @@
-import matplotlib.pyplot as plt
-import seaborn as sns
 import tensorflow
 import torch
 
-from TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY import \
-    Saliency_PTY
-from TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF import \
-    Saliency_TF
+from TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_PTY import Saliency_PTY
+from TSInterpret.InterpretabilityModels.Saliency.SaliencyMethods_TF import Saliency_TF
 
 
 class TSR:
     """
-    Wrapper Class for Saliency Calculation. Automatically calls the corresponding PYT or TF implementation.
+    Wrapper Class for Saliency Calculation.
+    Automatically calls the corresponding PYT or TF implementation.
     Arguments:
         model: model to be explained
         NumTimeStep int : Number of Time Step
@@ -43,5 +40,8 @@ class TSR:
             )
         else:
             raise NotImplementedError(
-                "Please use a TF or PYT Classification model! If the current model is a TF or PYT Model, try calling the wrappers directly (TF -> Saliency_TF, PYT -> Saliency_PYT)"
+                "Please use a TF or PYT Classification model! \
+                If the current model is a TF or PYT Model, \
+                try calling the wrappers directly \
+                (TF -> Saliency_TF, PYT -> Saliency_PYT)"
             )
