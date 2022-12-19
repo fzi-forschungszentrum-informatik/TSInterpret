@@ -6,11 +6,9 @@ from . import (
     Saliency,
     counterfactual,
     leftist,
-    utils,
 )
 
 __all__ = [
-    "utils",
     "InterpretabilityBase",
     "InstanceBase",
     "FeatureAttribution",
