@@ -1,19 +1,21 @@
 from typing import List
+
 import numpy as np
 import shap
-
 from sklearn import preprocessing
 # from tf_explain.core.grad_cam import GradCAM
 from tf_explain.core.integrated_gradients import IntegratedGradients
 from tf_explain.core.occlusion_sensitivity import OcclusionSensitivity
 from tf_explain.core.smoothgrad import SmoothGrad
 from tf_explain.core.vanilla_gradients import VanillaGradients
+
 from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 
 
 class Saliency_TF(Saliency):
     """
-    Tensorflow Implementation for Saliency Calculation based on [1]. The Saliency Methods are based on the library tf-explain [2] and shap [3].
+    Tensorflow Implementation for Saliency Calculation based on [1]. 
+    The Saliency Methods are based on the library tf-explain [2] and shap [3].
     For Tensorflow the following saliency methods are available:
         + Gradients (GRAD)
         + Integrated Gradients (IG)
