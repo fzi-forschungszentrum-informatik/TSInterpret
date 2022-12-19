@@ -1,12 +1,12 @@
-import numpy as np 
+import numpy as np
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Evo import EvolutionaryOptimization
 
 
 class TSEvo(CF):
     def __init__(self, model, data, backend='PYT', verbose=0):
-        self.model = model 
-        self.backend = backend 
+        self.model = model
+        self.backend = backend
         self.verbose=verbose
         if type(data) == tuple:
             self.x,self.y =data
@@ -19,7 +19,7 @@ class TSEvo(CF):
                 print('Reshape Reference Set')
                 self.x.reshape(-1,1,self.x.shape[-1])
             #print('Reference Set Constructor',self.x.shape)
-        else: 
+        else:
             self.x,self.y = None, None
             print('Dataset is no Tuple ')
         pass
@@ -39,18 +39,18 @@ class TSEvo(CF):
             original_x=np.array([original_x])
         if self.backend == 'tf':
             original_x=original_x.reshape(original_x.shape[0], original_x.shape[2],original_x.shape[1])
-        neighborhood =[] 
+        neighborhood =[]
         if target_y != None:
             if not type(target_y)==int:
                 target_y=np.argmax(original_y,axis=1)[0]
             reference_set = self.x[np.where(self.y==target_y)]
         elif len(original_y)>1:
             reference_set = self.x[np.where(self.y!=np.argmax(original_y,axis=1)[0])]
-        else: 
+        else:
             reference_set = self.x[np.where(self.y!=original_y)]
         if len(reference_set.shape)==2:
             reference_set= reference_set.reshape(-1,1,reference_set.shape[-1])
-            
+
         window= original_x.shape[-1]
         channels = original_x.shape[-2]
         e=EvolutionaryOptimization(self.model, original_x,original_y,target_y,reference_set, neighborhood, window,channels, self.backend,transformer,verbose=self.verbose,epochs=epochs)
@@ -60,7 +60,7 @@ class TSEvo(CF):
     #def explain(self,original_x,original_y, target_y= None):
     #    explanation = []
     #    logbook =[]
-    #    
+    #
     #    for i, item in enumerate(original_x):
     #        print(original_y[i])
     #        exp, log = self.explain_instance(item, original_y[i], target_y)
@@ -69,5 +69,5 @@ class TSEvo(CF):
     #        explanation = explanation.append(exp)
     #        logbook= logbook.append(log)
     #        #TODO Return Explanation / Lable
-        
+
     #    return explanation, logbook

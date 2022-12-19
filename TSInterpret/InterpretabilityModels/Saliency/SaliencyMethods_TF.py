@@ -13,7 +13,7 @@ from tf_explain.core.smoothgrad import SmoothGrad
 from tf_explain.core.vanilla_gradients import VanillaGradients
 from TSInterpret.InterpretabilityModels import utils
 import seaborn as sns
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import shap
 from TSInterpret.InterpretabilityModels.Saliency.Saliency_Base import Saliency
 

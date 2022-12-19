@@ -7,7 +7,7 @@ import TSInterpret.InterpretabilityModels.counterfactual.TSEvo.EvoUtils as EvoUt
 from deap import creator, base, algorithms, tools
 import time
 from deap.benchmarks.tools import hypervolume, diversity, convergence
-import numpy as np 
+import numpy as np
 import pickle
 import random
 from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Problem import MultiObjectiveCounterfactuals
@@ -30,13 +30,13 @@ class EvolutionaryOptimization():
             backend (str): torch or tensorflow
             transformer(str): mutation to use
         '''
-        
+
         # number of individuals to select for the next generation
         self.MU = 100
         # number of generations
         self.NGEN = epochs#500
         # number of children to produce at each generation
-        #TODO not in use 
+        #TODO not in use
         #self.LAMBDA = 200
         # prob that an offspring produced by crossover
         self.CXPB = 0.9
@@ -77,43 +77,43 @@ class EvolutionaryOptimization():
         #TODO causing issues
         self.toolbox.decorate("evaluate", tools.DeltaPenality(self.mop.feasible, 1.0))
         self.toolbox.register("mate", recombine)
-        #TODO differnetiate replacement strtageies 
+        #TODO differnetiate replacement strtageies
         #means = reference_set.mean(axis=0)
         #sigmas = reference_set.std(axis=0)
         #self.toolbox.register("mutate", mutate,observation_x=observation_x,means=means,sigmas=sigmas,indpb=0.56, uopb=0.32)#sigmas=sigmas,indpb=0.0, uopb=0.0) #indpb=0.56, uopb=0.32)
         self.toolbox.register("mutate", getattr(EvoUtils,transformer) ,reference_set=reference_set)
         #self.observation=observation_x
-    
+
     def run (self):
         '''
         Runs the optimization
         Returns:
             [deap.Individual, deap.logbook]: Return the Best Individual and Logbook Info.'''
-      
+
         pop = self.toolbox.population(n=self.MU)
         window=[]
         mutation = []
-        for ind in pop: 
+        for ind in pop:
             ind.window = np.random.randint(1,0.5 * np.array(ind).shape[1])
             ind.mutation=random.choice(MUT_TYPES)
 
         # hall of fame
         hof = tools.ParetoFront(similar=pareto_eq)
         best= tools.HallOfFame(1,similar=pareto_eq)
-       
-        # evaluate init population
-       
-        pop = evaluate_pop(pop,self.toolbox)
-       
-        pop = self.toolbox.select(pop, self.MU)
-       
 
-        
+        # evaluate init population
+
+        pop = evaluate_pop(pop,self.toolbox)
+
+        pop = self.toolbox.select(pop, self.MU)
+
+
+
         rf = [1.0, 1.0, 1.0]
         gen = 0
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        if log: 
+        if log:
             log_file = open("log" + timestr + ".txt", "w")
 
         mstats = create_mstats()
@@ -126,10 +126,10 @@ class EvolutionaryOptimization():
 
             offspring = tools.selTournamentDCD(pop, len(pop))
             offspring = algorithms.varAnd(offspring, self.toolbox, cxpb=self.CXPB, mutpb=self.MUTPB)
-        
+
             offspring = evaluate_pop(offspring,self.toolbox)
             # NSGA
-            
+
             pop = self.toolbox.select(offspring + pop, self.MU)
 
             """Logging Section"""
@@ -150,7 +150,7 @@ class EvolutionaryOptimization():
                 print(logbook.stream)
             gen = gen + 1
 
-            if self.verbose ==2 and pop[0].mutation !=None : 
+            if self.verbose ==2 and pop[0].mutation !=None :
                 mean= 0
                 freq=0
                 auth=0
@@ -169,12 +169,12 @@ class EvolutionaryOptimization():
                 window.append([np.mean(add), np.std(add)])
 
 
-       
+
         for item in best:
             label, output=self.mop.predict(np.array([item]), full=True)
-            item.output=output 
-            
+            item.output=output
+
         if self.verbose==2:
             return best, logbook, window, mutation
-        
+
         return best, best[0].output

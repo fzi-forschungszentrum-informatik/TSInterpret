@@ -522,13 +522,15 @@ class OptimizedSearch(BaseExplanation):
 class AtesCF(CF):
     """Calculates and Visualizes Counterfactuals for Multivariate Time Series in accordance to the paper [1].
 
+    References
+    ----------
      [1] Ates, Emre, et al. "Counterfactual Explanations for Multivariate Time Series." 2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
-
+    ----------
     """
     def __init__(self,model, ref, backend, mode, method= 'opt', number_distractors=2, max_attempts=1000, max_iter=1000, silent=False) -> None:
         """
         Arguments:
-            model : Model to be interpreted.
+            model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
             ref Tuple: Reference Dataset as Tuple (x,y).
             backend: desired Model Backend ('PYT', 'TF', 'SK').
             mode: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)

@@ -65,6 +65,9 @@ nav:
       - Saliency: ./Notebooks/TSR_torch.ipynb
   - API References: 
     - InterpretabilityMethods: 
-      - Counterfactual: ./Methods/CF.md
+      - Counterfactual:
+        - CF-Base:  ./Methods/CF.md
+        - COMTE: ./Methods/COMTE.md
+        - NUNCF: ./Methods/NunCF.md
       - Saliency: ./Methods/Saliency.md
       - LEFTIST: ./Methods/Leftist.md
