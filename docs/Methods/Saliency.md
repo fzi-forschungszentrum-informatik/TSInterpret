@@ -1,2 +1,2 @@
-:::TSInterpret.InterpretabilityModels.Saliency.FeatureAttribution
+:::TSInterpret.InterpretabilityModels.FeatureAttribution
 :::TSInterpret.InterpretabilityModels.Saliency.Saliency_Base
