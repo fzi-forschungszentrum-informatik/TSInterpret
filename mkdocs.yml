@@ -54,7 +54,7 @@ plugins:
 nav:
   - Home: index.md
   - Getting Started: GettingStarted.md
-  - Interpretability: AlgorithmOverview.md
+  - Algorithm Overview: AlgorithmOverview.md
   - How-To:
     - Instance-Based Methods: 
       - Counterfactuals:
