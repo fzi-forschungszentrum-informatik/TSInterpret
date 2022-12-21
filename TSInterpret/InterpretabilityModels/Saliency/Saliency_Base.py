@@ -10,6 +10,7 @@ class Saliency(FeatureAttribution):
     Please use the designated Subclasses SaliencyMethods_PYT.py
     for PyTorch explanations and SaliencyMethods_TF.py
     for Tensforflow explanations.
+
     References
     ----------
     [1] Ismail, Aya Abdelsalam, et al.
@@ -44,11 +45,11 @@ class Saliency(FeatureAttribution):
 
     def plot(self, item, exp, figsize=(15, 15), heatmap=False, save=None):
         """
-        Plots expalantion on the explained Sample.
+        Plots explanation on the explained Sample.
 
         Arguments:
             item np.array: instance to be explained,if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`.
-            exp np.array: expalantaion, ,if `mode = time`->`(time,feat)`  or `mode = feat`->`(feat,time)`.
+            exp np.array: explanation, ,if `mode = time`->`(time,feat)`  or `mode = feat`->`(feat,time)`.
             figsize (int,int): desired size of plot.
             heatmap bool: 'True' if only heatmap, otherwise 'False'.
             save str: Path to save figure.
