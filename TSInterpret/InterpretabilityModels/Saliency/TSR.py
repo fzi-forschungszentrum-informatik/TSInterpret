@@ -10,7 +10,7 @@ class TSR:
     Wrapper Class for Saliency Calculation.
     Automatically calls the corresponding PYT or TF implementation.
     Arguments:
-        model: model to be explained
+        model [torch.nn.Module, tf.keras.Model]: model to be explained
         NumTimeStep int : Number of Time Step
         NumFetaures int : Number Features
         method str: Saliency Methode to be used
@@ -22,6 +22,14 @@ class TSR:
     def __new__(
         self, model, NumTimeSteps, NumFeatures, method="GRAD", mode="time", device="cpu"
     ):
+        """Initialization
+        Arguments:
+            model [torch.nn.Module, tf.keras.Model]: model to be explained
+            NumTimeStep int : Number of Time Step
+            NumFetaures int : Number Features
+            method str: Saliency Methode to be used
+            mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
+        """   
         if isinstance(model, torch.nn.Module):
 
             return Saliency_PTY(

@@ -22,7 +22,8 @@ class Saliency_TF(Saliency):
         + DeepLiftShap (DLS)
         + SmoothGrad (SG)
         + Occlusion (FO)
-
+    References
+    ----------
     [1] Ismail, Aya Abdelsalam, et al.
     "Benchmarking deep learning interpretability in time series predictions."
     Advances in neural information processing systems 33 (2020): 6441-6452.
@@ -33,24 +34,25 @@ class Saliency_TF(Saliency):
     "A unified approach to interpreting model predictions."
     Advances in neural information processing systems 30 (2017).
         https://shap.readthedocs.io/
+    ----------
     """
 
     def __init__(
         self,
         model,
-        NumTimeSteps,
-        NumFeatures,
-        method="saliency",
-        mode="time",
-        device="cpu",
+        NumTimeSteps:int,
+        NumFeatures:int,
+        method:str="GRAD",
+        mode:str="time",
+        device:str="cpu",
     ) -> None:
         """
         Arguments:
-            model: model to be explained.
-            NumTimeSteps int: number of timesteps.
-            NumFeature int: number of features.
-            method str: Saliency Method to be used.
-            mode str: second dimension is 'feat' or 'time'.
+            model [tf.keras.models]: model to be explained
+            NumTimeStep int : Number of Time Step
+            NumFetaures int : Number Features
+            method str: Saliency Methode to be used
+            mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
         """
         # tf explain does not provide baseline !
         super().__init__(model, NumTimeSteps, NumFeatures, method, mode)
@@ -81,12 +83,11 @@ class Saliency_TF(Saliency):
     def explain(self, item, labels, TSR=True):
         """Method to explain the model based on the item.
         Arguments:
-            item np.array: item to get feature attribution for
-            labels np.array: labels
-            TSR bool: if True time series rescaling according to [1] is used,
-            else plain weights are returened.
+            item np.array: item to get feature attribution for, if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`
+            labels int: label
+            TSR bool: if True time series rescaling according to [1] is used, else plain (scaled) weights are returened
         Returns:
-            List: feature attributiin weights
+            np.array: feature attribution weights `mode = time`->`(time,feat)` or `mode = feat`->`(feat,time)`
 
         """
         rescaledGrad = np.zeros(item.shape)
@@ -103,7 +104,7 @@ class Saliency_TF(Saliency):
             )
         elif self.method == "DLS" or self.method == "GS":
             self.Grad = self.Grad(self.model, input)
-            attributions = self.Grad.shap_values(input)
+            attributions = self.Grad.shap_values(input)[0]
         elif self.method == "FO":
             input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps, 1)
             attributions = self.Grad.explain(
@@ -122,13 +123,13 @@ class Saliency_TF(Saliency):
             rescaledGrad[
                 idx : idx + batch_size, :, :
             ] = self._givenAttGetRescaledSaliency(attributions)
-            return rescaledGrad
+            return np.array(rescaledGrad[0])
 
     def _givenAttGetRescaledSaliency(self, attributions):
         saliency = np.absolute(attributions)
         saliency = saliency.reshape(-1, self.NumTimeSteps * self.NumFeatures)
         rescaledSaliency = preprocessing.minmax_scale(saliency, axis=1)
-        rescaledSaliency = rescaledSaliency.reshape(attributions.shape)
+        rescaledSaliency = rescaledSaliency.reshape(np.array(attributions).shape)
         return rescaledSaliency
 
     def _getTwoStepRescaling(

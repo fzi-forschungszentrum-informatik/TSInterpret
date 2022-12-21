@@ -10,22 +10,24 @@ class Saliency(FeatureAttribution):
     Please use the designated Subclasses SaliencyMethods_PYT.py
     for PyTorch explanations and SaliencyMethods_TF.py
     for Tensforflow explanations.
-
+    References
+    ----------
     [1] Ismail, Aya Abdelsalam, et al.
     "Benchmarking deep learning interpretability in time series predictions."
     Advances in neural information processing systems 33 (2020): 6441-6452.
+    ----------
     """
 
     def __init__(
-        self, model, NumTimeSteps, NumFeatures, method="GRAD", mode="time"
+        self, model, NumTimeSteps:int, NumFeatures:int, method:str="GRAD", mode:str="time"
     ) -> None:
         """
         Arguments:
-            model: model to be explained.
+            model [torch.nn.Module,tf.keras.models]: model to be explained.
             NumTimeSteps int: number of timesteps.
             NumFeature int: number of features.
             method str: Saliency Method to be used.
-            mode str: second dimension is 'feat' or 'time'.
+            mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`.
         """
         super().__init__(model, mode)
         self.NumTimeSteps = NumTimeSteps
@@ -40,8 +42,8 @@ class Saliency(FeatureAttribution):
         Plots expalantion on the explained Sample.
 
         Arguments:
-            item np.array: instance to be explained.
-            exp np.array: expalantaion.
+            item np.array: instance to be explained,if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`.
+            exp np.array: expalantaion, ,if `mode = time`->`(time,feat)`  or `mode = feat`->`(feat,time)`.
             figsize (int,int): desired size of plot.
             heatmap bool: 'True' if only heatmap, otherwise 'False'.
             save str: Path to save figure.
