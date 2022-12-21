@@ -582,8 +582,8 @@ class AtesCF(CF):
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
             ref Tuple: Reference Dataset as Tuple (x,y).
-            backend: desired Model Backend ('PYT', 'TF', 'SK').
-            mode: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
+            backend str: desired Model Backend ('PYT', 'TF', 'SK').
+            mode str: Name of second dimension: `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
             method str : 'opt' if optimized calculation, 'brute' for Brute Force
             number_distractors int: number of distractore to be used
             silent bool: logging.
@@ -623,11 +623,11 @@ class AtesCF(CF):
         """
         Calculates the Counterfactual according to Ates.
         Arguments:
-            x (np.array): The instance to explain.
-            target (np.array): target class. If no target class is given, the class with the secon heighest classification probability is selected.
+            x (np.array): The instance to explain. Shape : `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
+            target int: target class. If no target class is given, the class with the secon heighest classification probability is selected.
 
         Returns:
-            ([np.array], int): Tuple of Counterfactual and Label
+            ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
 
         """
 

@@ -41,10 +41,10 @@ class CF(InstanceBase):
         """
         Basic Plot Function for visualizing Coutnerfactuals.
         Arguments:
-            original np.array: Instance to be explained.
-            org_label: Label of instance to be explained.
-            exp np.array: Explanation.
-            exp_label: Label of Explanation.
+            original np.array: Instance to be explained. Shape: `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
+            org_label int: Label of instance to be explained.
+            exp np.array: Explanation. `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
+            exp_label int: Label of Explanation.
             vis_change bool: Change to be visualized as heatmap.
             all_in_one bool: Original and Counterfactual in one plot.
             save_fig str: Path to save fig at.
@@ -158,7 +158,7 @@ class CF(InstanceBase):
                 label=f"{exp_label}",
             )
             p.set_ylabel("Counterfactual")
-        if save_fig is not None:
+        if save_fig is None:
             plt.show()
         else:
             plt.savefig(save_fig)
@@ -169,9 +169,9 @@ class CF(InstanceBase):
         """
         Plot Function for Counterfactuals in uni-and multivariate setting. In the multivariate setting only the changed features are visualized.
         Arguments:
-            item np.array: original instance.
+            item np.array: original instance. Shape: `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
             org_label int: originally predicted label.
-            exp np.array: returned explanation.
+            exp np.array: returned explanation. Shape: `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
             cf_label int: lebel of returned instance.
             figsize Tuple: Size of Figure (x,y).
             save_fig str: Path to Save the figure.
@@ -240,9 +240,9 @@ class CF(InstanceBase):
         """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting.
         Also called via plot_in_one. Preferably, do not use directly.
         Arguments:
-            item np.array: original instance.
+            item np.array: original instance. Shape: `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
             org_label int: originally predicted label.
-            exp np.array: returned explanation.
+            exp np.array: returned explanation. Shape: `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
             cf_label int: lebel of returned instance.
             figsize Tuple: Size of Figure (x,y).
             save_fig str: Path to Save the figure.

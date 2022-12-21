@@ -7,8 +7,26 @@ from TSInterpret.InterpretabilityModels.counterfactual.TSEvo.Evo import (
 
 
 class TSEvo(CF):
-    def __init__(self, model, data, backend="PYT", verbose=0):
-        self.model = model
+    """
+    Calculates and Visualizes Counterfactuals for Uni- and Multivariate Time Series in accordance to the paper [1].
+
+    References
+    ----------
+     [1] Höllig, Jacqueline , et al.
+     "TSEvo: Evolutionary Counterfactual Explanations for Time Series Classification."
+     21st IEEE International Conference on Machine Learning and Applications (ICMLA). IEEE, 2022.
+    ----------
+    """
+    def __init__(self, model, data,mode='time', backend="PYT", verbose=0):
+        """
+        Arguments:
+            model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
+            data Tuple: Reference Dataset as Tuple (x,y).
+            mode: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
+            backend str: desired Model Backend ('PYT', 'TF', 'SK').
+            verbose int: Logging Level
+        """
+        super().__init__(model, mode)
         self.backend = backend
         self.verbose = verbose
         if type(data) == tuple:
@@ -37,17 +55,19 @@ class TSEvo(CF):
     ):
         """
         Entry Point to explain a instance.
-        Args:
-            original_x (np.array): The instamce to explain.
+        Arguments:
+            original_x (np.array): The instance to explain. Shape `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
             original_y (np.array): Classification Probability of instance.
-            target_y (int): Class to be targeted
+            target_y int: Class to be targeted
+            transformer str: ['authentic_opposing','mutate_both','gaussian','frequency']
+            epochs int: # Iterations
         Returns:
-            [deap.Individual, deap.logbook]: Return the Best Individual and Logbook Info.
+            [np.array, int]: Returns the Counterfactual and the class. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
         """
         print(len(original_y.shape))
         if len(original_x.shape) < 3:
             original_x = np.array([original_x])
-        if self.backend == "tf":
+        if self.backend == "TF" or self.mode=='time':
             original_x = original_x.reshape(
                 original_x.shape[0], original_x.shape[2], original_x.shape[1]
             )
@@ -60,6 +80,8 @@ class TSEvo(CF):
             reference_set = self.x[np.where(self.y != np.argmax(original_y, axis=1)[0])]
         else:
             reference_set = self.x[np.where(self.y != original_y)]
+
+        reference_set=reference_set.reshape(-1, original_x.shape[1],original_x.shape[2])
         if len(reference_set.shape) == 2:
             reference_set = reference_set.reshape(-1, 1, reference_set.shape[-1])
 
@@ -81,18 +103,3 @@ class TSEvo(CF):
         )
         ep, output = e.run()
         return np.array(ep)[0][0], output
-
-    # def explain(self,original_x,original_y, target_y= None):
-    #    explanation = []
-    #    logbook =[]
-    #
-    #    for i, item in enumerate(original_x):
-    #        print(original_y[i])
-    #        exp, log = self.explain_instance(item, original_y[i], target_y)
-    #        print(exp)
-    #       print(log)
-    #        explanation = explanation.append(exp)
-    #        logbook= logbook.append(log)
-    #        #TODO Return Explanation / Lable
-
-    #    return explanation, logbook

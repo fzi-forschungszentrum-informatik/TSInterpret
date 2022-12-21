@@ -19,12 +19,15 @@ warnings.simplefilter("ignore")
 class NativeGuideCF(CF):
     """
     NUN_CF according to [1] for both torch and tensorflow.
-
+    
+    References
+    ----------
     [1] Delaney, E., Greene, D., Keane, M.T.: Instance-Based Counterfactual Explanations
         for Time Series Classification. In: Sanchez-Ruiz, A.A., Floyd, M.W. (eds.) Case-
         Based Reasoning Research and Development, vol. 12877, pp. 32–47. Springer
         International Publishing, Cham (2021), series Title: Lecture Notes in Computer
         Science.
+    ---------- 
     """
 
     def __init__(
@@ -32,7 +35,7 @@ class NativeGuideCF(CF):
         model,
         shape,
         reference_set,
-        backend="torch",
+        backend="PYT",
         mode="feat",
         method="NUN-CF",
         distance_measure="dtw",
@@ -42,11 +45,11 @@ class NativeGuideCF(CF):
         """
         In this case differentiation between time & feat not necessary as implicitly given by CNN. Only works for CNNs due to the attribution methods.
         Arguments:
-            model: classification model to explain
+            model [torch.nn.Module, Callable, tf.keras.model]: classification model to explain
             shape Tuple: input shape
-            reference set Tuple: reference set as tuple (x,y)
+            reference_set Tuple: reference set as tuple (x,y)
             backend str: 'PYT' or  'TF'
-            mode str: model either 'time' or 'feat'
+            mode str: model either 'time' or 'feat'. `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
             method str: 'Nun_CF', 'dtw_bary_center' or 'native_guide'.
             distance_measure str: sklearn appreviation for distance of knn.
             n_neighbore int: # neighbors to select from.

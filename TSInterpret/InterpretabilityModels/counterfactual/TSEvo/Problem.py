@@ -49,7 +49,7 @@ class MultiObjectiveCounterfactuals(Problem):
             if self.backend == "PYT":
                 print("Predict Torch")
                 self.predict = self.get_prediction_torch
-            if self.backend == "tf":
+            if self.backend == "TF":
                 print("Predict TF")
                 self.predict = self.get_prediction_tensorflow
             self.output_distance = self.output_distance_binary
@@ -57,14 +57,14 @@ class MultiObjectiveCounterfactuals(Problem):
             print("No Target")
             if self.backend == "PYT":
                 self.predict = self.get_prediction_torch
-            if self.backend == "tf":
+            if self.backend == "TF":
                 self.predict = self.get_prediction_tensorflow
             self.output_distance = self.output_distance_multi
         else:
             print("Target")
             if self.backend == "PYT":
                 self.predict = self.get_prediction_torch
-            if self.backend == "tf":
+            if self.backend == "TF":
                 self.predict = self.get_prediction_tensorflow
             self.output_distance = self.output_distance_target
         self.label, self.output = self.predict(observation, full=True)

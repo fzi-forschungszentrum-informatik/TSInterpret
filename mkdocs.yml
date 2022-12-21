@@ -60,14 +60,18 @@ nav:
       - Counterfactuals:
         - Ates: ./Notebooks/Ates_torch.ipynb
         - Nun-CF: ./Notebooks/NunCF_torch.ipynb
+        - TSEvo: ./Notebooks/TSEvo_torch.ipynb
     - Feature Attribution Methods:
       - Leftist: ./Notebooks/Leftist_torch.ipynb
       - Saliency: ./Notebooks/TSR_torch.ipynb
   - API References: 
-    - InterpretabilityMethods: 
+    - Bases:
+      - Instance Based:  ./Methods/CF.md
+      - Feature Attribution: ./Methods/Saliency.md
+    - Methods: 
       - Counterfactual:
-        - CF-Base:  ./Methods/CF.md
+        - TSEvo: ./Methods/TSEvo.md
         - COMTE: ./Methods/COMTE.md
         - NUNCF: ./Methods/NunCF.md
-      - Saliency: ./Methods/Saliency.md
+      - TSR: ./Methods/Saliency.md
       - LEFTIST: ./Methods/Leftist.md
