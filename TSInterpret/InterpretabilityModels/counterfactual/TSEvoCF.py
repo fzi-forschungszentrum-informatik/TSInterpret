@@ -17,7 +17,8 @@ class TSEvo(CF):
      21st IEEE International Conference on Machine Learning and Applications (ICMLA). IEEE, 2022.
     ----------
     """
-    def __init__(self, model, data,mode='time', backend="PYT", verbose=0):
+
+    def __init__(self, model, data, mode="time", backend="PYT", verbose=0):
         """
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
@@ -67,7 +68,7 @@ class TSEvo(CF):
         print(len(original_y.shape))
         if len(original_x.shape) < 3:
             original_x = np.array([original_x])
-        if self.backend == "TF" or self.mode=='time':
+        if self.backend == "TF" or self.mode == "time":
             original_x = original_x.reshape(
                 original_x.shape[0], original_x.shape[2], original_x.shape[1]
             )
@@ -81,7 +82,9 @@ class TSEvo(CF):
         else:
             reference_set = self.x[np.where(self.y != original_y)]
 
-        reference_set=reference_set.reshape(-1, original_x.shape[1],original_x.shape[2])
+        reference_set = reference_set.reshape(
+            -1, original_x.shape[1], original_x.shape[2]
+        )
         if len(reference_set.shape) == 2:
             reference_set = reference_set.reshape(-1, 1, reference_set.shape[-1])
 

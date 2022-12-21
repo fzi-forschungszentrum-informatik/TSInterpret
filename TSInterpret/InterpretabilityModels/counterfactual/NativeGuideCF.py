@@ -19,7 +19,7 @@ warnings.simplefilter("ignore")
 class NativeGuideCF(CF):
     """
     NUN_CF according to [1] for both torch and tensorflow.
-    
+
     References
     ----------
     [1] Delaney, E., Greene, D., Keane, M.T.: Instance-Based Counterfactual Explanations
@@ -27,7 +27,7 @@ class NativeGuideCF(CF):
         Based Reasoning Research and Development, vol. 12877, pp. 32–47. Springer
         International Publishing, Cham (2021), series Title: Lecture Notes in Computer
         Science.
-    ---------- 
+    ----------
     """
 
     def __init__(
