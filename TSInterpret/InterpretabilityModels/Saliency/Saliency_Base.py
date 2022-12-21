@@ -19,7 +19,12 @@ class Saliency(FeatureAttribution):
     """
 
     def __init__(
-        self, model, NumTimeSteps:int, NumFeatures:int, method:str="GRAD", mode:str="time"
+        self,
+        model,
+        NumTimeSteps: int,
+        NumFeatures: int,
+        method: str = "GRAD",
+        mode: str = "time",
     ) -> None:
         """
         Arguments:

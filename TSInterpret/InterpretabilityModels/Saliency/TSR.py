@@ -29,7 +29,7 @@ class TSR:
             NumFetaures int : Number Features
             method str: Saliency Methode to be used
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
-        """   
+        """
         if isinstance(model, torch.nn.Module):
 
             return Saliency_PTY(

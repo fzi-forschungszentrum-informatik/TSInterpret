@@ -40,11 +40,11 @@ class Saliency_TF(Saliency):
     def __init__(
         self,
         model,
-        NumTimeSteps:int,
-        NumFeatures:int,
-        method:str="GRAD",
-        mode:str="time",
-        device:str="cpu",
+        NumTimeSteps: int,
+        NumFeatures: int,
+        method: str = "GRAD",
+        mode: str = "time",
+        device: str = "cpu",
     ) -> None:
         """
         Arguments:

@@ -44,11 +44,11 @@ class Saliency_PTY(Sal):
     def __init__(
         self,
         model,
-        NumTimeSteps:int,
-        NumFeatures:int,
-        method:str="GRAD",
-        mode:str="time",
-        device:str="cpu",
+        NumTimeSteps: int,
+        NumFeatures: int,
+        method: str = "GRAD",
+        mode: str = "time",
+        device: str = "cpu",
     ) -> None:
         """Initialization
         Arguments:
@@ -81,9 +81,9 @@ class Saliency_PTY(Sal):
             self.Grad = FeatureAblation(model)
         elif method == "FO":
             self.Grad = Occlusion(model)
-        self.device= device
+        self.device = device
 
-    def explain(self, item:np.ndarray, labels:int, TSR:bool=True):
+    def explain(self, item: np.ndarray, labels: int, TSR: bool = True):
         """Method to explain the model based on the item.
         Arguments:
             item np.array: item to get feature attribution for, if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`
@@ -174,26 +174,26 @@ class Saliency_PTY(Sal):
             )
 
         if TSR:
-            #print('TSR', TSR)
+            # print('TSR', TSR)
             TSR_attributions = self._getTwoStepRescaling(
                 input,
                 labels,
                 hasBaseline=base,
                 hasSliding_window_shapes=has_sliding_window,
             )
-            #print('TSR Attribution', TSR_attributions.shape)
+            # print('TSR Attribution', TSR_attributions.shape)
             TSR_saliency = self._givenAttGetRescaledSaliency(
                 TSR_attributions, isTensor=False
             )
-            #print('TSR Saliency', TSR_saliency.shape)
+            # print('TSR Saliency', TSR_saliency.shape)
             return TSR_saliency
         else:
-            #print('TSR', TSR)
+            # print('TSR', TSR)
             # TODO attributions does not exist for SVS and Fo
             rescaledGrad[
                 idx : idx + batch_size, :, :
             ] = self._givenAttGetRescaledSaliency(attributions)
-            #print('Rescaled', rescaledGrad.shape)
+            # print('Rescaled', rescaledGrad.shape)
             return rescaledGrad[0]
 
     def _getTwoStepRescaling(
@@ -210,7 +210,7 @@ class Saliency_PTY(Sal):
         timeGrad = np.zeros((1, sequence_length))
         inputGrad = np.zeros((input_size, 1))
         newGrad = np.zeros((input_size, sequence_length))
-        #print("has Sliding Window", hasSliding_window_shapes)
+        # print("has Sliding Window", hasSliding_window_shapes)
         if hasBaseline is None:
             ActualGrad = (
                 self.Grad.attribute(input, target=TestingLabel).data.cpu().numpy()
@@ -228,7 +228,7 @@ class Saliency_PTY(Sal):
                     .numpy()
                 )
             elif hasSliding_window_shapes is not None:
-                #print("HAS SLIDING WINDOW")
+                # print("HAS SLIDING WINDOW")
                 ActualGrad = (
                     self.Grad.attribute(
                         input,
@@ -270,7 +270,7 @@ class Saliency_PTY(Sal):
                         .numpy()
                     )
                 elif hasSliding_window_shapes is not None:
-                    #print("HAS SLIDING WINDOW")
+                    # print("HAS SLIDING WINDOW")
                     timeGrad_perTime = (
                         self.Grad.attribute(
                             newInput,
@@ -348,7 +348,7 @@ class Saliency_PTY(Sal):
 
             for c in range(input_size):
                 newGrad[c, t] = timeContibution[0, t] * featureContibution[c, 0]
-        #print('NewGrad',newGrad.shape)
+        # print('NewGrad',newGrad.shape)
         return newGrad
 
     def _givenAttGetRescaledSaliency(self, attributions, isTensor=True):
