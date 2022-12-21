@@ -54,7 +54,7 @@ def cnn_gunPoint_tensorflow():
 @pytest.fixture
 def cf_evo_torch_explainer( request, cnn_gunPoint_torch):
     X, y, model = cnn_gunPoint_torch
-    cf_explainer =TSEvo(model= model,data=(X,y), backend='PYT')
+    cf_explainer =TSEvo(model= model,data=(X,y), backend='PYT', mode='feat')
     yield X, y, model, cf_explainer
 
 @pytest.fixture

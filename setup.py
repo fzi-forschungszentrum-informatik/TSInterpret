@@ -52,7 +52,8 @@ base_packages = [
     "pyts>=0.12.0",
     "deprecated==1.2.13",
     "pymop",
-    "deap"
+    "deap", 
+    "wheel"
 ]
 
 dev_packages = base_packages + [
