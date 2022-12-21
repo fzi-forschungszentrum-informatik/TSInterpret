@@ -28,8 +28,11 @@ class LEFTIST(FeatureAttribution):
     """
     Local explainer for time series classification. Wrapper for LEFTIST from [1].
 
+    References
+    ----------
     [1] Guillemé, Maël, et al. "Agnostic local explanation for time series classification."
     2019 IEEE 31st International Conference on Tools with Artificial Intelligence (ICTAI). IEEE, 2019.
+    ----------
     """
 
     def __init__(
@@ -45,10 +48,10 @@ class LEFTIST(FeatureAttribution):
     ) -> None:
         """Initization.
         Arguments:
-           model_to_explain: classification model to explain
-           reference_set: reference set
-           mode: time or Feature
-           backend: TF, PYT or SK
+           model_to_explain [torch.nn.Module, Callable, tf.keras.model]: classification model to explain.
+           reference_set Tuple: Reference Dataset as Tuple (x,y).
+           mode str: Name of second dimension: `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
+           backend str: TF, PYT or SK
            transform_name str: Name of transformer
            learning_process_name str: 'Lime' or 'Shap'
            nb_interpretable_feature int: number of desired features
@@ -97,14 +100,14 @@ class LEFTIST(FeatureAttribution):
         Compute the explanation.
 
         Arguments:
-            instance np.array: item to be explained
-            nb_neighbors (int): number of neighbors to generate.
-            idx_label (int): index of label to explain. If None, return an explanation for each label.
-            explanation_size (int): number of feature to use for the explanations
+            instance np.array: item to be explained. Shape : `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
+            nb_neighbors int: number of neighbors to generate.
+            idx_label int: index of label to explain. If None, return an explanation for each label.
+            explanation_size int: number of feature to use for the explanations
             random_state int: fixes seed
 
         Returns:
-            List: Attribution weight
+            List: Attribution weight `mode = time` -> `(explanation_size,time, feat)` or `mode = time` -> `(explanation_size,feat, time)`
         """
 
         if self.segmentator_name == "uniform":
