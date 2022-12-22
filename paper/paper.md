@@ -17,7 +17,7 @@ authors:
 affiliations:
  - name: FZI Research Center for Information Technology, Karlsruhe, Germany
    index: 1
-date: 23 December 2022
+date: 22 December 2022
 bibliography: paper.bib
 
 ---
