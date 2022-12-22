@@ -57,8 +57,8 @@ Model-Agnostic methods can be applied to any model and rely on analyzing the con
 <p align="center"><img src="../img/Post-Hoc.png" height=700 width=700 /></p>
 Take, for example, a Decision Support System to classify heart rates as depicted in the figure below. While the data scientist knows that the machine learning model can obtain an accuracy of over 90 % to classify a heart rate as abnormal or normal, the decision process of such a system is still intransparent resulting in unsureness about the decision process of a model. Wrong Classifications in both directions can have long-lasting effects on a patient relying on the system. If a heart rate is wrongly classified as normal, a patient will not get the necessary medication. If a heart rate is wrongly classified as Abnormal, a patient would get medication and endure side effects although his heart might still be health 
 To make this decision process more opaque, a data scientist might decide to use algorithms for explainable and interpretable machine learning, to learn: 
-1. Which features are important.
-2. Which feature influences the decision of a model positively or negatively.
-3. How a counter-example would look like.
+- 1. Which features are important.
+- 2. Which feature influences the decision of a model positively or negatively.
+- 3. How a counter-example would look like.
 
 
