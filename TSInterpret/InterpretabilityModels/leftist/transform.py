@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class Transform(ABC):
     """
@@ -9,6 +10,7 @@ class Transform(ABC):
     Attributes:
         explained_instance (Object): instance to explain.
     """
+
     @abstractmethod
     def __init__(self, explained_instance):
         """

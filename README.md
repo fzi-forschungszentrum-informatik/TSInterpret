@@ -14,7 +14,7 @@
 </p>
 
 TSInterpret is a Python library for interpreting time series classification.
-The ambition is to faciliate the usage of times series interpretability methods. The Framework supports Sklearn, Tensorflow, Torch and in some cases predict functions. A listing of implemented algorithms and supported frameworks can be found in our <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/AlgorithmOverview/">Documentation</a>. More information on our framework can be found in our <a href="https://arxiv.org/abs/2208.05280"> paper<a>.
+The ambition is to faciliate the usage of time series interpretability methods. The Framework supports Sklearn, Tensorflow, Torch and in some cases predict functions. A listing of implemented algorithms and supported frameworks can be found in our <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/">Documentation</a>. More information on our framework can be found in our <a href="https://arxiv.org/abs/2208.05280"> paper<a>.
 
 ## 💈 Installation
 ```shell
@@ -74,6 +74,13 @@ int_mod.plot(np.array([test_x[0,:,:]]),exp)
     <img src="./docs/img/ReadMe.png" alt="Algorithm Results" height="200"/>
 </p>
 
+## :monocle_face: Why a special package for the interpretability of time series predictors? 
+
+Compared to other data types like tabular, image, or natural language data, time series data is unintuitive to understand. Approaches to the explainability of tabular regression and classification often assume independent features.  Compared to images or textual data, humans cannot intuitively and instinctively understand the underlying information contained in time series data. Further, research has shown that applying explainability algorithms for tabular, image, or natural language data often yields non-understandable  and inaccurate explanations, as they do not consider the time component (e.g., highlighting many unconnected time-steps, instead of features or time slices [1]). 
+Increasing research has focused on developing and adapting approaches to time series (survey: [2]). However, with no unified interface, accessibility to those methods is still an issue. TSInterpret tries to facilitate this by providing a PyPI package with a unified interface for multiple algorithms, documentation, and learning resources (notebooks) on the application.
+
+[2] Rojat, Thomas, et al. "Explainable artificial intelligence (xai) on timeseries data: A survey." arXiv preprint arXiv:2104.00950 (2021).
+
 ## 🏫 Affiliations
 <p align="center">
     <img src="https://upload.wikimedia.org/wikipedia/de/thumb/4/44/Fzi_logo.svg/1200px-Fzi_logo.svg.png?raw=true" alt="FZI Logo" height="200"/>
@@ -81,7 +88,7 @@ int_mod.plot(np.array([test_x[0,:,:]]),exp)
 
 ## Citation
 
-If you use TSInterpret in your research, please consider citing it and the methods authors' original papers. The methods authors' original papers are cited in the documentation and the paper below.
+If you use TSInterpret in your research, please consider citing it and the authors' original papers. The authors' original papers are cited in the documentation and the paper below.
 
 ```
 @misc{https://doi.org/10.48550/arxiv.2208.05280,

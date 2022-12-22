@@ -1,7 +1,4 @@
+:::TSInterpret.InterpretabilityModels.InstanceBase
 :::TSInterpret.InterpretabilityModels.counterfactual.CF
-
-:::TSInterpret.InterpretabilityModels.counterfactual.NativeGuideCF
-
-:::TSInterpret.InterpretabilityModels.counterfactual.Ates
 
 \bibliography

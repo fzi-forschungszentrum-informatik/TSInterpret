@@ -17,11 +17,11 @@ repos:
         types: [python]
         entry: black
 
-      - id: isort
-        name: isort
-        language: python
-        types: [python]
-        entry: isort
+#      - id: isort
+#        name: isort
+#        language: python
+#        types: [python]
+#        entry: isort
 
       - id: flake8
         name: flake8
@@ -29,11 +29,11 @@ repos:
         types: [python]
         entry: flake8
 
-      - id: mypy
-        name: mypy
-        language: python
-        types: [python]
-        entry: mypy
+#      - id: mypy
+#        name: mypy
+#        language: python
+#        types: [python]
+#        entry: mypy
 
       - id: pyupgrade
         name: pyupgrade

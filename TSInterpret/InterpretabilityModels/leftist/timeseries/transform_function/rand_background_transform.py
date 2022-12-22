@@ -4,13 +4,14 @@ import numpy as np
 
 from TSInterpret.InterpretabilityModels.leftist.transform import Transform
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
 
 
 class RandBackgroundTransform(Transform):
     """
     Method to create neighbors representation in explained instance data space.
     """
+
     def __init__(self, explained_instance):
         """
         Must inherit Transform class.
@@ -46,5 +47,7 @@ class RandBackgroundTransform(Transform):
         idx_segments_to_replace = np.where(neighbor_mask)[0]
         segments_interval_to_replace = self.segments_interval[idx_segments_to_replace]
         for segment_interval in segments_interval_to_replace:
-            neighbor_values[segment_interval[0]:segment_interval[1] + 1] = instance_to_copy[segment_interval[0]:segment_interval[1] + 1]
+            neighbor_values[
+                segment_interval[0] : segment_interval[1] + 1
+            ] = instance_to_copy[segment_interval[0] : segment_interval[1] + 1]
         return neighbor_values

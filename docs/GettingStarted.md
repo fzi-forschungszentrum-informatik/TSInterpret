@@ -9,13 +9,14 @@ pip install tsinterpret
 
 You can install the latest development version from GitHub as so:
 ```shell
-pip install https://github.com/jhoelli/TSInterpret.git --upgrade
+pip install https://github.com/fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
 ```
 
 Or, through SSH:
 ```shell
-pip install git@github.com:jhoelli/TSInterpret.git --upgrade
+pip install git@github.com:fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
 ```
+Feel welcome to open an <a href= "https://github.com/fzi-forschungszentrum-informatik/TSInterpret/issues/new"> issue on GitHub </a> if you are having any trouble.
 
 # Basic Usage 
 
@@ -43,4 +44,4 @@ Afterwads we can use the Plot Function to obtain a visualiation of the explanati
 exp_model.plot(item,np.argmax(y_target,axis=1)[0],exp,label)
 ```
 
-The input and output details vary fir each method. Therefore, getting familiar with the different [algorithms](AlgorithmOverview.md) makes sense.  
+The input and output details vary for each method. Therefore, getting familiar with the different [algorithms](AlgorithmOverview.md) makes sense.  

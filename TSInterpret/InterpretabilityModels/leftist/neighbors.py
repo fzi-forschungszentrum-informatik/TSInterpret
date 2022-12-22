@@ -1,6 +1,7 @@
 import numpy as np
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class Neighbors:
     """
@@ -14,38 +15,44 @@ class Neighbors:
 
     """
 
-    def __init__(self,masks=None,kernel_weights=None,values=None,proba_labels=None):
+    def __init__(self, masks=None, kernel_weights=None, values=None, proba_labels=None):
         if masks is None:
             self.masks = None
-        elif isinstance(masks,np.ndarray) and (masks.ndim==2):
+        elif isinstance(masks, np.ndarray) and (masks.ndim == 2):
             self.masks = masks
         else:
-            raise TypeError("neighbors masks must be np.ndarray with two dimensions (a matrix)")
+            raise TypeError(
+                "neighbors masks must be np.ndarray with two dimensions (a matrix)"
+            )
 
         if kernel_weights is None:
             self.kernel_weights = None
-        elif isinstance(kernel_weights,np.ndarray) and (kernel_weights.ndim==1):
+        elif isinstance(kernel_weights, np.ndarray) and (kernel_weights.ndim == 1):
             self.kernel_weights = kernel_weights
         else:
-            raise TypeError("kernel weights must be np.ndarray with one dimensions (an array)")
+            raise TypeError(
+                "kernel weights must be np.ndarray with one dimensions (an array)"
+            )
 
         if values is None:
             self.values = None
-        elif isinstance(values,np.ndarray) and (values.ndim==2):
+        elif isinstance(values, np.ndarray) and (values.ndim == 2):
             self.values = values
         else:
-            raise TypeError("neighbors values must be np.ndarray with two dimensions (a matrix)")
+            raise TypeError(
+                "neighbors values must be np.ndarray with two dimensions (a matrix)"
+            )
 
         if proba_labels is None:
             self.proba_labels = None
-        elif isinstance(proba_labels,np.ndarray) and (proba_labels.ndim==2):
+        elif isinstance(proba_labels, np.ndarray) and (proba_labels.ndim == 2):
             self.proba_labels = proba_labels
         else:
-            raise TypeError("neighbors probability labels must be np.ndarray with two dimensions (a matrix)")
-
-
+            raise TypeError(
+                "neighbors probability labels must be np.ndarray with two dimensions (a matrix)"
+            )
 
     def __str__(self):
         return "masks : \n {} \n kernel_weights : \n {} \n values : \n {} \n proba_labels : \n {} \n ".format(
-            self.masks,self.kernel_weights,self.values,self.proba_labels
+            self.masks, self.kernel_weights, self.values, self.proba_labels
         )

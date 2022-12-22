@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class LearningProcess(ABC):
     """
     Abstract class for the neighbors explainer.
     """
+
     @abstractmethod
     def __init__(self):
         """
@@ -14,7 +16,7 @@ class LearningProcess(ABC):
         self.kernel = None
 
     @abstractmethod
-    def solve(self,neighbors,idx_label,explanation_size):
+    def solve(self, neighbors, idx_label, explanation_size):
         """
         Build the explanation model from the neighbors.
 

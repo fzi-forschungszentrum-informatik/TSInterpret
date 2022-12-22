@@ -1,12 +1,12 @@
-from TSInterpret.InterpretabilityModels.InterpretabilityBase import \
-    InterpretabilityBase
+from TSInterpret.InterpretabilityModels.InterpretabilityBase import InterpretabilityBase
 
 
 class InstanceBase(InterpretabilityBase):
     def __init__(self, mlmodel, mode):
-        super().__init__(mlmodel,mode)
+        super().__init__(mlmodel, mode)
 
     def explain(self):
         pass
-    def plot (self):
+
+    def plot(self):
         pass

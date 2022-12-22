@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-__author__ = 'Mael Guilleme mael.guilleme[at]irisa.fr'
+__author__ = "Mael Guilleme mael.guilleme[at]irisa.fr"
+
 
 class NeighborsGenerator(ABC):
     """
@@ -15,7 +16,7 @@ class NeighborsGenerator(ABC):
         pass
 
     @abstractmethod
-    def generate(self,nb_features,nb_neighbors,transform):
+    def generate(self, nb_features, nb_neighbors, transform):
         """
         Generate neighbors and the kernel weights of the neighbors around the explained instance.
 
