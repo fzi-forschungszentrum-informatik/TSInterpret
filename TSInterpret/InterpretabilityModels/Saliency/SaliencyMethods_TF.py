@@ -49,8 +49,8 @@ class Saliency_TF(Saliency):
         """
         Arguments:
             model [tf.keras.models]: model to be explained
-            NumTimeStep int : Number of Time Step
-            NumFetaures int : Number Features
+            NumTimeSteps int : Number of Time Step
+            NumFeatures int : Number Features
             method str: Saliency Methode to be used
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
         """

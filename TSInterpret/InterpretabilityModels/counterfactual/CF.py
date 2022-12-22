@@ -16,7 +16,7 @@ class CF(InstanceBase):
     def __init__(self, mlmodel, mode) -> None:
         """Initialization of CF.
         Arguments:
-            model: Machine Learning Model to be explained.
+            mlmodel [torch.nn.Module, Callabale, tf.keras.Model]: Machine Learning Model to be explained.
             mode str : Second dimension is feature --> 'feat', is time --> 'time'
         """
 

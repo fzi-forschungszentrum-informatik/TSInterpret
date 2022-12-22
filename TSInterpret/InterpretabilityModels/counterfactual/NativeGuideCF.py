@@ -103,7 +103,7 @@ class NativeGuideCF(CF):
             predicted_label (np.array): Label of instance.
             reference_set (np.array): Set of addtional labeled data (could be training or test set)
             distance (str):
-            num_neighbors (int):number nearest neighbors to return
+            n_neighbors (int):number nearest neighbors to return
         Returns:
             [np.array]: Returns K_Nearest_Neighbors of input query with different classification label.
 

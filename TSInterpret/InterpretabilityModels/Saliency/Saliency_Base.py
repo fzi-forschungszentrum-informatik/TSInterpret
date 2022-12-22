@@ -31,7 +31,7 @@ class Saliency(FeatureAttribution):
         Arguments:
             model [torch.nn.Module,tf.keras.models]: model to be explained.
             NumTimeSteps int: number of timesteps.
-            NumFeature int: number of features.
+            NumFeatures int: number of features.
             method str: Saliency Method to be used.
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`.
         """

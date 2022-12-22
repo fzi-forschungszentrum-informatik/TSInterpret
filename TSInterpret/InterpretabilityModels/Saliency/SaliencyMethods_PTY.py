@@ -53,8 +53,8 @@ class Saliency_PTY(Sal):
         """Initialization
         Arguments:
             model [torch.nn.Module]: model to be explained
-            NumTimeStep int : Number of Time Step
-            NumFetaures int : Number Features
+            NumTimeSteps int : Number of Time Step
+            NumFeatures int : Number Features
             method str: Saliency Methode to be used
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
         """
@@ -90,7 +90,7 @@ class Saliency_PTY(Sal):
             labels int: label
             TSR bool: if True time series rescaling according to [1] is used, else plain (scaled) weights are returened
         Returns:
-        np.array: feature attribution weights `mode = time`->`(time,feat)` or `mode = feat`->`(feat,time)`
+            np.array: feature attribution weights `mode = time`->`(time,feat)` or `mode = feat`->`(feat,time)`
         """
         mask = np.zeros((self.NumTimeSteps, self.NumFeatures), dtype=int)
         for i in range(self.NumTimeSteps):

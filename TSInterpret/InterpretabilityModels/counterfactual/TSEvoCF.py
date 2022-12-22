@@ -23,7 +23,7 @@ class TSEvo(CF):
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
             data Tuple: Reference Dataset as Tuple (x,y).
-            mode: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
+            mode str: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
             backend str: desired Model Backend ('PYT', 'TF', 'SK').
             verbose int: Logging Level
         """
