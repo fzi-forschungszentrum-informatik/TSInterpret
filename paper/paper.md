@@ -9,10 +9,11 @@ authors:
     corresponding: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Cedric Kulbach
-  - orcid: 0000-0002-9363-4728
+    orcid: 0000-0002-9363-4728
     equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 1
   - name: Steffen Thoma
+    orcid: 0000-0003-1205-0630
     #equal-contrib: true # (This is how to denote the corresponding author)
     affiliation: 1
 affiliations:
