@@ -4,20 +4,21 @@ tags:
   - Python
 authors:
   - name: Jacqueline Höllig 
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0003-4978-3336
     equal-contrib: true
     corresponding: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Cedric Kulbach
+  - orcid: 0000-0002-9363-4728
     equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 1
   - name: Steffen Thoma
     #equal-contrib: true # (This is how to denote the corresponding author)
     affiliation: 1
 affiliations:
- - name: FZI Forschungszentrum Informatik, Germany
+ - name: FZI Research Center for Information Technology, Karlsruhe, Germany
    index: 1
-date: 23 Decmber 2022
+date: 23 December 2022
 bibliography: paper.bib
 
 ---
