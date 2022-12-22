@@ -38,13 +38,13 @@ Explanations Methods and Techniques for Model Interpretability can be classified
 ### Post-Hoc vs Instrinct
 
 Instrinct Interpretability refers to models that are interpretable by design. This can be achieved by constraining model complexity or including explanation components in the model design. 
-Post-Hoc Interpretability refers to explanation methods applied after model training and are usually decoupled from the model. 
 
-TSInterpret focuses on Post-Hoc Interpretability.
+Post-Hoc Interpretability refers to explanation methods applied after model training and are usually decoupled from the model. 
 
 ### Model-Specific vs Model-Agnostic
 
 Model-Specific methods are limited to specific model classes and usually rely on a specific model internal (e.g., Gradients).
+
 Model-Agnostic methods can be applied to any model and rely on analyzing the connection between inputs and output. Those methods cannot access the model's internal functions.
 
 ### Results of Explanation Methods
