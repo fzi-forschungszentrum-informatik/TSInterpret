@@ -5,12 +5,10 @@ tags:
 authors:
   - name: Jacqueline Höllig 
     orcid: 0000-0003-4978-3336
-    equal-contrib: true
     corresponding: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Cedric Kulbach
     orcid: 0000-0002-9363-4728
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 1
   - name: Steffen Thoma
     orcid: 0000-0003-1205-0630
@@ -34,7 +32,7 @@ Temporal data is ubiquitous and encountered in many real-world applications rang
 
 # Features
 
-Explanations can take various form (see Figure \autoref{fig:Example}). Different use cases or users need different types of explanations. While for a domain expert, counterfactuals are useful, a data scientist or machine learning engineer prefers gradient-based approaches [@ ismail_benchmarking_2020] to evaluate the model's feature attribution.
+Explanations can take various form (see Figure \autoref{fig:Example}). Different use cases or users need different types of explanations. While for a domain expert, counterfactuals are useful, a data scientist or machine learning engineer prefers gradient-based approaches [@ismail_benchmarking_2020] to evaluate the model's feature attribution.
 
 ![Explanations.\label{fig:Example}](ECG.png){}
 
