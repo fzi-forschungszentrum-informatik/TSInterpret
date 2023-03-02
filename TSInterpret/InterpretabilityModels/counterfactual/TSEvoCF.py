@@ -105,4 +105,4 @@ class TSEvo(CF):
             epochs=epochs,
         )
         ep, output = e.run()
-        return np.array(ep)[0][0], output
+        return np.array(ep)[0], output

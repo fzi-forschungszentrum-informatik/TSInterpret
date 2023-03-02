@@ -180,9 +180,13 @@ class CF(InstanceBase):
             item = item.reshape(item.shape[0], item.shape[2], item.shape[1])
         # TODO This is new and needs to be testes
         ind = ""
+        # print("Item Shape", item.shape[-2])
         if item.shape[-2] > 1:
+
             res = (item != exp).any(-1)
-            ind = np.where(res[0])
+            # print(res)
+            ind = np.where(res)
+            # print(ind)
             if len(ind[0]) == 0:
                 print("Items are identical")
                 return
@@ -262,7 +266,7 @@ class CF(InstanceBase):
 
         i = 0
         res = (item != exp).any(-1)
-        ind = np.where(res[0])
+        ind = np.where(res)
         if len(ind[0]) == 0:
             print("Items are identical")
             return
@@ -276,8 +280,8 @@ class CF(InstanceBase):
 
             df = pd.DataFrame(
                 {
-                    f"Predicted: {org_label}": list(item[0][channel].flatten()),
-                    f"Counterfactual: {cf_label}": list(exp[0][channel].flatten()),
+                    f"Predicted: {org_label}": list(item[channel].flatten()),
+                    f"Counterfactual: {cf_label}": list(exp[channel].flatten()),
                 }
             )
 
