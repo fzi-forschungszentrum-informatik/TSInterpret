@@ -180,13 +180,13 @@ class CF(InstanceBase):
             item = item.reshape(item.shape[0], item.shape[2], item.shape[1])
         # TODO This is new and needs to be testes
         ind = ""
-        print("Item Shape", item.shape[-2])
+        #print("Item Shape", item.shape[-2])
         if item.shape[-2] > 1:
 
             res = (item != exp).any(-1)
-            print(res)
+            #print(res)
             ind = np.where(res)
-            print(ind)
+            #print(ind)
             if len(ind[0]) == 0:
                 print("Items are identical")
                 return
