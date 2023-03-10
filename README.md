@@ -61,7 +61,7 @@ test_y=enc1.transform(test_y.reshape(-1,1))
 # Load a model.
 model_to_explain = tf.keras.models.load_model(f'../../ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5')
 ```
-Explain & Visualize Model
+### Explain & Visualize Model
 ```python
 from TSInterpret.InterpretabilityModels.Saliency.TSR import TSR
 int_mod=TSR(model_to_explain, train_x.shape[-2],train_x.shape[-1], method='IG',mode='time')
