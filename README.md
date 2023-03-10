@@ -48,7 +48,7 @@ import tensorflow as tf
 
 ```
 ### Create Classifcation Model
-This Sections uses a pretrained Classification Model to illustrate the use of our package. For running the example, please clone our repository. The code in this section can also be replaces with your personal classifiaction model written in torch or tensorflow.
+This Section uses a pretrained Classification Model to illustrate the use of our package. For running the example, please clone our repository and comment the variable  PATH_TO_YOUR_CLASSIFICATION_MODEL in. The code in this section can also be replaces with your personal classifiaction model written in torch or tensorflow.
 ```python
 
 # Load data.
@@ -59,8 +59,9 @@ train_y=enc1.transform(train_y.reshape(-1,1))
 test_y=enc1.transform(test_y.reshape(-1,1))
 
 # Load a model.
+#e.g., PATH_TO_YOUR_CLASSIFICATION_MODEL=f'./TSInterpret/ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5'
 model_to_explain = tf.keras.models.load_model(PATH_TO_YOUR_CLASSIFICATION_MODEL)
-#f'./TSInterpret/ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5'
+
 ```
 ### Explain & Visualize Model
 ```python
