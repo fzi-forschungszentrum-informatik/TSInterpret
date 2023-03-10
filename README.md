@@ -59,7 +59,7 @@ train_y=enc1.transform(train_y.reshape(-1,1))
 test_y=enc1.transform(test_y.reshape(-1,1))
 
 # Load a model.
-model_to_explain = tf.keras.models.load_model(PATH_TO_YOUR_CLASSIFICATION_MODEL) 7
+model_to_explain = tf.keras.models.load_model(PATH_TO_YOUR_CLASSIFICATION_MODEL)
 #f'./TSInterpret/ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5'
 ```
 ### Explain & Visualize Model
