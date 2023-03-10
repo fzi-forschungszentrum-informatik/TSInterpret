@@ -54,12 +54,13 @@ This Sections uses a pretrained Classification Model to illustrate the use of ou
 # Load data.
 dataset='BasicMotions'
 train_x,train_y, test_x, test_y=UCR_UEA_datasets().load_dataset(dataset)
-enc1=pickle.load(open(f'../../ClassificationModels/models/{dataset}/OneHotEncoder.pkl','rb'))
+enc1=sklearn.OneHotEncoder(sparse=False).fit(train_y.reshape(-1,1))
 train_y=enc1.transform(train_y.reshape(-1,1))
 test_y=enc1.transform(test_y.reshape(-1,1))
 
 # Load a model.
-model_to_explain = tf.keras.models.load_model(f'../../ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5')
+model_to_explain = tf.keras.models.load_model(PATH_TO_YOUR_CLASSIFICATION_MODEL) 7
+#f'./TSInterpret/ClassificationModels/models/{dataset}/cnn/{dataset}best_model.hdf5'
 ```
 ### Explain & Visualize Model
 ```python
