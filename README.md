@@ -48,7 +48,7 @@ import tensorflow as tf
 
 ```
 ### Create Classifcation Model
-This Section uses a pretrained Classification Model to illustrate the use of our package. For running the example, please clone our repository and comment the variable  PATH_TO_YOUR_CLASSIFICATION_MODEL in. The code in this section can also be replaces with your personal classifiaction model written in torch or tensorflow.
+This Section uses a pretrained Classification Model to illustrate the use of our package. For running the example, please clone our repository and comment the variable  PATH_TO_YOUR_CLASSIFICATION_MODEL in. The code in this section can also be replaces with your personal classification model written in torch or tensorflow.
 ```python
 
 # Load data.
