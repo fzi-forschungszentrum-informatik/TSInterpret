@@ -26,7 +26,7 @@ Please add an extra branch for your development. Do not develop on the main bran
 ## Adding a new Algorithm
 
 1. Pick a class from `FeatureAttribution`, `InstanceBased` or `InterpretabilityBase`, depending on the Algorithms Features. More information on the taxonomy can be found <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/Interpretability/#taxonomy">here</a>.
-2.  Make sure you implement the required method `explain`. For Algorithms that inherit from `InterpretabilityBase`, you will also need to implement `plot`. In all other cases a deafault plot function is available.
+2.  Make sure you implement the required method `explain`. For Algorithms that inherit from `InterpretabilityBase`, you will also need to implement `plot`. In all other cases a default plot function is available.
 3. Add to  `__init__` method.
 4. If possible provide a default value for each parameter. 
 5. Write a comprehensive docstring with example usage.
