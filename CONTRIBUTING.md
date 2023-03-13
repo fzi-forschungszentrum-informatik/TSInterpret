@@ -7,12 +7,31 @@ We welcome PRs from the community. By contributing to TSInterpret, you agree tha
 - new Features/Methods
 - fix typos, improve code quality, code coverage
 
+## Basic Development Workflow
+
+1. Fork the main branch from the GitHub repository.
+2. Clone your fork locally.
+3. Commit changes.
+4. Push the changes to your fork.
+5. Send a pull request from your fork back to the original main branch.
+
 ## Development Installation
 ```
 git clone https://github.com/fzi-forschungszentrum-informatik/TSInterpret.git
 pip install -e .[dev]
 ```
 Please add an extra branch for your development. Do not develop on the main branch.
+
+
+## Adding a new Algorithm
+
+1. Pick a class from `FeatureAttribution`, `InstanceBased` or `InterpretabilityBase`, depending on the Algorithms Features. More information on the taxonomy can be found <a href="https://fzi-forschungszentrum-informatik.github.io/TSInterpret/Interpretability/#taxonomy">here</a>.
+2.  Make sure you implement the required method `explain`. For Algorithms that inherit from `InterpretabilityBase`, you will also need to implement `plot`. In all other cases a deafault plot function is available.
+3. Add to  `__init__` method.
+4. If possible provide a default value for each parameter. 
+5. Write a comprehensive docstring with example usage.
+6. Write tests in `./tests`.
+7. Ideally, add a notebook with sample usage to `./docs/Notebooks`.
 
 ## Git pre-commit hooks
 
