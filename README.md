@@ -87,6 +87,15 @@ Increasing research has focused on developing and adapting approaches to time se
 
 [2] Rojat, Thomas, et al. "Explainable artificial intelligence (xai) on timeseries data: A survey." arXiv preprint arXiv:2104.00950 (2021).
 
+## 👐 Contributing
+
+Feel free to contribute in any way you like, we're always open to new ideas and approaches.
+
+- If you have questions, spotted a bug or ideas, feel free to open an [issue](https://github.com/fzi-forschungszentrum-informatik/TSInterpret/issues/new/choose).
+- Before opening a pull request, we also encourage users to open an issue for discussion. 
+
+Details on how to Contribute can be found  [here](https://github.com/fzi-forschungszentrum-informatik/TSInterpret/blob/main/CONTRIBUTING.md).
+
 ## 🏫 Affiliations
 <p align="center">
     <img src="https://upload.wikimedia.org/wikipedia/de/thumb/4/44/Fzi_logo.svg/1200px-Fzi_logo.svg.png?raw=true" alt="FZI Logo" height="200"/>
