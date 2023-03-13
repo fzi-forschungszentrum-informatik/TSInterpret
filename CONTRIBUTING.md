@@ -56,3 +56,6 @@ Test files can be found / should be added in folder ./tests.
 - [ ] For any new functionality or new examples, appropriate links are added.
 - [ ] For any changes to existing algorithms, run the example notebooks and tests manually and check that everything still works.
 - [ ] Any changes to dependencies are reflected in the appropriate place.
+
+## LISENCE
+By contributing to TSInterpret, you agree that your contributions will be licensed under the LICENSE file in the root directory of this source tree.
