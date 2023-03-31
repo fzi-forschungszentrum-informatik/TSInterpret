@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.python }}-pip-
       - name: Install Python dependencies
         run: |
-          export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True 
+          export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True  
           python -m pip install --upgrade pip
           pip install wheel
           pip install -e ".[dev]" codecov
