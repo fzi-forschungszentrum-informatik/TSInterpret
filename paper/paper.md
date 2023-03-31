@@ -34,7 +34,7 @@ Temporal data is ubiquitous and encountered in many real-world applications rang
 
 # Features
 
-Explanations can take various form (see Figure \autoref{fig:Example}). Different use cases or users need different types of explanations. While for a domain expert, counterfactuals are useful, a data scientist or machine learning engineer prefers gradient-based approaches [@ismail_benchmarking_2020] to evaluate the model's feature attribution.
+Explanations can take various form (see \autoref{fig:Example}). Different use cases or users need different types of explanations. While for a domain expert, counterfactuals are useful, a data scientist or machine learning engineer prefers gradient-based approaches [@ismail_benchmarking_2020] to evaluate the model's feature attribution.
 
 ![Explanations.\label{fig:Example}](ECG.png){}
 
