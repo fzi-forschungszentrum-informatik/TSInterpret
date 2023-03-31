@@ -38,7 +38,7 @@ Explanations can take various form (see \autoref{fig:Example}). Different use ca
 
 ![Explanations.\label{fig:Example}](ECG.png){}
 
-Counterfactual approaches calculate counterexamples by finding a time series close to the original time series that is classified differently, thereby showing decision boundaries. The intuition is to answer the question 'What if?'. `TSInterpret` implements @ates_counterfactual_2021, a perturbation-based approach for multivariate data, @sanchez-ruiz_instance-based_2021 for univariate time series and @hollig2022tsevo.
+Counterfactual approaches calculate counterexamples by finding a time series close to the original time series that is classified differently, thereby showing decision boundaries. The intuition is to answer the question 'What if?'. `TSInterpret` implements @ates_counterfactual_2021, a perturbation-based approach for multivariate data, @sanchez-ruiz_instance-based_2021 for univariate time series.
 Gradient-based approaches (e.g., GradCam) were adapted to time series by @ismail_benchmarking_2020 who proposed rescaling according to time step importance and feature importance. This is applicable to both gradient and perturbation-based methods and based on tf-explain [@meudec_raphael_tf-explain_2021] and captum [@kokhlikyan_captum_2020]. 
 LEFTIST by @guilleme_agnostic_2019 calculates feature importance based on a variety of Lime based on shapelets.
 
