@@ -5,12 +5,12 @@ tags:
 authors:
   - name: Jacqueline Höllig 
     orcid: 0000-0003-4978-3336
-    equal-contrib: true
+    #equal-contrib: true
     corresponding: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Cedric Kulbach
     orcid: 0000-0002-9363-4728
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
+    #equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 1
   - name: Steffen Thoma
     orcid: 0000-0003-1205-0630
@@ -30,7 +30,7 @@ bibliography: paper.bib
 
 # Statement of need
 
-Temporal data is ubiquitous and encountered in many real-world applications ranging from electronic health records [@rajkomar_scalable_2018] to cyber security [@susto_time-series_2018]. Although deep learning methods have been successful in the field of Computer Vision (CV) and Natural Language Processing (NLP) for almost a decade, application on time series has only occurred in the past few years [e.g., @fawaz_deep_2019;@rajkomar_scalable_2018;@susto_time-series_2018;@ruiz_great_2021]. Deep learning models have achieved state-of-the-art results on time series classification [e.g., @fawaz_deep_2019]. However, those methods are black boxes due to their complexity which limits their application to high-stake scenarios (e.g., in medicine or autonomous driving), where user trust and understandability of the decision process are crucial. In such a case, post-hoc interpretability is useful as it enables the analysis of already trained models without model modification. Much work has been done on post-hoc interpretability in CV and NLP, but most developed approaches are not directly applicable to time series data. The time component impedes the usage of existing methods  [@ismail_benchmarking_2020]. Thus, increasing effort is put into adapting existing methods to time series (e.g., LEFTIST based on SHAP/Lime [@guilleme_agnostic_2019], Temporal Saliency Rescaling for Saliency Methods [@ismail_benchmarking_2020], or Counterfactuals [@ates_counterfactual_2021;@sanchez-ruiz_instance-based_2021;@hollig2022tsevo]). Compared to images or textual data, humans cannot intuitively and instinctively understand the underlying information in time series data. Therefore, time series data, both uni- and multivariate, have an unintuitive nature, lacking an understanding at first sight  [@siddiqui_tsviz_2019]. Hence, providing suitable visualizations of time series interpretability becomes crucial.
+Temporal data is ubiquitous and encountered in many real-world applications ranging from electronic health records [@rajkomar_scalable_2018] to cyber security [@susto_time-series_2018]. Although deep learning methods have been successful in the field of Computer Vision (CV) and Natural Language Processing (NLP) for almost a decade, application on time series data has only occurred in the past few years [e.g., @fawaz_deep_2019;@rajkomar_scalable_2018;@susto_time-series_2018;@ruiz_great_2021]. Deep learning models have achieved state-of-the-art results on time series classification [e.g., @fawaz_deep_2019]. However, those methods are black boxes due to their complexity which limits their application to high-stake scenarios (e.g., in medicine or autonomous driving), where user trust and understandability of the decision process are crucial. In such scenarios, post-hoc interpretability is useful as it enables the analysis of already trained models without model modification. Much work has been done on post-hoc interpretability in CV and NLP, but most developed approaches are not directly applicable to time series data. The time component impedes the usage of existing methods  [@ismail_benchmarking_2020]. Thus, increasing effort is put into adapting existing methods to time series (e.g., LEFTIST based on SHAP/Lime [@guilleme_agnostic_2019], Temporal Saliency Rescaling for Saliency Methods [@ismail_benchmarking_2020], or Counterfactuals [@ates_counterfactual_2021;@sanchez-ruiz_instance-based_2021;@hollig2022tsevo]). Compared to images or textual data, humans cannot intuitively and instinctively understand the underlying information in time series data. Therefore, time series data, both uni- and multivariate, have an unintuitive nature, lacking an understanding at first sight  [@siddiqui_tsviz_2019]. Hence, providing suitable visualizations of time series interpretability becomes crucial.
 
 # Features
 
