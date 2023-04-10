@@ -95,9 +95,10 @@ def recombine(ind1, ind2):
             )
 
         else:
+
             items = np.where(channel1 == 1)
             if len(items[0]) != 0:
-                for item in items:
+                for item in items[0]:
                     ind1[item], ind2[item] = tools.cxUniform(
                         np.array(ind1[item]).tolist(),
                         np.array(ind2[item]).tolist(),
