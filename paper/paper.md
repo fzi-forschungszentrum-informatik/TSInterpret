@@ -1,5 +1,5 @@
 ---
-title: 'TSInterpret: A Python package for the interpretability of time series classification'
+title: 'TSInterpret: A Python Package for the Interpretability of Time Series Classification'
 tags:
   - Python
 authors:
