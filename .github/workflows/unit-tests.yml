@@ -37,8 +37,9 @@ jobs:
           export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True  
           python -m pip install --upgrade pip
           pip install wheel
+          pip install .[dev]
       - name: pytest
-        run: pytest --cov=. --cov-report=xml
+        run: pytest --cov .
       - name: Upload coverage reports to Codecov with GitHub Action
         uses: codecov/codecov-action@v3
         with:
