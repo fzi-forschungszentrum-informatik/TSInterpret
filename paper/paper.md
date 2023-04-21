@@ -26,7 +26,7 @@ bibliography: paper.bib
 
 # Summary
 
-`TSInterpret` is a python package that enables post-hoc interpretability and explanation of black-box time series classifiers with three lines of code. Due to the specific structure of time series (i.e., non-independent features [@ismail_benchmarking_2020], unintuitive visualizations [@siddiqui_tsviz_2019], traditional interpretability and explainability libraries [e.g., @kokhlikyan_captum_2020; @klaise_alibi_2021; @meudec_raphael_tf-explain_2021] find limited usage. `TSInterpret` specifically addresses the issue of black-box time series classification by providing a unified interface to state-of-the-art interpretation algorithms in combination with default plots. In addition, the package provides a framework for developing additional easy-to-use interpretability methods. 
+`TSInterpret` is a python package that enables post-hoc interpretability and explanation of black-box time series classifiers with three lines of code. Due to the specific structure of time series (i.e., non-independent features [@ismail_benchmarking_2020], unintuitive visualizations [@siddiqui_tsviz_2019], traditional interpretability and explainability libraries [e.g., @kokhlikyan_captum_2020;@klaise_alibi_2021;@meudec_raphael_tf-explain_2021] find limited usage. `TSInterpret` specifically addresses the issue of black-box time series classification by providing a unified interface to state-of-the-art interpretation algorithms in combination with default plots. In addition, the package provides a framework for developing additional easy-to-use interpretability methods. 
 
 # Statement of need
 
