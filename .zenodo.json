@@ -17,7 +17,7 @@
         }
     ],
 
-    "license": "BSD 3-Clause",
+    "license": "BSD-3-Clause",
 
     "title": "TSInterpret: A Python Package for the Interpretability of Time Series Classification"
 
