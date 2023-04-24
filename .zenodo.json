@@ -1,0 +1,25 @@
+{
+    "creators": [
+        {
+            "orcid": "0000-0003-4978-3336",
+            "affiliation": "FZI Research Center for Information Technology",
+            "name": "Höllig, Jacqueline"
+        },
+        {
+            "orcid": "0000-0002-9363-4728",
+            "affiliation": "FZI Research Center for Information Technology",
+            "name": "Kulbach, Cedric"
+        },
+        {
+            "orcid": "0000-0003-1205-0630",
+            "affiliation": "FZI Research Center for Information Technology",
+            "name": "Thoma, Steffen"
+        }
+    ],
+
+    "license": "BSD 3-Clause",
+
+    "title": "TSInterpret: A Python Package for the Interpretability of Time Series Classification",
+
+    "grants": [{"id":"02P20A013"}]
+}
