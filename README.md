@@ -11,6 +11,7 @@
     </a>
     <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/tsinterpret">
     <img alt="GitHub" src="https://img.shields.io/github/license/fzi-forschungszentrum-informatik/TSInterpret">
+    <a href="https://zenodo.org/badge/latestdoi/524909841"><img src="https://zenodo.org/badge/524909841.svg" alt="DOI"></a>
 </p>
 
 TSInterpret is a Python library for interpreting time series classification.
