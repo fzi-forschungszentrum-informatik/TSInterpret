@@ -11,7 +11,9 @@
     </a>
     <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/tsinterpret">
     <img alt="GitHub" src="https://img.shields.io/github/license/fzi-forschungszentrum-informatik/TSInterpret">
-    <a href="https://zenodo.org/badge/latestdoi/524909841"><img src="https://zenodo.org/badge/524909841.svg" alt="DOI"></a>
+    <a style="border-width:0" href="https://doi.org/10.21105/joss.05220">
+  <img src="https://joss.theoj.org/papers/10.21105/joss.05220/status.svg" alt="DOI badge" >
+</a>
 </p>
 
 TSInterpret is a Python library for interpreting time series classification.
@@ -122,21 +124,14 @@ Details on how to Contribute can be found  [here](https://github.com/fzi-forschu
 If you use TSInterpret in your research, please consider citing it and the authors' original papers. The authors' original papers are cited in the documentation and the paper below.
 
 ```
-@misc{https://doi.org/10.48550/arxiv.2208.05280,
-  doi = {10.48550/ARXIV.2208.05280},
-  
-  url = {https://arxiv.org/abs/2208.05280},
-  
-  author = {Höllig, Jacqueline and Kulbach, Cedric and Thoma, Steffen},
-  
-  keywords = {Machine Learning (cs.LG), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  
-  title = {TSInterpret: A unified framework for time series interpretability},
-  
-  publisher = {arXiv},
-  
-  year = {2022},
-  
-  copyright = {Creative Commons Attribution 4.0 International}
-}
+@article{Höllig2023, 
+doi = {10.21105/joss.05220}, 
+url = {https://doi.org/10.21105/joss.05220}, 
+year = {2023}, 
+publisher = {The Open Journal}, 
+volume = {8}, 
+number = {85}, 
+pages = {5220}, 
+author = {Jacqueline Höllig and Cedric Kulbach and Steffen Thoma}, 
+title = {TSInterpret: A Python Package for the Interpretability of Time Series Classification}, journal = {Journal of Open Source Software} } 
 ```
