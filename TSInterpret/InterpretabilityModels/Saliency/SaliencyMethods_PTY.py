@@ -99,7 +99,7 @@ class Saliency_PTY(Sal):
             mask[i, :] = i
         rescaledGrad = np.zeros(item.shape)
         idx = 0
-        item = np.array(item.tolist(), dtype=np.float64)
+        item = np.array(item.tolist())#, dtype=np.float64)
         input = torch.from_numpy(item)
 
         input = input.reshape(-1, self.NumTimeSteps, self.NumFeatures).to(self.device)

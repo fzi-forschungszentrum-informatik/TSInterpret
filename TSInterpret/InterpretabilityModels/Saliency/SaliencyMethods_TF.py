@@ -22,6 +22,9 @@ class Saliency_TF(Saliency):
         + DeepLiftShap (DLS)
         + SmoothGrad (SG)
         + Occlusion (FO)
+
+    Attention: GS and DLS only work for Python < 3.10. 
+    
     References
     ----------
     [1] Ismail, Aya Abdelsalam, et al.
