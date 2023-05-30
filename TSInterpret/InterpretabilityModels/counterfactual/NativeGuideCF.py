@@ -58,7 +58,7 @@ class NativeGuideCF(CF):
         super().__init__(model, mode)
         self.backend = backend
         test_x, test_y = reference_set
-        test_x = np.array(test_x)#, dtype=np.float32)
+        test_x = np.array(test_x)  # , dtype=np.float32)
 
         if mode == "time":
             # Parse test data into (1, feat, time):
@@ -125,7 +125,7 @@ class NativeGuideCF(CF):
         _, nun = self._native_guide_retrieval(
             query, predicted_label, distance, n_neighbors
         )
-        individual = np.array(nun.tolist())#, dtype=np.float64)
+        individual = np.array(nun.tolist())  # , dtype=np.float64)
         out = self.predict(individual)
         return nun, np.argmax(out)
 
@@ -164,7 +164,7 @@ class NativeGuideCF(CF):
 
         test_x, test_y = self.reference_set
         train_x = test_x
-        individual = np.array(nun.tolist())#, dtype=np.float64)
+        individual = np.array(nun.tolist())  # , dtype=np.float64)
         out = self.predict(individual)
         if self.backend == "PYT":
             training_weights = (
@@ -178,7 +178,7 @@ class NativeGuideCF(CF):
                 data, self.model, class_index=label[0]
             )  # grad_cam(self.model, instance.reshape(1,-1,1))#self.cam_extractor.explain(data, self.model,class_index=label)#instance
         # Classify Original
-        individual = np.array(instance.tolist())#, dtype=np.float64)
+        individual = np.array(instance.tolist())  # , dtype=np.float64)
         out = self.predict(individual)
 
         most_influencial_array = self._findSubarray((training_weights), subarray_length)
@@ -192,8 +192,9 @@ class NativeGuideCF(CF):
             0, starting_point : subarray_length + starting_point
         ]
         individual = np.array(
-            X_example.reshape(-1, 1, train_x.shape[-1]).tolist())#, dtype=np.float64
-        #)
+            X_example.reshape(-1, 1, train_x.shape[-1]).tolist()
+        )  # , dtype=np.float64
+        # )
         out = self.predict(individual)
         prob_target = out[0][
             label
@@ -213,8 +214,9 @@ class NativeGuideCF(CF):
                 :, starting_point : subarray_length + starting_point
             ]
             individual = np.array(
-                X_example.reshape(-1, 1, train_x.shape[-1]).tolist())#, dtype=np.float64
-           # )
+                X_example.reshape(-1, 1, train_x.shape[-1]).tolist()
+            )  # , dtype=np.float64
+            # )
             out = self.predict(individual)
             prob_target = out[0][label]
             counter = counter + 1
@@ -230,7 +232,7 @@ class NativeGuideCF(CF):
         beta = 0
         insample_cf = nan.reshape(1, 1, -1)
 
-        individual = np.array(query.tolist())#, dtype=np.float64)
+        individual = np.array(query.tolist())  # , dtype=np.float64)
 
         output = self.predict(individual)
         pred_treshold = 0.5
@@ -241,7 +243,7 @@ class NativeGuideCF(CF):
             [query, insample_cf], weights=np.array([(1 - beta), beta])
         )
         generated_cf = generated_cf.reshape(1, 1, -1)
-        individual = np.array(generated_cf.tolist())#, dtype=np.float64)
+        individual = np.array(generated_cf.tolist())  # , dtype=np.float64)
         prob_target = self.predict(individual)[0][target]
         counter = 0
 
@@ -251,7 +253,7 @@ class NativeGuideCF(CF):
                 [query, insample_cf], weights=np.array([(1 - beta), beta])
             )
             generated_cf = generated_cf.reshape(1, 1, -1)
-            individual = np.array(generated_cf.tolist())#, dtype=np.float64)
+            individual = np.array(generated_cf.tolist())  # , dtype=np.float64)
             prob_target = self.predict(individual)[0][target]
 
             counter = counter + 1

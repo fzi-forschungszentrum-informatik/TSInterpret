@@ -48,7 +48,7 @@ class Saliency_PTY(Sal):
         NumFeatures: int,
         method: str = "GRAD",
         mode: str = "time",
-        tsr:bool=True,
+        tsr: bool = True,
         device: str = "cpu",
     ) -> None:
         """Initialization
@@ -61,7 +61,7 @@ class Saliency_PTY(Sal):
         """
         super().__init__(model, NumTimeSteps, NumFeatures, method, mode)
         self.method = method
-        self.tsr=tsr
+        self.tsr = tsr
         if method == "GRAD":
             self.Grad = Saliency(model)
         elif method == "IG":
@@ -85,7 +85,7 @@ class Saliency_PTY(Sal):
             self.Grad = Occlusion(model)
         self.device = device
 
-    def explain(self, item: np.ndarray, labels: int, TSR = None):
+    def explain(self, item: np.ndarray, labels: int, TSR=None):
         """Method to explain the model based on the item.
         Arguments:
             item np.array: item to get feature attribution for, if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`
@@ -99,7 +99,7 @@ class Saliency_PTY(Sal):
             mask[i, :] = i
         rescaledGrad = np.zeros(item.shape)
         idx = 0
-        item = np.array(item.tolist())#, dtype=np.float64)
+        item = np.array(item.tolist())  # , dtype=np.float64)
         input = torch.from_numpy(item)
 
         input = input.reshape(-1, self.NumTimeSteps, self.NumFeatures).to(self.device)
@@ -175,7 +175,7 @@ class Saliency_PTY(Sal):
                 baselines=baseline_single,
             )
         if TSR is not None:
-            self.tsr=TSR
+            self.tsr = TSR
 
         if self.tsr:
             # print('TSR', TSR)
