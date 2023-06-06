@@ -165,11 +165,11 @@ class Saliency_PTY(Sal):
             attributions = self.Grad.attribute(input, target=labels)
         elif self.method == "FO":
             base = baseline_single
-            if self.mode == 'feat':
+            if self.mode == "feat":
                 has_sliding_window = (1, self.NumFeatures)
             else:
-                has_sliding_window = (self.NumFeatures,1)
-            #has_sliding_window = (1, self.NumFeatures)
+                has_sliding_window = (self.NumFeatures, 1)
+            # has_sliding_window = (1, self.NumFeatures)
             attributions = self.Grad.attribute(
                 input,
                 sliding_window_shapes=has_sliding_window,

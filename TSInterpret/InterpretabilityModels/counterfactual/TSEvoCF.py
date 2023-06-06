@@ -18,7 +18,16 @@ class TSEvo(CF):
     ----------
     """
 
-    def __init__(self, model, data,transformer='authentic_opposing_information',epochs=500, mode="time", backend="PYT", verbose=0):
+    def __init__(
+        self,
+        model,
+        data,
+        transformer="authentic_opposing_information",
+        epochs=500,
+        mode="time",
+        backend="PYT",
+        verbose=0,
+    ):
         """
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
@@ -32,8 +41,8 @@ class TSEvo(CF):
         super().__init__(model, mode)
         self.backend = backend
         self.verbose = verbose
-        self.transformer=transformer
-        self.epochs=epochs
+        self.transformer = transformer
+        self.epochs = epochs
         if type(data) == tuple:
             self.x, self.y = data
             # print('Len Reference Set ', len(self.x.shape))
@@ -55,7 +64,7 @@ class TSEvo(CF):
         original_x,
         original_y,
         target_y=None,
-    ) :
+    ):
         """
         Entry Point to explain a instance.
         Arguments:
@@ -66,10 +75,10 @@ class TSEvo(CF):
         Returns:
             [np.array, int]: Returns the Counterfactual and the class. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
         """
-        transformer=self.transformer
-        epochs= self.epochs
+        transformer = self.transformer
+        epochs = self.epochs
 
-        #print(len(original_y.shape))
+        # print(len(original_y.shape))
         if len(original_x.shape) < 3:
             original_x = np.array([original_x])
         if self.backend == "TF" or self.mode == "time":
