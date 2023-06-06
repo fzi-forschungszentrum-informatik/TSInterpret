@@ -12,6 +12,6 @@ jobs:
         with:
           python-version: 3.9
       - run: export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True 
-      - run: pip install sklearn=0.0
+      - run: pip install sklearn==0.0
       - run: pip install .[docs]
       - run: mkdocs gh-deploy --force
