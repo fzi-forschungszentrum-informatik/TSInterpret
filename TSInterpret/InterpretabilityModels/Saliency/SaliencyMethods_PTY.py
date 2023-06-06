@@ -115,7 +115,7 @@ class Saliency_PTY(Sal):
             self.device
         )
         # input = samples.reshape(-1, args.NumTimeSteps, args.NumFeatures).to(device)
-        if self.mode =='feat':
+        if self.mode == "feat":
             input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps)
         baseline_single = (
             torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
@@ -216,17 +216,17 @@ class Saliency_PTY(Sal):
         sequence_length = self.NumTimeSteps
         input_size = self.NumFeatures
         assignment = input[0, 0, 0]
-        #TODO IS THIS CORRECT TO BE PUT HERE
-        #if self.mode == "feat":
+        # TODO IS THIS CORRECT TO BE PUT HERE
+        # if self.mode == "feat":
         #    hasSliding_window_shapes = (1, self.NumFeatures)
-        #else:
+        # else:
         #    hasSliding_window_shapes = (self.NumFeatures, 1)
         timeGrad = np.zeros((1, sequence_length))
         inputGrad = np.zeros((input_size, 1))
         newGrad = np.zeros((input_size, sequence_length))
         # print("has Sliding Window", hasSliding_window_shapes)
-        if self.mode=='time':
-            input= input.reshape(-1,sequence_length, input_size)
+        if self.mode == "time":
+            input = input.reshape(-1, sequence_length, input_size)
         if hasBaseline is None:
             ActualGrad = (
                 self.Grad.attribute(input, target=TestingLabel).data.cpu().numpy()
@@ -263,20 +263,20 @@ class Saliency_PTY(Sal):
                     .data.cpu()
                     .numpy()
                 )
-        if self.mode=='time':
-            ActualGrad= ActualGrad.reshape(-1, input_size,sequence_length)
+        if self.mode == "time":
+            ActualGrad = ActualGrad.reshape(-1, input_size, sequence_length)
         for t in range(sequence_length):
-            if self.mode=='time':
-                input= input.reshape(-1,input_size,sequence_length)
+            if self.mode == "time":
+                input = input.reshape(-1, input_size, sequence_length)
             newInput = input.clone()
-            #if newInput.shape[-1] == self.NumTimeSteps:
+            # if newInput.shape[-1] == self.NumTimeSteps:
             #    print('A')
             newInput[:, :, t] = assignment
-            #else: 
+            # else:
             #    print('B')
             #    newInput[:, t,:] = assignment
-            if self.mode=='time':
-                newInput= newInput.reshape(-1,sequence_length, input_size)
+            if self.mode == "time":
+                newInput = newInput.reshape(-1, sequence_length, input_size)
 
             if hasBaseline is None:
                 timeGrad_perTime = (
@@ -316,10 +316,12 @@ class Saliency_PTY(Sal):
                         .data.cpu()
                         .numpy()
                     )
-            #import sys 
-            #sys.exit(1)
-            if self.mode=='time':
-                timeGrad_perTime = timeGrad_perTime.reshape(-1, input_size,sequence_length)
+            # import sys
+            # sys.exit(1)
+            if self.mode == "time":
+                timeGrad_perTime = timeGrad_perTime.reshape(
+                    -1, input_size, sequence_length
+                )
 
             timeGrad_perTime = np.absolute(ActualGrad - timeGrad_perTime)
             timeGrad[:, t] = np.sum(timeGrad_perTime)
@@ -332,8 +334,8 @@ class Saliency_PTY(Sal):
                 for c in range(input_size):
                     newInput = input.clone()
                     newInput[:, c, t] = assignment
-                    if self.mode == 'time':
-                        newInput=newInput.reshape(-1,sequence_length,input_size)
+                    if self.mode == "time":
+                        newInput = newInput.reshape(-1, sequence_length, input_size)
 
                     if hasBaseline is None:
                         inputGrad_perInput = (
@@ -372,21 +374,23 @@ class Saliency_PTY(Sal):
                                 .data.cpu()
                                 .numpy()
                             )
-                    inputGrad_perInput = inputGrad_perInput.reshape(-1,input_size,sequence_length)
+                    inputGrad_perInput = inputGrad_perInput.reshape(
+                        -1, input_size, sequence_length
+                    )
                     inputGrad_perInput = np.absolute(ActualGrad - inputGrad_perInput)
                     inputGrad[c, :] = np.sum(inputGrad_perInput)
                 featureContibution = preprocessing.minmax_scale(inputGrad, axis=0)
             else:
                 featureContibution = np.ones((input_size, 1)) * 0.1
-            #print('FC',featureContibution)
-            #print('TC',timeContibution)
-            #print(input_size)
+            # print('FC',featureContibution)
+            # print('TC',timeContibution)
+            # print(input_size)
 
             for c in range(input_size):
                 newGrad[c, t] = timeContibution[0, t] * featureContibution[c, 0]
-            if self.mode == 'time':
-                newGrad=newGrad.reshape(-1, sequence_length,input_size)
-        #print('NewGrad',newGrad.shape)
+            if self.mode == "time":
+                newGrad = newGrad.reshape(-1, sequence_length, input_size)
+        # print('NewGrad',newGrad.shape)
         return newGrad
 
     def _givenAttGetRescaledSaliency(self, attributions, isTensor=True):
