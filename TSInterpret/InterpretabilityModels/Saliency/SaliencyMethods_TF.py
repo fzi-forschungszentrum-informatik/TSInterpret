@@ -22,6 +22,9 @@ class Saliency_TF(Saliency):
         + DeepLiftShap (DLS)
         + SmoothGrad (SG)
         + Occlusion (FO)
+
+    Attention: GS and DLS only work for Python < 3.10.
+
     References
     ----------
     [1] Ismail, Aya Abdelsalam, et al.
@@ -44,6 +47,7 @@ class Saliency_TF(Saliency):
         NumFeatures: int,
         method: str = "GRAD",
         mode: str = "time",
+        tsr: bool = True,
         device: str = "cpu",
     ) -> None:
         """
@@ -58,6 +62,7 @@ class Saliency_TF(Saliency):
         super().__init__(model, NumTimeSteps, NumFeatures, method, mode)
         print("Mode in TF Saliency", self.mode)
         self.method = method
+        self.tsr = tsr
         if method == "GRAD":
             self.Grad = VanillaGradients()
         if method == "IG":
@@ -80,7 +85,7 @@ class Saliency_TF(Saliency):
         elif method == "FO":
             self.Grad = OcclusionSensitivity()
 
-    def explain(self, item, labels, TSR=True):
+    def explain(self, item, labels, TSR=None):
         """Method to explain the model based on the item.
         Arguments:
             item np.array: item to get feature attribution for, if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`
@@ -113,8 +118,9 @@ class Saliency_TF(Saliency):
                 class_index=labels,
                 patch_size=self.NumFeatures,
             )
-
-        if TSR:
+        if TSR is not None:
+            self.tsr = TSR
+        if self.tsr:
             # print(base)
             TSR_attributions = self._getTwoStepRescaling(input, labels)
             TSR_saliency = self._givenAttGetRescaledSaliency(TSR_attributions)

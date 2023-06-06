@@ -23,7 +23,7 @@ class PyTorchModel(BaseModel):
          Returns:
             an array of output scores for a classifier.
         """
-        item = np.array(item.tolist(), dtype=np.float64)
+        item = np.array(item.tolist())  # , dtype=np.float64)
         if self.change:
             item = torch.from_numpy(item.reshape(-1, item.shape[-1], item.shape[-2]))
 
