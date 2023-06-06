@@ -18,11 +18,13 @@ class TSEvo(CF):
     ----------
     """
 
-    def __init__(self, model, data, mode="time", backend="PYT", verbose=0):
+    def __init__(self, model, data,transformer='authentic_opposing_information',epochs=500, mode="time", backend="PYT", verbose=0):
         """
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
             data Tuple: Reference Dataset as Tuple (x,y).
+            transformer str: ['authentic_opposing','mutate_both','gaussian','frequency']
+            epochs int: Maximal Number of Itertions
             mode str: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
             backend str: desired Model Backend ('PYT', 'TF', 'SK').
             verbose int: Logging Level
@@ -30,6 +32,8 @@ class TSEvo(CF):
         super().__init__(model, mode)
         self.backend = backend
         self.verbose = verbose
+        self.transformer=transformer
+        self.epochs=epochs
         if type(data) == tuple:
             self.x, self.y = data
             # print('Len Reference Set ', len(self.x.shape))
@@ -51,21 +55,21 @@ class TSEvo(CF):
         original_x,
         original_y,
         target_y=None,
-        transformer="authentic_opposing_information",
-        epochs=500,
-    ):
+    ) :
         """
         Entry Point to explain a instance.
         Arguments:
             original_x (np.array): The instance to explain. Shape `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
             original_y (np.array): Classification Probability of instance.
             target_y int: Class to be targeted
-            transformer str: ['authentic_opposing','mutate_both','gaussian','frequency']
-            epochs int: # Iterations
+
         Returns:
             [np.array, int]: Returns the Counterfactual and the class. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
         """
-        print(len(original_y.shape))
+        transformer=self.transformer
+        epochs= self.epochs
+
+        #print(len(original_y.shape))
         if len(original_x.shape) < 3:
             original_x = np.array([original_x])
         if self.backend == "TF" or self.mode == "time":
