@@ -23,7 +23,7 @@ class TSEvo(CF):
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
             data Tuple: Reference Dataset as Tuple (x,y).
-            transformer str: ['authentic_opposing','mutate_both','gaussian','frequency']
+            transformer str: ['authentic_opposing_information','mutate_both','mutate_mean','frequency_band_mapping']
             epochs int: Maximal Number of Itertions
             mode str: Name of second dimension: time -> (-1, time, feature) or feat -> (-1, feature, time)
             backend str: desired Model Backend ('PYT', 'TF', 'SK').
