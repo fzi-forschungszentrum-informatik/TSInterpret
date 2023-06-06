@@ -54,14 +54,14 @@ def cnn_gunPoint_tensorflow():
 @pytest.fixture
 def cf_evo_torch_explainer( request, cnn_gunPoint_torch):
     X, y, model = cnn_gunPoint_torch
-    cf_explainer =TSEvo(model= model,data=(X,y), backend='PYT', mode='feat')
+    cf_explainer =TSEvo(model= model,data=(X,y), backend='PYT',transformer=request.param, mode='feat',epochs=10)
     yield X, y, model, cf_explainer
 
 @pytest.fixture
 def cf_evo_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
     #TO
     X, y, model = cnn_gunPoint_tensorflow
-    cf_explainer =TSEvo(model= model,data=(X,y), backend='tf')
+    cf_explainer =TSEvo(model= model,data=(X,y), backend='tf',epochs=10)
     yield X, y, model, cf_explainer
 #@pytest.fixture
 #def cf_ates_sklearn_explainer( request, cnn_gunPoint_sklearn):
@@ -69,7 +69,7 @@ def cf_evo_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
 #    cf_explainer =AtesCF(model,(X,y),backend='SK',method= request.param,mode='time')
 #    yield X, y, model, cf_explainer
 
-@pytest.mark.parametrize('cf_evo_torch_explainer',['authentic_opposing','mutate_both','gaussian','frequency'],ids='method={}'.format,indirect=True)
+@pytest.mark.parametrize('cf_evo_torch_explainer',['authentic_opposing_information','mutate_both','mutate_mean','frequency_band_mapping'],ids='transformer={}'.format,indirect=True)
 def test_cf_evo_torch_explainer(cf_evo_torch_explainer):
 
     X, y, model, cf = cf_evo_torch_explainer
@@ -78,7 +78,7 @@ def test_cf_evo_torch_explainer(cf_evo_torch_explainer):
     probas = torch.nn.functional.softmax(model(torch.from_numpy(x).float())).detach().numpy()
     pred_class = probas.argmax()
 
-    exp,_ = cf.explain(x.reshape(1,1,-1),np.array([pred_class]), epochs=10)
+    exp,_ = cf.explain(x.reshape(1,1,-1),np.array([pred_class]))
     exp=np.array(exp)
     assert exp.reshape((1,X.shape[-2], X.shape[-1])).shape == (1,X.shape[-2], X.shape[-1])
     item=exp.reshape(1,X.shape[-2],-1)
