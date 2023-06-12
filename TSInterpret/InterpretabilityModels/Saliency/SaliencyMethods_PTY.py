@@ -227,6 +227,7 @@ class Saliency_PTY(Sal):
         # print("has Sliding Window", hasSliding_window_shapes)
         if self.mode == "time":
             input = input.reshape(-1, sequence_length, input_size)
+
         if hasBaseline is None:
             ActualGrad = (
                 self.Grad.attribute(input, target=TestingLabel).data.cpu().numpy()
@@ -263,8 +264,8 @@ class Saliency_PTY(Sal):
                     .data.cpu()
                     .numpy()
                 )
-        if self.mode == "time":
-            ActualGrad = ActualGrad.reshape(-1, input_size, sequence_length)
+        #if self.mode == "time":
+        #    ActualGrad = ActualGrad.reshape(-1, input_size, sequence_length)
         for t in range(sequence_length):
             if self.mode == "time":
                 input = input.reshape(-1, input_size, sequence_length)
@@ -318,19 +319,21 @@ class Saliency_PTY(Sal):
                     )
             # import sys
             # sys.exit(1)
+            
+
+            timeGrad_perTime = np.absolute(ActualGrad - timeGrad_perTime)
             if self.mode == "time":
                 timeGrad_perTime = timeGrad_perTime.reshape(
                     -1, input_size, sequence_length
                 )
-
-            timeGrad_perTime = np.absolute(ActualGrad - timeGrad_perTime)
             timeGrad[:, t] = np.sum(timeGrad_perTime)
 
-        timeContibution = preprocessing.minmax_scale(timeGrad, axis=1)
-        meanTime = np.quantile(timeContibution, 0.55)
+        timeContribution = preprocessing.minmax_scale(timeGrad, axis=1)
+        print(timeContribution.shape)
+        meanTime = np.quantile(timeContribution, 0.55)
 
         for t in range(sequence_length):
-            if timeContibution[0, t] > meanTime:
+            if timeContribution[0, t] > meanTime:
                 for c in range(input_size):
                     newInput = input.clone()
                     newInput[:, c, t] = assignment
@@ -374,22 +377,22 @@ class Saliency_PTY(Sal):
                                 .data.cpu()
                                 .numpy()
                             )
+                    
+                    inputGrad_perInput = np.absolute(ActualGrad - inputGrad_perInput)
                     inputGrad_perInput = inputGrad_perInput.reshape(
                         -1, input_size, sequence_length
                     )
-                    inputGrad_perInput = np.absolute(ActualGrad - inputGrad_perInput)
                     inputGrad[c, :] = np.sum(inputGrad_perInput)
-                featureContibution = preprocessing.minmax_scale(inputGrad, axis=0)
-            else:
-                featureContibution = np.ones((input_size, 1)) * 0.1
-            # print('FC',featureContibution)
-            # print('TC',timeContibution)
-            # print(input_size)
+                featureContribution = preprocessing.minmax_scale(inputGrad, axis=0)
 
+            else:
+                featureContribution = np.ones((input_size, 1)) * 0.1
+            # print('FC',featureContribution)
+            newGrad=newGrad.reshape(input_size,sequence_length)
             for c in range(input_size):
-                newGrad[c, t] = timeContibution[0, t] * featureContibution[c, 0]
+                newGrad[c, t] = timeContribution[0, t] * featureContribution[c, 0]
             if self.mode == "time":
-                newGrad = newGrad.reshape(-1, sequence_length, input_size)
+                newGrad = newGrad.reshape( sequence_length, input_size)
         # print('NewGrad',newGrad.shape)
         return newGrad
 
