@@ -328,7 +328,7 @@ class Saliency_PTY(Sal):
             timeGrad[:, t] = np.sum(timeGrad_perTime)
 
         timeContribution = preprocessing.minmax_scale(timeGrad, axis=1)
-        #print(timeContribution.shape)
+        # print(timeContribution.shape)
         meanTime = np.quantile(timeContribution, 0.55)
 
         for t in range(sequence_length):
