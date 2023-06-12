@@ -264,7 +264,7 @@ class Saliency_PTY(Sal):
                     .data.cpu()
                     .numpy()
                 )
-        #if self.mode == "time":
+        # if self.mode == "time":
         #    ActualGrad = ActualGrad.reshape(-1, input_size, sequence_length)
         for t in range(sequence_length):
             if self.mode == "time":
@@ -319,7 +319,6 @@ class Saliency_PTY(Sal):
                     )
             # import sys
             # sys.exit(1)
-            
 
             timeGrad_perTime = np.absolute(ActualGrad - timeGrad_perTime)
             if self.mode == "time":
@@ -329,7 +328,7 @@ class Saliency_PTY(Sal):
             timeGrad[:, t] = np.sum(timeGrad_perTime)
 
         timeContribution = preprocessing.minmax_scale(timeGrad, axis=1)
-        print(timeContribution.shape)
+        #print(timeContribution.shape)
         meanTime = np.quantile(timeContribution, 0.55)
 
         for t in range(sequence_length):
@@ -377,7 +376,7 @@ class Saliency_PTY(Sal):
                                 .data.cpu()
                                 .numpy()
                             )
-                    
+
                     inputGrad_perInput = np.absolute(ActualGrad - inputGrad_perInput)
                     inputGrad_perInput = inputGrad_perInput.reshape(
                         -1, input_size, sequence_length
@@ -388,11 +387,11 @@ class Saliency_PTY(Sal):
             else:
                 featureContribution = np.ones((input_size, 1)) * 0.1
             # print('FC',featureContribution)
-            newGrad=newGrad.reshape(input_size,sequence_length)
+            newGrad = newGrad.reshape(input_size, sequence_length)
             for c in range(input_size):
                 newGrad[c, t] = timeContribution[0, t] * featureContribution[c, 0]
             if self.mode == "time":
-                newGrad = newGrad.reshape( sequence_length, input_size)
+                newGrad = newGrad.reshape(sequence_length, input_size)
         # print('NewGrad',newGrad.shape)
         return newGrad
 
