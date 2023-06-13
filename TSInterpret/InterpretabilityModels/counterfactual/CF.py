@@ -201,7 +201,7 @@ class CF(InstanceBase):
                 return
             else:
                 item = item[ind]
-                exp=exp[ind]
+                exp = exp[ind]
 
         plt.style.use("classic")
         colors = [
