@@ -569,7 +569,7 @@ class AtesCF(CF):
     def __init__(
         self,
         model,
-        ref,
+        data,
         backend,
         mode,
         method="opt",
@@ -591,7 +591,7 @@ class AtesCF(CF):
         """
         super().__init__(model, mode)
         self.backend = backend
-        test_x, test_y = ref
+        test_x, test_y = data
         shape = test_x.shape
         if mode == "time":
             # Parse test data into (1, feat, time):

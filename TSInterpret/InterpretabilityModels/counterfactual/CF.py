@@ -178,11 +178,15 @@ class CF(InstanceBase):
         """
         if self.mode == "time":
             item = item.reshape(item.shape[-1], item.shape[-2])
+            exp = exp.reshape(item.shape[-1], item.shape[-2])
+        else:
+            item = item.reshape(item.shape[-2], item.shape[-1])
+            exp = exp.reshape(item.shape[-2], item.shape[-1])
+
         # TODO This is new and needs to be testes
         ind = ""
         # print("Item Shape", item.shape[-2])
         if item.shape[-2] > 1:
-
             res = (item != exp).any(-1)
             # print(res)
             ind = np.where(res)
@@ -197,6 +201,7 @@ class CF(InstanceBase):
                 return
             else:
                 item = item[ind]
+                exp=exp[ind]
 
         plt.style.use("classic")
         colors = [

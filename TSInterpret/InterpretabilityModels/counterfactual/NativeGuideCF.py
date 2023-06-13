@@ -34,7 +34,7 @@ class NativeGuideCF(CF):
         self,
         model,
         shape,
-        reference_set,
+        data,
         backend="PYT",
         mode="feat",
         method="NUN-CF",
@@ -47,7 +47,7 @@ class NativeGuideCF(CF):
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: classification model to explain
             shape Tuple: input shape
-            reference_set Tuple: reference set as tuple (x,y)
+            data Tuple: reference set as tuple (x,y)
             backend str: 'PYT' or  'TF'
             mode str: model either 'time' or 'feat'. `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
             method str: 'Nun_CF', 'dtw_bary_center' or 'native_guide'.
@@ -57,7 +57,7 @@ class NativeGuideCF(CF):
         """
         super().__init__(model, mode)
         self.backend = backend
-        test_x, test_y = reference_set
+        test_x, test_y = data
         test_x = np.array(test_x)  # , dtype=np.float32)
 
         if mode == "time":
