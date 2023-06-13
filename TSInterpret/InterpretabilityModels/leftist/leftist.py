@@ -45,6 +45,8 @@ class LEFTIST(FeatureAttribution):
         segmentator_name="uniform",
         learning_process_name="Lime",
         nb_interpretable_feature=10,
+        nb_neighbors=1,
+        explanation_size=1
     ) -> None:
         """Initization.
         Arguments:
@@ -55,11 +57,13 @@ class LEFTIST(FeatureAttribution):
            transform_name str: Name of transformer
            learning_process_name str: 'Lime' or 'Shap'
            nb_interpretable_feature int: number of desired features
+            nb_neighbors int: number of neighbors to generate.
+            explanation_size int: number of feature to use for the explanations
         """
         super().__init__(model, mode)
 
         self.neighbors = None
-
+        self.nb_neighbors=nb_neighbors
         self.test_x, _ = data
         self.backend = backend
         self.mode = mode
@@ -68,6 +72,7 @@ class LEFTIST(FeatureAttribution):
         self.segmentator_name = segmentator_name
         self.learning_process_name = learning_process_name
         self.nb_interpretable_feature = nb_interpretable_feature
+        self.explanation_size=explanation_size
         if mode == "feat":
             self.change = True
             self.test_x = self.test_x.reshape(
@@ -91,9 +96,7 @@ class LEFTIST(FeatureAttribution):
     def explain(
         self,
         instance,
-        nb_neighbors,
         idx_label=None,
-        explanation_size=None,
         random_state=0,
     ):
         """
@@ -101,15 +104,14 @@ class LEFTIST(FeatureAttribution):
 
         Arguments:
             instance np.array: item to be explained. Shape : `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
-            nb_neighbors int: number of neighbors to generate.
             idx_label int: index of label to explain. If None, return an explanation for each label.
-            explanation_size int: number of feature to use for the explanations
             random_state int: fixes seed
 
         Returns:
             List: Attribution weight `mode = time` -> `(explanation_size,time, feat)` or `mode = time` -> `(explanation_size,feat, time)`
         """
-
+        nb_neighbors=self.nb_neighbors
+        explanation_size=self.explanation_size
         if self.segmentator_name == "uniform":
             self.segmentator = UniformSegmentator(self.nb_interpretable_feature)
 
