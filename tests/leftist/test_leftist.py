@@ -56,7 +56,7 @@ def leftist_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
 def test_leftist_torch_explainer(leftist_torch_explainer):
     X, _, _, method = leftist_torch_explainer
     x = X[0].reshape(1,X.shape[-2], -1)
-    exp= method.explain(x, 1000,explanation_size=5)
+    exp= method.explain(x)
     assert np.array(exp).shape == (2, X.shape[-1])
 
 @pytest.mark.parametrize("leftist_tensorflow_explainer", [{"a": "Lime", "b": "uniform"},{"a": "Lime", "b": "straight_line"},
@@ -65,5 +65,5 @@ def test_leftist_torch_explainer(leftist_torch_explainer):
 def test_leftist_tensorflow_explainer(leftist_tensorflow_explainer):
     X, _ , _ , method = leftist_tensorflow_explainer
     x = X[0].reshape(X.shape[1],X.shape[2])
-    exp =method.explain(x,1000,explanation_size=5)
+    exp =method.explain(x)
     assert np.array(exp).shape == (7, X.shape[-2])

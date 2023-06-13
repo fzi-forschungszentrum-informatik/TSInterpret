@@ -45,7 +45,7 @@ class LEFTIST(FeatureAttribution):
         segmentator_name="uniform",
         learning_process_name="Lime",
         nb_interpretable_feature=10,
-        nb_neighbors=1,
+        nb_neighbors=1000,
         explanation_size=1
     ) -> None:
         """Initization.
