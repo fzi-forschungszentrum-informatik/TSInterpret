@@ -37,8 +37,8 @@ class LEFTIST(FeatureAttribution):
 
     def __init__(
         self,
-        model_to_explain,
-        reference_set=None,
+        model,
+        data=None,
         mode="time",
         backend="F",
         transform_name="straight",
@@ -49,18 +49,18 @@ class LEFTIST(FeatureAttribution):
         """Initization.
         Arguments:
            model_to_explain [torch.nn.Module, Callable, tf.keras.model]: classification model to explain.
-           reference_set Tuple: Reference Dataset as Tuple (x,y).
+           data Tuple: Reference Dataset as Tuple (x,y).
            mode str: Name of second dimension: `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
            backend str: TF, PYT or SK
            transform_name str: Name of transformer
            learning_process_name str: 'Lime' or 'Shap'
            nb_interpretable_feature int: number of desired features
         """
-        super().__init__(model_to_explain, mode)
+        super().__init__(model, mode)
 
         self.neighbors = None
 
-        self.test_x, _ = reference_set
+        self.test_x, _ = data
         self.backend = backend
         self.mode = mode
         self.change = False
