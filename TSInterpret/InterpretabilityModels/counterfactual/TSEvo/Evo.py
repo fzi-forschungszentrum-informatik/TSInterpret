@@ -38,8 +38,7 @@ class EvolutionaryOptimization:
         transformer="authentic_opposing_information",
         epochs=500,
         verbose=0,
-        mode='feat'
-    
+        mode="feat",
     ):
         """
         Initialization of Optimization Algorithm
@@ -69,7 +68,7 @@ class EvolutionaryOptimization:
         self.MUTPB = 0.6  # 0.6
         # print('Create MOP')
         # self.neighborhood=neighborhood
-        
+
         self.verbose = verbose
         self.mop = MultiObjectiveCounterfactuals(
             model,
@@ -81,7 +80,7 @@ class EvolutionaryOptimization:
             window,
             backend,
             channels,
-            mode=mode
+            mode=mode,
         )
         # print('Finished Create MOP')
         """Create types"""

@@ -116,7 +116,7 @@ class TSEvo(CF):
             transformer,
             verbose=self.verbose,
             epochs=epochs,
-            mode=self.mode
+            mode=self.mode,
         )
         ep, output = e.run()
         return np.array(ep)[0], output
