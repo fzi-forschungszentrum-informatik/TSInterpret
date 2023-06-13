@@ -177,7 +177,7 @@ class CF(InstanceBase):
             save_fig str: Path to Save the figure.
         """
         if self.mode == "time":
-            item = item.reshape(item.shape[0], item.shape[2], item.shape[1])
+            item = item.reshape( item.shape[-1], item.shape[-2])
         # TODO This is new and needs to be testes
         ind = ""
         # print("Item Shape", item.shape[-2])
