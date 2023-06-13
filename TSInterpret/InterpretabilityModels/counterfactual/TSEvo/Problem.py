@@ -106,6 +106,8 @@ class MultiObjectiveCounterfactuals(Problem):
     ):
         if self.mode == 'time':
             individual=individual.reshape(1,individual.shape[-1],individual.shape[-2])
+        else:
+            individual=individual.reshape(1,individual.shape[-2],individual.shape[-1])
         individual = np.array(individual.tolist(), dtype=np.float64)
         input_ = torch.from_numpy(individual).float()#.reshape(1, -1, self.window)
 
@@ -131,6 +133,8 @@ class MultiObjectiveCounterfactuals(Problem):
         individual = np.array(individual.tolist(), dtype=np.float64)
         if self.mode == 'time':
             individual=individual.reshape(1,individual.shape[-1],individual.shape[-2])
+        else:
+            individual=individual.reshape(1,individual.shape[-2],individual.shape[-1])
         input_ = torch.from_numpy(individual).float()#.reshape(1, -1, self.window)
         output = torch.nn.functional.softmax(self.model(input_)).detach().numpy()
         idx = output.argmax()
