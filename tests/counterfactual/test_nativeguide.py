@@ -43,15 +43,13 @@ def cf_ng_torch_explainer( request, cnn_gunPoint_torch):
     from TSInterpret.InterpretabilityModels.counterfactual.NativeGuideCF \
      import NativeGuideCF
     X, y, model = cnn_gunPoint_torch
-    shape=X[0].shape
-    cf_explainer =NativeGuideCF(model,shape,(X,y),backend='PYT',method= request.param,mode='feat')
+    cf_explainer =NativeGuideCF(model,(X,y),backend='PYT',method= request.param,mode='feat')
     yield X, y, model, cf_explainer
 
 @pytest.fixture
 def cf_ng_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
     X, y, model = cnn_gunPoint_tensorflow
-    shape=X[0].shape
-    cf_explainer =NativeGuideCF(model,shape,(X,y),backend='TF',method= request.param,mode='time')
+    cf_explainer =NativeGuideCF(model,(X,y),backend='TF',method= request.param,mode='time')
     yield X, y, model, cf_explainer
 
 

@@ -1,6 +1,11 @@
 """Implementation after Delaney et al . https://github.com/e-delaney/Instance-Based_CFE_TSC"""
 import warnings
 from typing import Tuple
+from collections import OrderedDict
+from typing import Dict, Callable
+
+
+import torch
 
 import numpy as np
 from torchcam.methods import CAM
@@ -33,7 +38,6 @@ class NativeGuideCF(CF):
     def __init__(
         self,
         model,
-        shape,
         data,
         backend="PYT",
         mode="feat",
@@ -46,7 +50,6 @@ class NativeGuideCF(CF):
         In this case differentiation between time & feat not necessary as implicitly given by CNN. Only works for CNNs due to the attribution methods.
         Arguments:
             model [torch.nn.Module, Callable, tf.keras.model]: classification model to explain
-            shape Tuple: input shape
             data Tuple: reference set as tuple (x,y)
             backend str: 'PYT' or  'TF'
             mode str: model either 'time' or 'feat'. `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
@@ -56,23 +59,25 @@ class NativeGuideCF(CF):
             max_iter int : max number of runs
         """
         super().__init__(model, mode)
+        
         self.backend = backend
         test_x, test_y = data
         test_x = np.array(test_x)  # , dtype=np.float32)
-
+        shape= (test_x.shape[-2],test_x.shape[-1])
+        print(shape)
         if mode == "time":
             # Parse test data into (1, feat, time):
-            self.ts_length = shape[-2]
+            self.ts_length = test_x.shape[-2]
             test_x = test_x.reshape(test_x.shape[0], test_x.shape[2], test_x.shape[1])
         elif mode == "feat":
-            self.ts_length = shape[-1]
+            self.ts_length = test_x.shape[-1]
 
         if backend == "PYT":
-
-            try:
-                self.cam_extractor = CAM(self.model, input_shape=(shape[1], shape[2]))
-            except:
-                print("GradCam Hook already registered")
+            self.remove_all_hooks(self.model)
+            #try:
+            self.cam_extractor = CAM(self.model,input_shape=shape)
+            #except:
+            #    print("GradCam Hook already registered")
             change = False
             if self.mode == "time":
                 change = True
@@ -88,12 +93,31 @@ class NativeGuideCF(CF):
         else:
             print("Only Compatible with Tensorflow (TF) or Pytorch (PYT)!")
 
-        self.reference_set = (test_x, y_pred)
+        self.data = (test_x, y_pred)
         self.method = method
         self.distance_measure = distance_measure
         self.max_iter = max_iter
         self.n_neighbors = n_neighbors
         # Manipulate reference set replace original y with predicted y
+
+    def remove_all_hooks(self,model: torch.nn.Module) -> None:
+        #TODO Move THIS TO TSINTERPRET !
+        if hasattr(model, "_forward_hooks"):
+            if model._forward_hooks != OrderedDict():
+                model._forward_hooks: Dict[int, Callable] = OrderedDict()
+            elif hasattr(model, "_forward_pre_hooks"):
+                model._forward_pre_hooks: Dict[int, Callable] = OrderedDict()
+            elif hasattr(model, "_backward_hooks"):
+                model._backward_hooks: Dict[int, Callable] = OrderedDict()
+        for name, child in model._modules.items():
+            if child is not None:
+                if hasattr(child, "_forward_hooks"):
+                    child._forward_hooks: Dict[int, Callable] = OrderedDict()
+                elif hasattr(child, "_forward_pre_hooks"):
+                    child._forward_pre_hooks: Dict[int, Callable] = OrderedDict()
+                elif hasattr(child, "_backward_hooks"):
+                    child._backward_hooks: Dict[int, Callable] = OrderedDict()
+                self.remove_all_hooks(child)
 
     def _native_guide_retrieval(self, query, predicted_label, distance, n_neighbors):
         """
@@ -111,7 +135,7 @@ class NativeGuideCF(CF):
         if type(predicted_label) != int:
             predicted_label = np.argmax(predicted_label)
 
-        x_train, y = self.reference_set
+        x_train, y = self.data
         if len(y.shape) == 2:
             y = np.argmax(y, axis=1)
         ts_length = self.ts_length
@@ -162,7 +186,7 @@ class NativeGuideCF(CF):
         if np.count_nonzero(nun.reshape(-1) - instance.reshape(-1)) == 0:
             print("Starting and nun are Identical !")
 
-        test_x, test_y = self.reference_set
+        test_x, test_y = self.data
         train_x = test_x
         individual = np.array(nun.tolist())  # , dtype=np.float64)
         out = self.predict(individual)
