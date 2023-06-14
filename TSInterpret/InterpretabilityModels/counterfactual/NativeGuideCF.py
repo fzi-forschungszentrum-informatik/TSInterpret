@@ -59,11 +59,11 @@ class NativeGuideCF(CF):
             max_iter int : max number of runs
         """
         super().__init__(model, mode)
-        
+
         self.backend = backend
         test_x, test_y = data
         test_x = np.array(test_x)  # , dtype=np.float32)
-        shape= (test_x.shape[-2],test_x.shape[-1])
+        shape = (test_x.shape[-2], test_x.shape[-1])
         print(shape)
         if mode == "time":
             # Parse test data into (1, feat, time):
@@ -74,9 +74,9 @@ class NativeGuideCF(CF):
 
         if backend == "PYT":
             self.remove_all_hooks(self.model)
-            #try:
-            self.cam_extractor = CAM(self.model,input_shape=shape)
-            #except:
+            # try:
+            self.cam_extractor = CAM(self.model, input_shape=shape)
+            # except:
             #    print("GradCam Hook already registered")
             change = False
             if self.mode == "time":
@@ -100,8 +100,8 @@ class NativeGuideCF(CF):
         self.n_neighbors = n_neighbors
         # Manipulate reference set replace original y with predicted y
 
-    def remove_all_hooks(self,model: torch.nn.Module) -> None:
-        #TODO Move THIS TO TSINTERPRET !
+    def remove_all_hooks(self, model: torch.nn.Module) -> None:
+        # TODO Move THIS TO TSINTERPRET !
         if hasattr(model, "_forward_hooks"):
             if model._forward_hooks != OrderedDict():
                 model._forward_hooks: Dict[int, Callable] = OrderedDict()
