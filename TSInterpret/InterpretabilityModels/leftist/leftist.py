@@ -117,6 +117,8 @@ class LEFTIST(FeatureAttribution):
 
         if self.mode == "feat":
             instance = instance.reshape(instance.shape[-1], instance.shape[-2])
+        else: 
+            instance = instance.reshape(instance.shape[-2], instance.shape[-1])
         if self.transform_name == "mean":
             self.transform = MeanTransform(instance)
         elif self.transform_name == "straight_line":

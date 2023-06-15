@@ -64,6 +64,6 @@ def test_leftist_torch_explainer(leftist_torch_explainer):
                          indirect=True)
 def test_leftist_tensorflow_explainer(leftist_tensorflow_explainer):
     X, _ , _ , method = leftist_tensorflow_explainer
-    x = X[0].reshape(X.shape[1],X.shape[2])
+    x = X[0].reshape(1,X.shape[1],X.shape[2])
     exp =method.explain(x)
     assert np.array(exp).shape == (7, X.shape[-2])
