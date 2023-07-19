@@ -31,6 +31,7 @@ base_packages = [
     "tqdm>=4.61.2, < 4.66.0",
     "h5py==3.7.0", # todo add version
     "joblib>=1.0.1,< 2.0",
+    "sklearn==0.0",
     #"lime==0.2.0.1",
     "Markdown==3.3.4,< 4.0",
     "matplotlib>=3.3.4,< 4.0",

@@ -32,7 +32,7 @@ class MultiObjectiveCounterfactuals(Problem):
         self.target = target
         self.original_y = original_y
         if type(original_y) is int: 
-            reference_set = self.x[np.where(self.y != original_y)]
+            self.original_label = original_y
         elif len(original_y) > 1:
             self.original_label = np.argmax(original_y, axis=1)[0]
         else:

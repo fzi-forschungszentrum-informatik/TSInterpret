@@ -207,6 +207,9 @@ class NativeGuideCF(CF):
 
         most_influencial_array = self._findSubarray((training_weights), subarray_length)
 
+        if np.any(np.isnan(most_influencial_array)):
+            return np.full(individual.shape, None), None
+
         starting_point = np.where(training_weights == most_influencial_array[0])[0][0]
 
         X_example = instance.copy().reshape(1, -1)
