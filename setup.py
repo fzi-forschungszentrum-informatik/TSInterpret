@@ -23,7 +23,9 @@ REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
-    "scikit-learn==1.0.2",
+    "mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip ",
+    #"mlrose>=1.3.0,< 2.0",
+    "scikit-learn==1.3.0",
     # "scikit-surprise==1.1.1",
     "torch>=1.13.0,<2.0",
     "pandas~=1.3.2",
@@ -31,7 +33,6 @@ base_packages = [
     "tqdm>=4.61.2, < 4.66.0",
     "h5py==3.7.0", # todo add version
     "joblib>=1.0.1,< 2.0",
-    "sklearn==0.0",
     #"lime==0.2.0.1",
     "Markdown==3.3.4,< 4.0",
     "matplotlib>=3.3.4,< 4.0",
@@ -44,7 +45,7 @@ base_packages = [
     "tslearn>= 0.5.2,< 1.0",
     "seaborn>=0.11.2,< 1.0",
     "scikit_optimize>=0.9.0,< 1.0",
-    "mlrose>=1.3.0,< 2.0",
+    
     "torchcam>=0.3.1,< 1.0",
     "tf_explain>=0.3.1,< 1.0",
     "opencv-python==4.6.0.66",
