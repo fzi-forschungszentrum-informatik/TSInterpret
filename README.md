@@ -33,21 +33,11 @@ Or, through SSH:
 pip install git@github.com:fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
 ```
 
-On Windows with Anaconda there is a known installation issue due to the <a href='https://github.com/scikit-learn/sklearn-pypi-package'>sklearn brownout</a> in third party dependencies. The workaround (working for python 3.9) till all the dependencies are fixed: 
-
-1. Set Enviroment Variable
+Due to the <a href='https://github.com/scikit-learn/sklearn-pypi-package'>sklearn brownout</a> `pip install sklearn` is no longer available in third party dependencies. As the current release of <a href='https://github.com/gkhayes/mlrose'>mlrose</a> still relies on sklearn, we eliminated the dependency. If you still want to use TSEvo (with dependecy to mlrose), it can be installed via : 
 ```shell
-set SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
-```
-2. Install sklearn in advance 
-```shell
-pip install sklearn=0.0
+pip install https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip
 ```
 
-3. Install TsIntrerpret
-```shell
-pip install TSInterpret
-```
 
 ## 🍫 Quickstart
 The following example creates a simple Neural Network based on tensorflow and interprets the Classfier with Integrated Gradients and Temporal Saliency Rescaling [1].
