@@ -36,6 +36,7 @@ jobs:
         run: |
           export SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True 
           python -m pip install --upgrade pip
+          pip install https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip
           pip install wheel
           pip install .[dev]
       - name: pytest
