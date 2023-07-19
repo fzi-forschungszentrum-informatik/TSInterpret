@@ -91,7 +91,7 @@ class TSEvo(CF):
             reference_set = self.x[np.where(self.y == target_y)]
         elif len(original_y) > 1:
             reference_set = self.x[np.where(self.y != np.argmax(original_y, axis=1)[0])]
-        elif type(original_y) is int: 
+        elif type(original_y) is int:
             reference_set = self.x[np.where(self.y != original_y)]
         else:
             reference_set = self.x[np.where(self.y != original_y)]

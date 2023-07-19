@@ -22,7 +22,6 @@ class MultiObjectiveCounterfactuals(Problem):
         channels=1,
         mode="feat",
     ):
-
         super().__init__(n_var=channels, n_obj=3, n_constr=0, evaluation_of="auto")
 
         self.model = model
@@ -31,7 +30,7 @@ class MultiObjectiveCounterfactuals(Problem):
         self.observation = observation
         self.target = target
         self.original_y = original_y
-        if type(original_y) is int: 
+        if type(original_y) is int:
             self.original_label = original_y
         elif len(original_y) > 1:
             self.original_label = np.argmax(original_y, axis=1)[0]
@@ -72,7 +71,6 @@ class MultiObjectiveCounterfactuals(Problem):
         self.label, self.output = self.predict(observation, full=True)
 
     def _evaluate(self, explanation, out, *args, **kwargs):
-
         label, output = self.predict(explanation)
 
         output_distance = self.output_distance(output, label)
@@ -160,17 +158,14 @@ class MultiObjectiveCounterfactuals(Problem):
         return idx, output[0][idx]
 
     def output_distance_binary(self, output, label):
-
         output_distance = 1 - output
 
         if label == self.original_label:
-
             output_distance = 1.0  # output
 
         return output_distance
 
     def output_distance_multi(self, output, label):
-
         output_distance = output - self.output[label]
 
         if label == self.original_label:
@@ -178,7 +173,6 @@ class MultiObjectiveCounterfactuals(Problem):
         return output_distance
 
     def output_distance_target(self, output, label):
-
         output_distance = output - self.output[self.target]
         if label != self.target:
             output_distance = 1.0  # output

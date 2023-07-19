@@ -145,7 +145,8 @@ class EvolutionaryOptimization:
         """
         Runs the optimization
         Returns:
-            [deap.Individual, deap.logbook]: Return the Best Individual and Logbook Info."""
+            [deap.Individual, deap.logbook]: Return the Best Individual and Logbook Info.
+        """
 
         pop = self.toolbox.population(n=self.MU)
         window = []
@@ -177,7 +178,6 @@ class EvolutionaryOptimization:
         record = mstats.compile(pop)
         logbook.record(gen=0, evals=len(pop), **record)
         while gen < self.NGEN:
-
             offspring = tools.selTournamentDCD(pop, len(pop))
             offspring = algorithms.varAnd(
                 offspring, self.toolbox, cxpb=self.CXPB, mutpb=self.MUTPB

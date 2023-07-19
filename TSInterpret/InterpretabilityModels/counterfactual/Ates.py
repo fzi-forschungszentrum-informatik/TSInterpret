@@ -60,7 +60,6 @@ class BaseExplanation:
         preds = np.argmax(self.clf(input_), axis=1)
         true_positive_node_ids = {c: [] for c in np.unique(self.labels)}
         for pred, (idx, row) in zip(preds, self.labels.iterrows()):
-
             if row["label"] == pred:
                 true_positive_node_ids[pred].append(idx)
         for c in np.unique(self.labels):
@@ -361,7 +360,6 @@ class LossDiscreteState:
         return self.evaluate(feature_matrix)
 
     def evaluate(self, feature_matrix):
-
         new_case = self.x_test.copy()
         assert len(self.cols_swap) == len(feature_matrix)
 
@@ -406,7 +404,6 @@ class OptimizedSearch(BaseExplanation):
         self.maxiter = maxiter
 
     def opt_Discrete(self, to_maximize, x_test, dist, columns, init, num_features=None):
-
         fitness_fn = LossDiscreteState(
             to_maximize,
             self.clf,
@@ -464,7 +461,6 @@ class OptimizedSearch(BaseExplanation):
     def explain(
         self, x_test, num_features=None, to_maximize=None
     ) -> Tuple[np.array, int]:
-
         input_ = x_test.reshape(1, -1, self.window_size)
         orig_preds = self.clf(input_)
 
@@ -603,7 +599,6 @@ class AtesCF(CF):
             self.ts_length = shape[-1]
 
         if backend == "PYT":
-
             self.predict = PyTorchModel(model, change).predict
         elif backend == "TF":
             self.predict = TensorFlowModel(model, change).predict

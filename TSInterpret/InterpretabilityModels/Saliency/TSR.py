@@ -23,7 +23,6 @@ class TSR:
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
         """
         if isinstance(model, torch.nn.Module):
-
             return Saliency_PTY(
                 model,
                 NumTimeSteps,
@@ -34,7 +33,6 @@ class TSR:
             )
 
         elif isinstance(model, tensorflow.keras.Model):
-
             return Saliency_TF(
                 model, NumTimeSteps, NumFeatures, method=method, mode=mode
             )

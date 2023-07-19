@@ -56,9 +56,7 @@ def recombine(ind1, ind2):
             indpb=0.1,
         )
     else:
-
         if (shape / window_size1).is_integer():
-
             ind1 = windowed_view(
                 np.array(ind1).reshape(num_channels, shape),
                 window_size1,
@@ -95,7 +93,6 @@ def recombine(ind1, ind2):
             )
 
         else:
-
             items = np.where(channel1 == 1)
             if len(items[0]) != 0:
                 for item in items[0]:
@@ -107,7 +104,6 @@ def recombine(ind1, ind2):
 
     shape_new = np.array(ind1).reshape(1, -1).shape[1]
     if shape_new > shape:
-
         diff = shape_new - shape
         ind1 = np.array(ind1).reshape(num_channels, -1)[:, 0 : shape_new - diff]
         ind2 = np.array(ind2).reshape(num_channels, -1)[:, 0 : shape_new - diff]
@@ -136,7 +132,6 @@ def mutate(individual, means, sigmas, indpb, uopb):
         means = means[channel]
         sigmas = sigmas[channel]
         for i, m, s in zip(range(len(individual[int(channel)])), means, sigmas):
-
             if random.random() < indpb:
                 individual[channel][i] = random.gauss(m, s)
 
@@ -202,7 +197,6 @@ def pareto_eq(ind1, ind2):
 
 
 def authentic_opposing_information(ind1, reference_set):
-
     window = ind1.window
     # window=10
     num_channels = len(ind1.channels)
@@ -218,7 +212,6 @@ def authentic_opposing_information(ind1, reference_set):
         )  # [0]
 
     else:
-
         shape_new = window * (int(shape / window) + 1)
         padded = np.zeros((num_channels, shape_new))
         sample_padded = np.zeros((num_channels, shape_new))
@@ -239,7 +232,6 @@ def authentic_opposing_information(ind1, reference_set):
 
     new_shape = ind1.reshape(num_channels, -1).shape[1]
     if new_shape > shape:
-
         diff = shape_new - shape
         ind1 = np.array(ind1).reshape(num_channels, -1)[:, 0 : shape_new - diff]
 

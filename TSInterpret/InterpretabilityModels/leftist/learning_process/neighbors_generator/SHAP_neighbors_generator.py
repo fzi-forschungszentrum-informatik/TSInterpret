@@ -118,7 +118,6 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
             self.num_samples_left * remaining_weight_vector[subset_size - 1] / nsubsets
             >= 1.0 - 1e-8
         ):
-
             # update the counter of full subset and the remaining neighbors to draw
             self.num_full_subsets += 1
             self.num_samples_left -= nsubsets
@@ -178,7 +177,6 @@ class SHAPNeighborsGenerator(NeighborsGenerator):
                 self.num_samples_left > 0
                 and subset_size <= self.num_paired_subset_sizes
             ):
-
                 neighbor_mask[:] = np.abs(neighbor_mask - 1)
                 # only add the sample if we have not seen it before, otherwise just
                 # increment a previous sample's weight

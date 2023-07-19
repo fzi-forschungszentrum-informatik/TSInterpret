@@ -156,7 +156,6 @@ class NativeGuideCF(CF):
     def _findSubarray(
         self, a, k
     ):  # used to find the maximum contigious subarray of length k in the explanation weight vector
-
         n = len(a)
 
         vec = []
@@ -228,7 +227,6 @@ class NativeGuideCF(CF):
         ]  # torch.nn.functional.softmax(model(torch.from_numpy(test_x))).detach().numpy()[0][y_pred[instance]]
         counter = 0
         while prob_target > 0.5 and counter < max_iter:
-
             subarray_length += 1
             most_influencial_array = self._findSubarray(
                 (training_weights), subarray_length
@@ -254,7 +252,6 @@ class NativeGuideCF(CF):
         return X_example, np.argmax(out, axis=1)[0]
 
     def _instance_based_cf(self, query, label, target, distance="dtw", max_iter=500):
-
         d, nan = self._native_guide_retrieval(query, label, distance, 1)
         beta = 0
         insample_cf = nan.reshape(1, 1, -1)
