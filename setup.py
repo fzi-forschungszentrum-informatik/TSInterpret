@@ -23,7 +23,7 @@ REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
-    "mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip ",
+    #"mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip",
     #"mlrose>=1.3.0,< 2.0",
     "scikit-learn==1.3.0",
     # "scikit-surprise==1.1.1",
@@ -64,7 +64,8 @@ dev_packages = base_packages + [
     "pre-commit>=2.9.2,< 3.0",
     "pytest>=4.5.0,< 5.0",
     "pytest-cov>=2.6.1,< 3.0",
-    "pyupgrade>=3.2.0,< 4.0"
+    "pyupgrade>=3.2.0,< 4.0",
+    "mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip"
 ]
 
 docs_packages = [
