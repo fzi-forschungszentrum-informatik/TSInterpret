@@ -27,8 +27,8 @@ base_packages = [
     #"mlrose>=1.3.0,< 2.0",
     "scikit-learn==1.3.0",
     # "scikit-surprise==1.1.1",
-    "torch>=1.13.0,<2.0",
-    "pandas~=1.3.2",
+    "torch>=1.13.0,<3.0",
+    "pandas<=3.0.0",
     "numpy>=1.21.6,< 2.0",
     "tqdm>=4.61.2, < 4.66.0",
     "h5py==3.7.0", # todo add version
