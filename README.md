@@ -25,13 +25,9 @@ pip install TSInterpret
 ```
 You can install the latest development version from GitHub as so:
 ```shell
-pip install https://github.com/fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
+pip install https://github.com/fzi-forschungszentrum-informatik/TSInterpret/archive/refs/heads/main.zip
 ```
 
-Or, through SSH:
-```shell
-pip install git@github.com:fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
-```
 
 Due to the <a href='https://github.com/scikit-learn/sklearn-pypi-package'>sklearn brownout</a> `pip install sklearn` is no longer available in third party dependencies. As the current release of <a href='https://github.com/gkhayes/mlrose'>mlrose</a> still relies on sklearn, we eliminated the dependency. If you still want to use COMTE (with dependecy to mlrose), it can be installed via : 
 ```shell
