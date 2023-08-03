@@ -33,7 +33,7 @@ Or, through SSH:
 pip install git@github.com:fzi-forschungszentrum-informatik/TSInterpret.git --upgrade
 ```
 
-Due to the <a href='https://github.com/scikit-learn/sklearn-pypi-package'>sklearn brownout</a> `pip install sklearn` is no longer available in third party dependencies. As the current release of <a href='https://github.com/gkhayes/mlrose'>mlrose</a> still relies on sklearn, we eliminated the dependency. If you still want to use TSEvo (with dependecy to mlrose), it can be installed via : 
+Due to the <a href='https://github.com/scikit-learn/sklearn-pypi-package'>sklearn brownout</a> `pip install sklearn` is no longer available in third party dependencies. As the current release of <a href='https://github.com/gkhayes/mlrose'>mlrose</a> still relies on sklearn, we eliminated the dependency. If you still want to use COMTE (with dependecy to mlrose), it can be installed via : 
 ```shell
 pip install https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip
 ```
