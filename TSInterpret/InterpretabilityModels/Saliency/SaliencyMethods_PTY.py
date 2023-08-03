@@ -85,7 +85,7 @@ class Saliency_PTY(Sal):
             self.Grad = Occlusion(model)
         self.device = device
 
-    def explain(self, item: np.ndarray, labels: int, TSR=None,**kwargs):
+    def explain(self, item: np.ndarray, labels: int, TSR=None, **kwargs):
         """Method to explain the model based on the item.
         Arguments:
             item np.array: item to get feature attribution for, if `mode = time`->`(1,time,feat)`  or `mode = feat`->`(1,feat,time)`
@@ -107,8 +107,8 @@ class Saliency_PTY(Sal):
 
         batch_size = input.shape[0]
 
-        if 'inputMask' in kwargs.keys():
-            inputMask= kwargs=['inputMask']
+        if "inputMask" in kwargs.keys():
+            inputMask = kwargs = ["inputMask"]
         else:
             inputMask = np.zeros(input.shape)
             inputMask[:, :, :] = mask
@@ -120,22 +120,24 @@ class Saliency_PTY(Sal):
         # input = samples.reshape(-1, args.NumTimeSteps, args.NumFeatures).to(device)
         if self.mode == "feat":
             input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps)
-        if 'baseline_single' in kwargs.keys():
-            baseline_single=(kwargs['baseline_single'])
+        if "baseline_single" in kwargs.keys():
+            baseline_single = kwargs["baseline_single"]
         else:
-             baseline_single = (
-            torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
-            ) #random.random
-        if 'baseline_multiple' in kwargs.keys():
-            baseline_single=(kwargs['baseline_multiple'])
+            baseline_single = (
+                torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
+            )  # random.random
+        if "baseline_multiple" in kwargs.keys():
+            baseline_single = kwargs["baseline_multiple"]
         else:
             baseline_multiple = (
                 torch.from_numpy(
-                np.random.random((input.shape[0] * 5, input.shape[1], input.shape[2]))
+                    np.random.random(
+                        (input.shape[0] * 5, input.shape[1], input.shape[2])
+                    )
+                )
+                .float()
+                .to(self.device)
             )
-            .float()
-            .to(self.device)
-        )
         input = input.float()
         base = None
         has_sliding_window = None
@@ -193,16 +195,16 @@ class Saliency_PTY(Sal):
 
         if self.tsr:
             # print('TSR', TSR)
-            if 'assignment' in kwargs.keys():
-                assignment=kwargs['assignment']
-            else: 
-                assignment=None
+            if "assignment" in kwargs.keys():
+                assignment = kwargs["assignment"]
+            else:
+                assignment = None
             TSR_attributions = self._getTwoStepRescaling(
                 input,
                 labels,
                 hasBaseline=base,
                 hasSliding_window_shapes=has_sliding_window,
-                assignment=assignment
+                assignment=assignment,
             )
             # print('TSR Attribution', TSR_attributions.shape)
             TSR_saliency = self._givenAttGetRescaledSaliency(
@@ -226,7 +228,7 @@ class Saliency_PTY(Sal):
         hasBaseline=None,
         hasFeatureMask=None,
         hasSliding_window_shapes=None,
-        assignment= None
+        assignment=None,
     ):
         sequence_length = self.NumTimeSteps
         input_size = self.NumFeatures
