@@ -94,6 +94,7 @@ class Saliency_PTY(Sal):
         Returns:
             np.array: feature attribution weights `mode = time`->`(time,feat)` or `mode = feat`->`(feat,time)`
         """
+
         mask = np.zeros((self.NumTimeSteps, self.NumFeatures), dtype=int)
         for i in range(self.NumTimeSteps):
             mask[i, :] = i
@@ -127,7 +128,7 @@ class Saliency_PTY(Sal):
                 torch.from_numpy(np.random.random(input.shape)).float().to(self.device)
             )  # random.random
         if "baseline_multiple" in kwargs.keys():
-            baseline_single = kwargs["baseline_multiple"]
+            baseline_multiple = kwargs["baseline_multiple"]
         else:
             baseline_multiple = (
                 torch.from_numpy(
