@@ -266,8 +266,12 @@ def frequency_band_mapping(ind1, reference_set):
     # Set up dataframe for slices with start and end value
     slices_start_end_value = pd.DataFrame(columns=["Slice_number", "Start", "End"])
     # Include the first fourier band which should not be perturbed
-    new_row =pd.DataFrame([[0,0,1]],columns=["Slice_number", "Start", "End"]) #{"Slice_number": 0, "Start": 0, "End": 1}
-    slices_start_end_value = pd.concat([slices_start_end_value,new_row], ignore_index=True) #slices_start_end_value.append(new_row, ignore_index=True)
+    new_row = pd.DataFrame(
+        [[0, 0, 1]], columns=["Slice_number", "Start", "End"]
+    )  # {"Slice_number": 0, "Start": 0, "End": 1}
+    slices_start_end_value = pd.concat(
+        [slices_start_end_value, new_row], ignore_index=True
+    )  # slices_start_end_value.append(new_row, ignore_index=True)
     start_idx = length
     end_idx = length
     while length < len_fourier:
@@ -275,9 +279,13 @@ def frequency_band_mapping(ind1, reference_set):
         end_idx = start_idx + num_slices**2  # End value
         end_idx = min(end_idx, len_fourier)
 
-        new_row =pd.DataFrame([[num_slices,start_idx,end_idx]],columns=["Slice_number", "Start", "End"])#new_row = {"Slice_number": num_slices, "Start": start_idx, "End": end_idx}
+        new_row = pd.DataFrame(
+            [[num_slices, start_idx, end_idx]], columns=["Slice_number", "Start", "End"]
+        )  # new_row = {"Slice_number": num_slices, "Start": start_idx, "End": end_idx}
         # append row to the dataframe
-        slices_start_end_value =  pd.concat([slices_start_end_value, new_row], ignore_index=True)#slices_start_end_value.append( new_row, ignore_index=True)
+        slices_start_end_value = pd.concat(
+            [slices_start_end_value, new_row], ignore_index=True
+        )  # slices_start_end_value.append( new_row, ignore_index=True)
 
         length = length + end_idx - start_idx
         num_slices = num_slices + 1
