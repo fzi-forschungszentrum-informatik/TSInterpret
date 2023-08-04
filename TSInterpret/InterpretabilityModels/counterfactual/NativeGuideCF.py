@@ -156,7 +156,11 @@ class NativeGuideCF(CF):
     def _findSubarray(
         self, a, k
     ):  # used to find the maximum contigious subarray of length k in the explanation weight vector
+       
+        if len(a.shape)==2:
+            a=a.reshape(-1)
         n = len(a)
+        a=a.tolist()    
 
         vec = []
 
@@ -170,7 +174,6 @@ class NativeGuideCF(CF):
 
             # Push the vector in the container
             vec.append(temp)
-
         sum_arr = []
         for v in vec:
             sum_arr.append(np.sum(v))
@@ -180,7 +183,6 @@ class NativeGuideCF(CF):
     def _counterfactual_generator_swap(
         self, instance, label, subarray_length=1, max_iter=500
     ):
-        print(label)
         _, nun = self._native_guide_retrieval(instance, label, self.distance_measure, 1)
         if np.count_nonzero(nun.reshape(-1) - instance.reshape(-1)) == 0:
             print("Starting and nun are Identical !")
