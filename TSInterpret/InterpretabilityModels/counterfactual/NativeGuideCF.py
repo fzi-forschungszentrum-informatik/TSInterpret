@@ -156,11 +156,10 @@ class NativeGuideCF(CF):
     def _findSubarray(
         self, a, k
     ):  # used to find the maximum contigious subarray of length k in the explanation weight vector
-       
-        if len(a.shape)==2:
-            a=a.reshape(-1)
+        if len(a.shape) == 2:
+            a = a.reshape(-1)
         n = len(a)
-        a=a.tolist()    
+        a = a.tolist()
 
         vec = []
 
