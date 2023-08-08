@@ -1,4 +1,3 @@
-
 import logging
 import multiprocessing
 import numbers
@@ -9,12 +8,18 @@ import pandas as pd
 import six
 from sklearn.neighbors import KDTree
 from skopt import gbrt_minimize, gp_minimize
-from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import LossDiscreteState, Problem
-from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optmization_helpers import random_hill_climb
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import (
+    LossDiscreteState,
+    Problem,
+)
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optmization_helpers import (
+    random_hill_climb,
+)
 
-#sys.modules["sklearn.externals.six"] = six
+# sys.modules["sklearn.externals.six"] = six
 
-#import mlrose
+# import mlrose
+
 
 class BaseExplanation:
     def __init__(
@@ -239,9 +244,6 @@ def _eval_one(tup):
     ]  # CLASSIFIER.predict_proba(x_test)[0][label_idx]
 
 
-
-
-
 class BruteForceSearch(BaseExplanation):
     def _find_best(self, x_test, distractor, label_idx):
         global CLASSIFIER
@@ -328,9 +330,6 @@ class BruteForceSearch(BaseExplanation):
         return other, target
 
 
-
-
-
 class OptimizedSearch(BaseExplanation):
     def __init__(
         self,
@@ -361,7 +360,7 @@ class OptimizedSearch(BaseExplanation):
             max_features=num_features,
             maximize=False,
         )
-        problem = Problem( length=len(columns), loss=fitness_fn, max_val=2)
+        problem = Problem(length=len(columns), loss=fitness_fn, max_val=2)
         best_state, best_fitness = random_hill_climb(
             problem,
             max_attempts=self.max_attemps,
@@ -436,8 +435,8 @@ class OptimizedSearch(BaseExplanation):
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors
         )
-        #print('distracotr shape',np.array(distractors).shape)
-        #print('distracotr classification',np.argmax(self.clf(np.array(distractors).reshape(2,6,100)), axis=1))
+        # print('distracotr shape',np.array(distractors).shape)
+        # print('distracotr classification',np.argmax(self.clf(np.array(distractors).reshape(2,6,100)), axis=1))
 
         # Avoid constructing KDtrees twice
         self.backup.per_class_trees = self.per_class_trees

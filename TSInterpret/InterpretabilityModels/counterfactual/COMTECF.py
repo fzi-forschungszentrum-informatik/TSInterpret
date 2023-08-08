@@ -13,8 +13,6 @@ from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optimization import
 from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import *
 
 
-
-
 class COMTECF(CF):
     """Calculates and Visualizes Counterfactuals for Multivariate Time Series in accordance to the paper [1].
 
@@ -69,7 +67,7 @@ class COMTECF(CF):
 
         elif backend == "SK":
             self.predict = SklearnModel(model, change).predict
-        
+
         self.referenceset = (test_x, test_y)
         self.method = method
         self.silent = silent
@@ -90,7 +88,7 @@ class COMTECF(CF):
             ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
 
         """
-        org_shape=x.shape
+        org_shape = x.shape
         if self.mode != "feat":
             x = x.reshape(-1, x.shape[-1], x.shape[-2])
         train_x, train_y = self.referenceset
@@ -107,9 +105,8 @@ class COMTECF(CF):
                 max_attempts=self.max_attemps,
                 maxiter=self.max_iter,
             )
-            exp,label= opt.explain(x, to_maximize=target)
+            exp, label = opt.explain(x, to_maximize=target)
         elif self.method == "brute":
             opt = BruteForceSearch(self.predict, train_x, train_y, threads=1)
-            exp,label= opt.explain(x, to_maximize=target)
+            exp, label = opt.explain(x, to_maximize=target)
         return exp.reshape(org_shape), label
-        

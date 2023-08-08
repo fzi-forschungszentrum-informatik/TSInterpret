@@ -1,7 +1,15 @@
 import numpy as np
-def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
-                      init_state=None, curve=False, random_state=None):
 
+
+def random_hill_climb(
+    problem,
+    max_attempts=10,
+    max_iters=np.inf,
+    restarts=0,
+    init_state=None,
+    curve=False,
+    random_state=None,
+):
     # Set random seed
     if isinstance(random_state, int) and random_state > 0:
         np.random.seed(random_state)
@@ -40,16 +48,15 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
                 fitness_values.append(problem.get_fitness())
 
         # Update best state and best fitness
-        #print('best_fitness',best_fitness)
+        # print('best_fitness',best_fitness)
         if problem.get_fitness() < best_fitness:
             best_fitness = problem.get_fitness()
             best_state = problem.get_state()
-            #print('bestfitness after', best_fitness)
-   
-
+            # print('bestfitness after', best_fitness)
 
     if curve:
-        import matplotlib.pyplot as plt 
+        import matplotlib.pyplot as plt
+
         plt.plot(np.asarray(fitness_values))
         plt.show()
 
