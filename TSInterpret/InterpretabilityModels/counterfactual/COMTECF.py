@@ -1,16 +1,13 @@
-import logging
-import multiprocessing
-import numbers
-import sys
 from typing import Tuple
 import numpy as np
-import pandas as pd
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
 from TSInterpret.Models.PyTorchModel import PyTorchModel
 from TSInterpret.Models.SklearnModel import SklearnModel
 from TSInterpret.Models.TensorflowModel import TensorFlowModel
-from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optimization import *
-from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import *
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optimization import (
+    BruteForceSearch,
+    OptimizedSearch,
+)
 
 
 class COMTECF(CF):

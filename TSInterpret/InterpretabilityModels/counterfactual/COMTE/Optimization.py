@@ -1,11 +1,9 @@
 import logging
 import multiprocessing
 import numbers
-import sys
 from typing import Tuple
 import numpy as np
 import pandas as pd
-import six
 from sklearn.neighbors import KDTree
 from skopt import gbrt_minimize, gp_minimize
 from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import (
@@ -15,10 +13,6 @@ from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import (
 from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optmization_helpers import (
     random_hill_climb,
 )
-
-# sys.modules["sklearn.externals.six"] = six
-
-# import mlrose
 
 
 class BaseExplanation:

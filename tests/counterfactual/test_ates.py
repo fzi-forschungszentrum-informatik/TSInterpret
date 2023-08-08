@@ -72,7 +72,7 @@ def cf_ates_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
 #    yield X, y, model, cf_explainer
 
 #TODO ADD OPT
-@pytest.mark.parametrize('cf_ates_torch_explainer',['brute'],ids='method={}'.format,indirect=True)
+@pytest.mark.parametrize('cf_ates_torch_explainer',['brute','opt'],ids='method={}'.format,indirect=True)
 @pytest.mark.parametrize('target',[None])#0,1
 def test_cf_ates_torch_explainer(cf_ates_torch_explainer,target):
 
@@ -97,7 +97,7 @@ def test_cf_ates_torch_explainer(cf_ates_torch_explainer,target):
         assert y_label == ta
 
 #TODO ADD OPT
-@pytest.mark.parametrize('cf_ates_tensorflow_explainer',['brute'],ids='method={}'.format,
+@pytest.mark.parametrize('cf_ates_tensorflow_explainer',['brute','opt'],ids='method={}'.format,
                          indirect=True)
 @pytest.mark.parametrize('target',[None])#0,1
 def test_cf_ates_tensorflow_explainer(cf_ates_tensorflow_explainer,target):
@@ -108,7 +108,7 @@ def test_cf_ates_tensorflow_explainer(cf_ates_tensorflow_explainer,target):
     pred_class = np.argmax(probas,axis=1)[0]
 
     exp,ta = cf.explain(x, target=target)
-    assert exp.shape == (1,X.shape[-1], X.shape[-2])
+    assert exp.shape == (1,X.shape[-2], X.shape[-1])
     item=exp.reshape(1,X.shape[-2],-1)
     y_pred = model.predict(item)
     y_label= np.argmax(y_pred,axis=1)[0]
