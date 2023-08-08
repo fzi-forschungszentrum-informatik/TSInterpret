@@ -4,7 +4,7 @@ from tslearn.datasets import UCR_UEA_datasets
 import numpy as np 
 import torch
 from ClassificationModels.CNN_T import ResNetBaseline,fit
-from TSInterpret.InterpretabilityModels.counterfactual.Ates import AtesCF
+from TSInterpret.InterpretabilityModels.counterfactual.COMTECF import COMTECF
 import sklearn
 import tensorflow as tf 
 from tslearn.preprocessing import TimeSeriesScalerMinMax
@@ -56,19 +56,19 @@ def cnn_gunPoint_tensorflow():
 @pytest.fixture
 def cf_ates_torch_explainer( request, cnn_gunPoint_torch):
     X, y, model = cnn_gunPoint_torch
-    cf_explainer =AtesCF(model,(X,y),backend='PYT',method= request.param,mode='feat')
+    cf_explainer =COMTECF(model,(X,y),backend='PYT',method= request.param,mode='feat')
     yield X, y, model, cf_explainer
 
 @pytest.fixture
 def cf_ates_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
     #TO
     X, y, model = cnn_gunPoint_tensorflow
-    cf_explainer =AtesCF(model,(X,y),backend='TF',method= request.param,mode='time')
+    cf_explainer =COMTECF(model,(X,y),backend='TF',method= request.param,mode='time')
     yield X, y, model, cf_explainer
 #@pytest.fixture
 #def cf_ates_sklearn_explainer( request, cnn_gunPoint_sklearn):
 #    X, y, model = cnn_gunPoint_sklearn
-#    cf_explainer =AtesCF(model,(X,y),backend='SK',method= request.param,mode='time')
+#    cf_explainer =COMTECF(model,(X,y),backend='SK',method= request.param,mode='time')
 #    yield X, y, model, cf_explainer
 
 #TODO ADD OPT
