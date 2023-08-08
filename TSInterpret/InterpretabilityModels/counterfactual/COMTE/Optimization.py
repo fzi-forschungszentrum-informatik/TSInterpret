@@ -1,23 +1,18 @@
 import logging
 import multiprocessing
 import numbers
-import sys
 from typing import Tuple
 import numpy as np
 import pandas as pd
-
-# Workaround for mlrose package
-import six
 from sklearn.neighbors import KDTree
 from skopt import gbrt_minimize, gp_minimize
-
-sys.modules["sklearn.externals.six"] = six
-import mlrose
-
-from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
-from TSInterpret.Models.PyTorchModel import PyTorchModel
-from TSInterpret.Models.SklearnModel import SklearnModel
-from TSInterpret.Models.TensorflowModel import TensorFlowModel
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import (
+    LossDiscreteState,
+    Problem,
+)
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optmization_helpers import (
+    random_hill_climb,
+)
 
 
 class BaseExplanation:
@@ -91,9 +86,6 @@ class BaseExplanation:
         if isinstance(to_maximize, numbers.Integral):
             to_maximize = np.unique(self.labels)[to_maximize]
         distractors = []
-        # print('to_maximize',to_maximize)
-        # print('Class Tree',self.per_class_trees)
-        # print('Class Tree with id',self.per_class_trees[to_maximize])
         for idx in (
             self.per_class_trees[to_maximize]
             .query(x_test.T.flatten().reshape(1, -1), k=n_distractors)[1]
@@ -332,58 +324,6 @@ class BruteForceSearch(BaseExplanation):
         return other, target
 
 
-class LossDiscreteState:
-    def __init__(
-        self,
-        label_idx,
-        clf,
-        x_test,
-        distractor,
-        cols_swap,
-        reg,
-        max_features=3,
-        maximize=True,
-    ):
-        self.target = label_idx
-        self.clf = clf
-        self.x_test = x_test
-        self.reg = reg
-        self.distractor = distractor
-        self.cols_swap = cols_swap  # Column names that we can swap
-        self.prob_type = "discrete"
-        self.max_features = 3 if max_features is None else max_features
-        self.maximize = maximize
-        self.window_size = x_test.shape[-1]
-        self.channels = x_test.shape[-2]
-
-    def __call__(self, feature_matrix):
-        return self.evaluate(feature_matrix)
-
-    def evaluate(self, feature_matrix):
-        new_case = self.x_test.copy()
-        assert len(self.cols_swap) == len(feature_matrix)
-
-        for col_replace, a in zip(self.cols_swap, feature_matrix):
-            if a == 1:
-                new_case[0][col_replace] = self.distractor[0][col_replace]
-
-        replaced_feature_count = np.sum(feature_matrix)
-
-        input_ = new_case.reshape(1, self.channels, self.window_size)
-        result = self.clf(input_)[0][self.target]
-        feature_loss = self.reg * np.maximum(
-            0, replaced_feature_count - self.max_features
-        )
-        loss_pred = np.square(np.maximum(0, 0.95 - result))
-
-        loss_pred = loss_pred + feature_loss
-        # print(loss_pred)
-        return -loss_pred if self.maximize else loss_pred
-
-    def get_prob_type(self):
-        return self.prob_type
-
-
 class OptimizedSearch(BaseExplanation):
     def __init__(
         self,
@@ -414,10 +354,8 @@ class OptimizedSearch(BaseExplanation):
             max_features=num_features,
             maximize=False,
         )
-        problem = mlrose.DiscreteOpt(
-            length=len(columns), fitness_fn=fitness_fn, maximize=False, max_val=2
-        )
-        best_state, best_fitness = mlrose.random_hill_climb(
+        problem = Problem(length=len(columns), loss=fitness_fn, max_val=2)
+        best_state, best_fitness = random_hill_climb(
             problem,
             max_attempts=self.max_attemps,
             max_iters=self.maxiter,
@@ -469,9 +407,6 @@ class OptimizedSearch(BaseExplanation):
         if to_maximize is None:
             to_maximize = np.argsort(orig_preds)[0][-2:-1][0]
 
-        # print('Current may',np.argmax(orig_preds))
-        # print(to_maximize)
-
         if orig_label == to_maximize:
             print("Original and Target Label are identical !")
             return None, None
@@ -494,6 +429,8 @@ class OptimizedSearch(BaseExplanation):
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors
         )
+        # print('distracotr shape',np.array(distractors).shape)
+        # print('distracotr classification',np.argmax(self.clf(np.array(distractors).reshape(2,6,100)), axis=1))
 
         # Avoid constructing KDtrees twice
         self.backup.per_class_trees = self.per_class_trees
@@ -537,7 +474,6 @@ class OptimizedSearch(BaseExplanation):
 
             if not self.silent:
                 logging.info("Current probas: %s", probas)
-
             if np.argmax(probas) == to_maximize:
                 current_best = np.max(probas)
                 if current_best > best_explanation_score:
@@ -549,100 +485,3 @@ class OptimizedSearch(BaseExplanation):
             return None, None
 
         return best_modified, best_explanation
-
-
-class AtesCF(CF):
-    """Calculates and Visualizes Counterfactuals for Multivariate Time Series in accordance to the paper [1].
-
-    References
-    ----------
-     [1] Ates, Emre, et al.
-     "Counterfactual Explanations for Multivariate Time Series."
-     2021 International Conference on Applied Artificial Intelligence (ICAPAI). IEEE, 2021.
-    ----------
-    """
-
-    def __init__(
-        self,
-        model,
-        data,
-        backend,
-        mode,
-        method="opt",
-        number_distractors=2,
-        max_attempts=1000,
-        max_iter=1000,
-        silent=False,
-    ) -> None:
-        """
-        Arguments:
-            model [torch.nn.Module, Callable, tf.keras.model]: Model to be interpreted.
-            ref Tuple: Reference Dataset as Tuple (x,y).
-            backend str: desired Model Backend ('PYT', 'TF', 'SK').
-            mode str: Name of second dimension: `time` -> `(-1, time, feature)` or `feat` -> `(-1, feature, time)`
-            method str : 'opt' if optimized calculation, 'brute' for Brute Force
-            number_distractors int: number of distractore to be used
-            silent bool: logging.
-
-        """
-        super().__init__(model, mode)
-        self.backend = backend
-        test_x, test_y = data
-        shape = test_x.shape
-        if mode == "time":
-            # Parse test data into (1, feat, time):
-            change = True
-            self.ts_length = shape[-2]
-            test_x = test_x.reshape(test_x.shape[0], test_x.shape[2], test_x.shape[1])
-        elif mode == "feat":
-            change = False
-            self.ts_length = shape[-1]
-
-        if backend == "PYT":
-            self.predict = PyTorchModel(model, change).predict
-        elif backend == "TF":
-            self.predict = TensorFlowModel(model, change).predict
-
-        elif backend == "SK":
-            self.predict = SklearnModel(model, change).predict
-        self.referenceset = (test_x, test_y)
-        self.method = method
-        self.silent = silent
-        self.number_distractors = number_distractors
-        self.max_attemps = max_attempts
-        self.max_iter = max_iter
-
-    def explain(
-        self, x: np.ndarray, orig_class: int = None, target: int = None
-    ) -> Tuple[np.ndarray, int]:
-        """
-        Calculates the Counterfactual according to Ates.
-        Arguments:
-            x (np.array): The instance to explain. Shape : `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
-            target int: target class. If no target class is given, the class with the secon heighest classification probability is selected.
-
-        Returns:
-            ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
-
-        """
-
-        if self.mode != "feat":
-            x = x.reshape(-1, x.shape[-1], x.shape[-2])
-        train_x, train_y = self.referenceset
-        if len(train_y.shape) > 1:
-            train_y = np.argmax(train_y, axis=1)
-        if self.method == "opt":
-            opt = OptimizedSearch(
-                self.predict,
-                train_x,
-                train_y,
-                silent=self.silent,
-                threads=1,
-                num_distractors=self.number_distractors,
-                max_attempts=self.max_attemps,
-                maxiter=self.max_iter,
-            )
-            return opt.explain(x, to_maximize=target)
-        elif self.method == "brute":
-            opt = BruteForceSearch(self.predict, train_x, train_y, threads=1)
-            return opt.explain(x, to_maximize=target)

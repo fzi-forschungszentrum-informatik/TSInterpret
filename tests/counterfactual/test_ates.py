@@ -4,7 +4,7 @@ from tslearn.datasets import UCR_UEA_datasets
 import numpy as np 
 import torch
 from ClassificationModels.CNN_T import ResNetBaseline,fit
-from TSInterpret.InterpretabilityModels.counterfactual.Ates import AtesCF
+from TSInterpret.InterpretabilityModels.counterfactual.COMTECF import COMTECF
 import sklearn
 import tensorflow as tf 
 from tslearn.preprocessing import TimeSeriesScalerMinMax
@@ -56,23 +56,23 @@ def cnn_gunPoint_tensorflow():
 @pytest.fixture
 def cf_ates_torch_explainer( request, cnn_gunPoint_torch):
     X, y, model = cnn_gunPoint_torch
-    cf_explainer =AtesCF(model,(X,y),backend='PYT',method= request.param,mode='feat')
+    cf_explainer =COMTECF(model,(X,y),backend='PYT',method= request.param,mode='feat')
     yield X, y, model, cf_explainer
 
 @pytest.fixture
 def cf_ates_tensorflow_explainer( request, cnn_gunPoint_tensorflow):
     #TO
     X, y, model = cnn_gunPoint_tensorflow
-    cf_explainer =AtesCF(model,(X,y),backend='TF',method= request.param,mode='time')
+    cf_explainer =COMTECF(model,(X,y),backend='TF',method= request.param,mode='time')
     yield X, y, model, cf_explainer
 #@pytest.fixture
 #def cf_ates_sklearn_explainer( request, cnn_gunPoint_sklearn):
 #    X, y, model = cnn_gunPoint_sklearn
-#    cf_explainer =AtesCF(model,(X,y),backend='SK',method= request.param,mode='time')
+#    cf_explainer =COMTECF(model,(X,y),backend='SK',method= request.param,mode='time')
 #    yield X, y, model, cf_explainer
 
 #TODO ADD OPT
-@pytest.mark.parametrize('cf_ates_torch_explainer',['brute'],ids='method={}'.format,indirect=True)
+@pytest.mark.parametrize('cf_ates_torch_explainer',['brute','opt'],ids='method={}'.format,indirect=True)
 @pytest.mark.parametrize('target',[None])#0,1
 def test_cf_ates_torch_explainer(cf_ates_torch_explainer,target):
 
@@ -97,7 +97,7 @@ def test_cf_ates_torch_explainer(cf_ates_torch_explainer,target):
         assert y_label == ta
 
 #TODO ADD OPT
-@pytest.mark.parametrize('cf_ates_tensorflow_explainer',['brute'],ids='method={}'.format,
+@pytest.mark.parametrize('cf_ates_tensorflow_explainer',['brute','opt'],ids='method={}'.format,
                          indirect=True)
 @pytest.mark.parametrize('target',[None])#0,1
 def test_cf_ates_tensorflow_explainer(cf_ates_tensorflow_explainer,target):
@@ -108,7 +108,7 @@ def test_cf_ates_tensorflow_explainer(cf_ates_tensorflow_explainer,target):
     pred_class = np.argmax(probas,axis=1)[0]
 
     exp,ta = cf.explain(x, target=target)
-    assert exp.shape == (1,X.shape[-1], X.shape[-2])
+    assert exp.shape == (1,X.shape[-2], X.shape[-1])
     item=exp.reshape(1,X.shape[-2],-1)
     y_pred = model.predict(item)
     y_label= np.argmax(y_pred,axis=1)[0]
