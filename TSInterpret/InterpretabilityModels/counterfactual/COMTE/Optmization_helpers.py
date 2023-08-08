@@ -1,6 +1,6 @@
 import numpy as np
 def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
-                      init_state=None, curve=True, random_state=None):
+                      init_state=None, curve=False, random_state=None):
 
     # Set random seed
     if isinstance(random_state, int) and random_state > 0:

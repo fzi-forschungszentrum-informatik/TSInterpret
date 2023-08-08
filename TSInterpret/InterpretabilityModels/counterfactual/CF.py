@@ -178,7 +178,7 @@ class CF(InstanceBase):
         """
         if self.mode == "time":
             item = item.reshape(item.shape[-1], item.shape[-2])
-            exp = exp.reshape(item.shape[-1], item.shape[-2])
+            exp = exp.reshape( exp.shape[-1],  exp.shape[-2])
         else:
             item = item.reshape(item.shape[-2], item.shape[-1])
             exp = exp.reshape(item.shape[-2], item.shape[-1])

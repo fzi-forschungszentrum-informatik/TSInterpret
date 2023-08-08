@@ -90,7 +90,7 @@ class COMTECF(CF):
             ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
 
         """
-
+        org_shape=x.shape
         if self.mode != "feat":
             x = x.reshape(-1, x.shape[-1], x.shape[-2])
         train_x, train_y = self.referenceset
@@ -107,7 +107,9 @@ class COMTECF(CF):
                 max_attempts=self.max_attemps,
                 maxiter=self.max_iter,
             )
-            return opt.explain(x, to_maximize=target)
+            exp,label= opt.explain(x, to_maximize=target)
         elif self.method == "brute":
             opt = BruteForceSearch(self.predict, train_x, train_y, threads=1)
-            return opt.explain(x, to_maximize=target)
+            exp,label= opt.explain(x, to_maximize=target)
+        return exp.reshape(org_shape), label
+        

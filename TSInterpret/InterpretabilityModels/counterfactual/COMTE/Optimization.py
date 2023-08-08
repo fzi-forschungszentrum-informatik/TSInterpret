@@ -422,8 +422,6 @@ class OptimizedSearch(BaseExplanation):
         tr, _ = explanation
         if tr is None:
             print("Run Brute Force as Backup.")
-            import sys 
-            sys.exit(1)
             explanation = self.backup.explain(
                 x_test, num_features=num_features, to_maximize=to_maximize
             )
@@ -483,8 +481,6 @@ class OptimizedSearch(BaseExplanation):
 
             if not self.silent:
                 logging.info("Current probas: %s", probas)
-            print('probas', probas)
-            print('probas',np.argmax(probas))
             if np.argmax(probas) == to_maximize:
                 current_best = np.max(probas)
                 if current_best > best_explanation_score:
