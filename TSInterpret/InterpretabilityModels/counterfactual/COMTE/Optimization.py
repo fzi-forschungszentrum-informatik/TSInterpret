@@ -9,10 +9,12 @@ import pandas as pd
 import six
 from sklearn.neighbors import KDTree
 from skopt import gbrt_minimize, gp_minimize
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import LossDiscreteState, Problem
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optmization_helpers import random_hill_climb
 
-sys.modules["sklearn.externals.six"] = six
+#sys.modules["sklearn.externals.six"] = six
 
-import mlrose
+#import mlrose
 
 class BaseExplanation:
     def __init__(
@@ -85,9 +87,6 @@ class BaseExplanation:
         if isinstance(to_maximize, numbers.Integral):
             to_maximize = np.unique(self.labels)[to_maximize]
         distractors = []
-        # print('to_maximize',to_maximize)
-        # print('Class Tree',self.per_class_trees)
-        # print('Class Tree with id',self.per_class_trees[to_maximize])
         for idx in (
             self.per_class_trees[to_maximize]
             .query(x_test.T.flatten().reshape(1, -1), k=n_distractors)[1]
@@ -362,10 +361,8 @@ class OptimizedSearch(BaseExplanation):
             max_features=num_features,
             maximize=False,
         )
-        problem = mlrose.DiscreteOpt(
-            length=len(columns), fitness_fn=fitness_fn, maximize=False, max_val=2
-        )
-        best_state, best_fitness = mlrose.random_hill_climb(
+        problem = Problem( length=len(columns), loss=fitness_fn, max_val=2)
+        best_state, best_fitness = random_hill_climb(
             problem,
             max_attempts=self.max_attemps,
             max_iters=self.maxiter,
@@ -417,9 +414,6 @@ class OptimizedSearch(BaseExplanation):
         if to_maximize is None:
             to_maximize = np.argsort(orig_preds)[0][-2:-1][0]
 
-        # print('Current may',np.argmax(orig_preds))
-        # print(to_maximize)
-
         if orig_label == to_maximize:
             print("Original and Target Label are identical !")
             return None, None
@@ -428,6 +422,8 @@ class OptimizedSearch(BaseExplanation):
         tr, _ = explanation
         if tr is None:
             print("Run Brute Force as Backup.")
+            import sys 
+            sys.exit(1)
             explanation = self.backup.explain(
                 x_test, num_features=num_features, to_maximize=to_maximize
             )
@@ -442,6 +438,8 @@ class OptimizedSearch(BaseExplanation):
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors
         )
+        #print('distracotr shape',np.array(distractors).shape)
+        #print('distracotr classification',np.argmax(self.clf(np.array(distractors).reshape(2,6,100)), axis=1))
 
         # Avoid constructing KDtrees twice
         self.backup.per_class_trees = self.per_class_trees
@@ -485,7 +483,8 @@ class OptimizedSearch(BaseExplanation):
 
             if not self.silent:
                 logging.info("Current probas: %s", probas)
-
+            print('probas', probas)
+            print('probas',np.argmax(probas))
             if np.argmax(probas) == to_maximize:
                 current_best = np.max(probas)
                 if current_best > best_explanation_score:

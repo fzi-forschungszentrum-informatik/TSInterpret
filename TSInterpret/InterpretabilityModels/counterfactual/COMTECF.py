@@ -69,6 +69,7 @@ class COMTECF(CF):
 
         elif backend == "SK":
             self.predict = SklearnModel(model, change).predict
+        
         self.referenceset = (test_x, test_y)
         self.method = method
         self.silent = silent

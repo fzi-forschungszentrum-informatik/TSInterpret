@@ -1,19 +1,60 @@
 
-import logging
-import multiprocessing
-import numbers
-import sys
-from typing import Tuple
 import numpy as np
-import pandas as pd
-import six
-from sklearn.neighbors import KDTree
-from skopt import gbrt_minimize, gp_minimize
 
-sys.modules["sklearn.externals.six"] = six
+class Problem  :
+    def __init__(self,length,loss, max_val):
+        self.loss = loss
+        self.max_val= max_val
+        self.length=length
+        #self.maximize=maximize
+        self.fitness = np.inf
+        self.state = np.array([0]*self.length)
 
-import mlrose
+
+    def random_neighbor(self):
+        neighbor = np.copy(self.state)
+        i = np.random.randint(0, self.length)
+
+        if self.max_val == 2:
+            neighbor[i] = np.abs(neighbor[i] - 1)
+
+        else:
+            vals = list(np.arange(self.max_val))
+            vals.remove(neighbor[i])
+            neighbor[i] = vals[np.random.randint(0, self.max_val-1)]
+
+        return neighbor
+
+    def get_fitness(self):
+        return self.fitness
+    
+    def eval_fitness(self, state):
+        fitness =self.loss.evaluate(state)
+        return fitness
+    
+    def random(self):
+        state = np.random.randint(0, self.max_val, self.length)
+        return state
+    
+    def reset(self):
+
+        self.state = self.random()
+        self.fitness = self.eval_fitness(self.state)
+
+    def set_state(self, new_state):
+
+        self.state = new_state
+        self.fitness = self.eval_fitness(self.state)
+    
+    def get_state(self):
+        return self.state
+    #def get_maximize(self):
+    #    return self.maximize
+
+    
+
 class LossDiscreteState:
+    '''Loss Function'''
     def __init__(
         self,
         label_idx,
@@ -46,20 +87,33 @@ class LossDiscreteState:
 
         for col_replace, a in zip(self.cols_swap, feature_matrix):
             if a == 1:
+                #print(self.distractor.shape)
                 new_case[0][col_replace] = self.distractor[0][col_replace]
 
         replaced_feature_count = np.sum(feature_matrix)
+        #print('replaced_Feature', replaced_feature_count)
+        
+        #print('NEW CASE', new_case)
+        #print('self xtest', self.x_test)
+        #print('NEW CASE', new_case.shape)
+        #print('self xtest', self.x_test.shape)
+        #print('DIFF', np.where((self.x_test.reshape(-1)-new_case.reshape(-1)) != 0) )
 
         input_ = new_case.reshape(1, self.channels, self.window_size)
-        result = self.clf(input_)[0][self.target]
+        result_org = self.clf(input_)
+        result=result_org[0][self.target]
+        #print('RESULT',result)
         feature_loss = self.reg * np.maximum(
             0, replaced_feature_count - self.max_features
         )
+
+        #print('FEATURE LOSS',feature_loss)
         loss_pred = np.square(np.maximum(0, 0.95 - result))
+        #print('losspred ',loss_pred)
+        #if np.argmax(result_org[0]) != self.target:
+        #    loss_pred=np.inf
 
         loss_pred = loss_pred + feature_loss
-        # print(loss_pred)
-        return -loss_pred if self.maximize else loss_pred
 
-    def get_prob_type(self):
-        return self.prob_type
+        return loss_pred
+    
