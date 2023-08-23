@@ -147,18 +147,17 @@ class NativeGuideCF(CF):
         x_train.reshape(-1, 1, ts_length)
         return dist[0], x_train[np.where(y != predicted_label)][ind[0]]
 
-
     def _native_guide_wrapper(self, query, predicted_label, distance, n_neighbors):
         _, nun = self._native_guide_retrieval(
             query, predicted_label, distance, n_neighbors
         )
-        if nun is None: 
+        if nun is None:
             return None, None
         individual = np.array(nun.tolist())  # , dtype=np.float64)
         out = self.predict(individual)
         if np.argmax(out) == predicted_label:
-             print("No Counterfactual found. Most likly caused by a constant predictor.")
-             return None, None
+            print("No Counterfactual found. Most likly caused by a constant predictor.")
+            return None, None
 
         return nun, np.argmax(out)
 
