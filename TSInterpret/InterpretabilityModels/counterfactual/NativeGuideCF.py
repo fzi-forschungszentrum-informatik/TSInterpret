@@ -83,8 +83,6 @@ class NativeGuideCF(CF):
             self.predict = PyTorchModel(self.model, change).predict
             y_pred = np.argmax(self.predict(test_x), axis=1)
 
-
-
         elif backend == "TF":
             self.cam_extractor = GradCam1D()  # VanillaGradients()#GradCam1D()
             y_pred = np.argmax(
@@ -133,11 +131,11 @@ class NativeGuideCF(CF):
             [np.array]: Returns K_Nearest_Neighbors of input query with different classification label.
 
         """
-        if type(predicted_label) != int:
-            if len(predicted_label)>1:
+        if not isinstance(predicted_label, (int, np.int64, np.int32, np.int16)):
+            if len(predicted_label) > 1:
                 predicted_label = np.argmax(predicted_label)
-            else: 
-                predicted_label= predicted_label[0]
+            else:
+                predicted_label = predicted_label[0]
 
         x_train, y = self.data
         if len(y.shape) == 2:
