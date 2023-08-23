@@ -62,7 +62,7 @@ dev_packages = base_packages + [
     "isort==5.9.3",
     "mypy>=0.761,< 1.0",
     "pre-commit>=2.9.2,< 3.0",
-    "pytest>=4.5.0,< 5.0",
+    "pytest>= 6.2.5",
     "pytest-cov>=2.6.1,< 3.0",
     "pyupgrade>=3.2.0,< 4.0",
     #"mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip"

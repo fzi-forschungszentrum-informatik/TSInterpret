@@ -1,4 +1,4 @@
-from typing import cast, Tuple, Union
+
 import pytest
 from tslearn.datasets import UCR_UEA_datasets
 import numpy as np 
@@ -7,8 +7,6 @@ from ClassificationModels.CNN_T import ResNetBaseline,fit
 from TSInterpret.InterpretabilityModels.counterfactual.COMTECF import COMTECF
 import sklearn
 import tensorflow as tf 
-from tslearn.preprocessing import TimeSeriesScalerMinMax
-from tslearn.svm import TimeSeriesSVC
 
 @pytest.fixture
 def cnn_gunPoint_torch():

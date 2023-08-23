@@ -64,7 +64,6 @@ class NativeGuideCF(CF):
         test_x, test_y = data
         test_x = np.array(test_x)  # , dtype=np.float32)
         shape = (test_x.shape[-2], test_x.shape[-1])
-        print(shape)
         if mode == "time":
             # Parse test data into (1, feat, time):
             self.ts_length = test_x.shape[-2]
@@ -132,8 +131,11 @@ class NativeGuideCF(CF):
             [np.array]: Returns K_Nearest_Neighbors of input query with different classification label.
 
         """
-        if type(predicted_label) != int:
-            predicted_label = np.argmax(predicted_label)
+        if not isinstance(predicted_label, (int, np.int64, np.int32, np.int16)):
+            if len(predicted_label) > 1:
+                predicted_label = np.argmax(predicted_label)
+            else:
+                predicted_label = predicted_label[0]
 
         x_train, y = self.data
         if len(y.shape) == 2:
@@ -149,8 +151,14 @@ class NativeGuideCF(CF):
         _, nun = self._native_guide_retrieval(
             query, predicted_label, distance, n_neighbors
         )
+        if nun is None:
+            return None, None
         individual = np.array(nun.tolist())  # , dtype=np.float64)
         out = self.predict(individual)
+        if np.argmax(out) == predicted_label:
+            print("No Counterfactual found. Most likly caused by a constant predictor.")
+            return None, None
+
         return nun, np.argmax(out)
 
     def _findSubarray(
@@ -300,7 +308,6 @@ class NativeGuideCF(CF):
         """
         if self.mode == "time":
             x = x.reshape(x.shape[0], x.shape[2], x.shape[1])
-            print(x.shape)
         if self.method == "NG":
             return self._native_guide_wrapper(
                 x, y, self.distance_measure, self.n_neighbors

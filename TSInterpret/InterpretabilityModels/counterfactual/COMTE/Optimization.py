@@ -10,7 +10,7 @@ from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Problem import (
     LossDiscreteState,
     Problem,
 )
-from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optmization_helpers import (
+from TSInterpret.InterpretabilityModels.counterfactual.COMTE.Optimization_helpers import (
     random_hill_climb,
 )
 
