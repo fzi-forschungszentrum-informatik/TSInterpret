@@ -94,7 +94,10 @@ class Saliency_PTY(Sal):
         Returns:
             np.array: feature attribution weights `mode = time`->`(time,feat)` or `mode = feat`->`(feat,time)`
         """
-
+        try: 
+            labels=int(labels)
+        except ValueError: 
+            raise Exception('Please provide the labels as int.')
         mask = np.zeros((self.NumTimeSteps, self.NumFeatures), dtype=int)
         for i in range(self.NumTimeSteps):
             mask[i, :] = i
