@@ -47,7 +47,7 @@ class FeatureAttribution(InterpretabilityBase):
         self,
         item,
         exp,
-        figsize=(15, 15),
+        figsize= (6.4 ,4.8),
         heatmap=False,
         normelize_saliency=True,
         vmin=-1,
@@ -69,6 +69,7 @@ class FeatureAttribution(InterpretabilityBase):
         """
         # TODO normelize on -1 to 1 and color appropriatly
         plt.style.use("classic")
+        plt.figure(figsize=figsize)
         # Figure out number changed channels
         # index= np.where(np.any(item))
         # TODO Positiv8
