@@ -47,7 +47,7 @@ class FeatureAttribution(InterpretabilityBase):
         self,
         item,
         exp,
-        figsize= (6.4 ,4.8),
+        figsize=(6.4, 4.8),
         heatmap=False,
         normelize_saliency=True,
         vmin=-1,

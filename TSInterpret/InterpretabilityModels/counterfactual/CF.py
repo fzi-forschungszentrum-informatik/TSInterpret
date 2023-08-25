@@ -37,7 +37,7 @@ class CF(InstanceBase):
         vis_change=True,
         all_in_one=False,
         save_fig=None,
-        figsize=(6.4 ,4.8)
+        figsize=(6.4, 4.8),
     ):
         """
         Basic Plot Function for visualizing Coutnerfactuals.
@@ -165,7 +165,7 @@ class CF(InstanceBase):
             plt.savefig(save_fig)
 
     def plot_in_one(
-        self, item, org_label, exp, cf_label, save_fig=None, figsize=(6.4 ,4.8)
+        self, item, org_label, exp, cf_label, save_fig=None, figsize=(6.4, 4.8)
     ):
         """
         Plot Function for Counterfactuals in uni-and multivariate setting. In the multivariate setting only the changed features are visualized.
@@ -245,7 +245,7 @@ class CF(InstanceBase):
             plt.savefig(save_fig)
 
     def plot_multi(
-        self, item, org_label, exp, cf_label, figsize=(6.4 ,4.8), save_fig=None
+        self, item, org_label, exp, cf_label, figsize=(6.4, 4.8), save_fig=None
     ):
         """Plot Function for Ates et al., used if multiple features are changed in a Multivariate Setting.
         Also called via plot_in_one. Preferably, do not use directly.
