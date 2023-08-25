@@ -43,7 +43,7 @@ class Saliency(FeatureAttribution):
     def explain(self):
         raise NotImplementedError("Don't use the base CF class directly")
 
-    def plot(self, item, exp, figsize=(15, 15), heatmap=False, save=None):
+    def plot(self, item, exp, figsize=(6.4 ,4.8), heatmap=False, save=None):
         """
         Plots explanation on the explained Sample.
 
@@ -62,9 +62,11 @@ class Saliency(FeatureAttribution):
             exp = exp.reshape(exp.shape[-1], -1)
         else:
             print("NOT Time mode")
+        
+
 
         if heatmap:
-            ax011 = plt.subplot(1, 1, 1)
+            fig,ax011 = plt.subplots(1, 1, figsize= figsize)
             sns.heatmap(
                 exp,
                 fmt="g",
@@ -77,7 +79,7 @@ class Saliency(FeatureAttribution):
             )
         elif len(item[0]) == 1:
             # if only onedimensional input
-            fig, axn = plt.subplots(len(item[0]), 1, sharex=True, sharey=True)
+            fig, axn = plt.subplots(len(item[0]), 1, sharex=True, sharey=True, figsize= figsize)
             # cbar_ax = fig.add_axes([.91, .3, .03, .4])
             axn012 = axn.twinx()
             sns.heatmap(
@@ -98,7 +100,7 @@ class Saliency(FeatureAttribution):
         else:
             ax011 = []
 
-            fig, axn = plt.subplots(len(item[0]), 1, sharex=True, sharey=True)
+            fig, axn = plt.subplots(len(item[0]), 1, sharex=True, sharey=True, figsize= figsize)
             cbar_ax = fig.add_axes([0.91, 0.3, 0.03, 0.4])
 
             for channel in item[0]:
