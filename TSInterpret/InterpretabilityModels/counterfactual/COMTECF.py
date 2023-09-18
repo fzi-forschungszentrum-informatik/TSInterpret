@@ -52,7 +52,9 @@ class COMTECF(CF):
             # Parse test data into (1, feat, time):
             change = True
             self.ts_length = shape[-2]
-            test_x = test_x.reshape(test_x.shape[0], test_x.shape[2], test_x.shape[1])
+            test_x = np.swapaxes(
+                test_x, 2, 1
+            )  # test_x.reshape(test_x.shape[0], test_x.shape[2], test_x.shape[1])
         elif mode == "feat":
             change = False
             self.ts_length = shape[-1]
@@ -87,7 +89,7 @@ class COMTECF(CF):
         """
         org_shape = x.shape
         if self.mode != "feat":
-            x = x.reshape(-1, x.shape[-1], x.shape[-2])
+            x = np.swapaxes(x, -1, -2)  # x.reshape(-1, x.shape[-1], x.shape[-2])
         train_x, train_y = self.referenceset
         if len(train_y.shape) > 1:
             train_y = np.argmax(train_y, axis=1)
@@ -106,4 +108,6 @@ class COMTECF(CF):
         elif self.method == "brute":
             opt = BruteForceSearch(self.predict, train_x, train_y, threads=1)
             exp, label = opt.explain(x, to_maximize=target)
+        if self.mode != "feat":
+            exp = np.swapaxes(exp, -1, -2)
         return exp.reshape(org_shape), label

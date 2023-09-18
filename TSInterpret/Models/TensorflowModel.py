@@ -1,6 +1,7 @@
 import tensorflow as tf
 
 from TSInterpret.Models.base_model import BaseModel
+import numpy as np
 
 
 class TensorFlowModel(BaseModel):
@@ -20,7 +21,9 @@ class TensorFlowModel(BaseModel):
             an array of output scores for a classifier.
         """
         if self.change:
-            item = item.reshape(item.shape[0], item.shape[2], item.shape[1])
+            item = np.swapaxes(
+                item, 2, 1
+            )  # item.reshape(item.shape[0], item.shape[2], item.shape[1])
         out = self.model.predict(item)
         return out
 

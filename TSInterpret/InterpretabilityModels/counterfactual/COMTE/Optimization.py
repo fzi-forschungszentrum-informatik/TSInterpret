@@ -49,8 +49,7 @@ class BaseExplanation:
             return
         self.per_class_trees = {}
         self.per_class_node_indices = {c: [] for c in np.unique(self.labels)}
-
-        input_ = self.timeseries.reshape(-1, self.channels, self.window_size)
+        input_ = self.timeseries
 
         preds = np.argmax(self.clf(input_), axis=1)
         true_positive_node_ids = {c: [] for c in np.unique(self.labels)}
@@ -246,7 +245,7 @@ class BruteForceSearch(BaseExplanation):
         CLASSIFIER = self.clf
         X_TEST = x_test
         DISTRACTOR = distractor
-        input_ = x_test.reshape(1, -1, self.window_size)
+        input_ = x_test
         best_case = self.clf(input_)[0][label_idx]
         best_column = None
         tuples = []
@@ -271,7 +270,7 @@ class BruteForceSearch(BaseExplanation):
         return best_column, best_case
 
     def explain(self, x_test, to_maximize=None, num_features=10):
-        input_ = x_test.reshape(1, -1, self.window_size)
+        input_ = x_test
         orig_preds = self.clf(input_)
         if to_maximize is None:
             to_maximize = np.argsort(orig_preds)[0][-2:-1][0]
@@ -292,10 +291,8 @@ class BruteForceSearch(BaseExplanation):
             prev_best = 0
             # best_dist = dist
             while True:
-                input_ = modified.reshape(1, -1, self.window_size)
+                input_ = modified
                 probas = self.clf(input_)
-                # print('Current may',np.argmax(probas))
-                # print(to_maximize)
                 if np.argmax(probas) == to_maximize:
                     current_best = np.max(probas)
                     if current_best > best_explanation_score:
@@ -376,7 +373,7 @@ class OptimizedSearch(BaseExplanation):
             modified = x_test.copy()
             for c in short_explanation:
                 modified[0][c] = dist[0][c]
-            input_ = modified.reshape(1, -1, self.window_size)
+            input_ = modified
             prev_proba = self.clf(input_)[0][to_maximize]
             best_col = None
             best_diff = 0
@@ -384,8 +381,7 @@ class OptimizedSearch(BaseExplanation):
                 tmp = modified.copy()
 
                 tmp[0][c] = dist[0][c]
-
-                input_ = tmp.reshape(1, self.channels, self.window_size)
+                input_ = tmp
                 cur_proba = self.clf(input_)[0][to_maximize]
                 if cur_proba - prev_proba > best_diff:
                     best_col = c
@@ -399,7 +395,7 @@ class OptimizedSearch(BaseExplanation):
     def explain(
         self, x_test, num_features=None, to_maximize=None
     ) -> Tuple[np.array, int]:
-        input_ = x_test.reshape(1, -1, self.window_size)
+        input_ = x_test
         orig_preds = self.clf(input_)
 
         orig_label = np.argmax(orig_preds)
@@ -419,8 +415,6 @@ class OptimizedSearch(BaseExplanation):
                 x_test, num_features=num_features, to_maximize=to_maximize
             )
         best, other = explanation
-        # print('Other',np.array(other).shape)
-        # print('Best',np.array(best).shape)
         target = np.argmax(self.clf(best), axis=1)
 
         return best, target
@@ -429,8 +423,6 @@ class OptimizedSearch(BaseExplanation):
         distractors = self._get_distractors(
             x_test, to_maximize, n_distractors=self.num_distractors
         )
-        # print('distracotr shape',np.array(distractors).shape)
-        # print('distracotr classification',np.argmax(self.clf(np.array(distractors).reshape(2,6,100)), axis=1))
 
         # Avoid constructing KDtrees twice
         self.backup.per_class_trees = self.per_class_trees
@@ -469,7 +461,7 @@ class OptimizedSearch(BaseExplanation):
             for c in columns:
                 if c in explanation:
                     modified[0][c] = dist[0][c]
-            input_ = modified.reshape(1, -1, self.window_size)
+            input_ = modified#.reshape(1, -1, self.window_size)
             probas = self.clf(input_)
 
             if not self.silent:

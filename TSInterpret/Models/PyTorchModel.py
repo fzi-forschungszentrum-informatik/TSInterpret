@@ -25,7 +25,7 @@ class PyTorchModel(BaseModel):
         """
         item = np.array(item.tolist())  # , dtype=np.float64)
         if self.change:
-            item = torch.from_numpy(item.reshape(-1, item.shape[-1], item.shape[-2]))
+            item = torch.from_numpy(np.swapaxes(item, -1, -2))
 
         else:
             item = torch.from_numpy(item)
