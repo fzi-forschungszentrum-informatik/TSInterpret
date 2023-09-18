@@ -461,7 +461,7 @@ class OptimizedSearch(BaseExplanation):
             for c in columns:
                 if c in explanation:
                     modified[0][c] = dist[0][c]
-            input_ = modified#.reshape(1, -1, self.window_size)
+            input_ = modified  # .reshape(1, -1, self.window_size)
             probas = self.clf(input_)
 
             if not self.silent:
