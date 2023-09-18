@@ -143,6 +143,10 @@ class Saliency_TF(Saliency):
     ):
         sequence_length = self.NumTimeSteps
         input_size = self.NumFeatures
+        #print(sequence_length)
+        #print(input_size)
+        #print('inputshape',input.shape)
+        #print('Saliency Rescaling',input)
         assignment = input[0, 0, 0]
         timeGrad = np.zeros((1, sequence_length))
         inputGrad = np.zeros((input_size, 1))
@@ -162,11 +166,12 @@ class Saliency_TF(Saliency):
             ActualGrad = self.Grad.explain(
                 (input, None), self.model, class_index=TestingLabel
             )  # .data.cpu().numpy()
-
+        #print('Actual GRad', ActualGrad)
         for t in range(sequence_length):
-            newInput = input.copy().reshape(1, input_size, sequence_length)
+            newInput = np.swapaxes(input.copy(),2,1).reshape(1, input_size, sequence_length)
+            #print('NEW INPUT',newInput)
             newInput[:, :, t] = assignment
-            newInput = newInput.reshape(1, sequence_length, input_size)
+            newInput = np.swapaxes(newInput,2,1).reshape(1, sequence_length, input_size)
             if self.method == "FO":
                 timeGrad_perTime = self.Grad.explain(
                     (newInput, None),
@@ -187,13 +192,12 @@ class Saliency_TF(Saliency):
 
         timeContibution = preprocessing.minmax_scale(timeGrad, axis=1)
         meanTime = np.quantile(timeContibution, 0.55)
-
         for t in range(sequence_length):
             if timeContibution[0, t] > meanTime:
                 for c in range(input_size):
-                    newInput = input.copy().reshape(1, input_size, sequence_length)
+                    newInput = np.swapaxes(input.copy(),2,1).reshape(1, input_size, sequence_length)
                     newInput[:, c, t] = assignment
-                    newInput = newInput.reshape(1, sequence_length, input_size)
+                    newInput = np.swapaxes(newInput,2,1).reshape(1, sequence_length, input_size)
                     if self.method == "FO":
                         inputGrad_perInput = self.Grad.explain(
                             (newInput, None),
@@ -204,7 +208,6 @@ class Saliency_TF(Saliency):
                     elif self.method == "DLS" or self.method == "GS":
                         inputGrad_perInput = self.Grad.shap_values(newInput)
                         inputGrad_perInput = np.array(inputGrad_perInput)
-                        # print(inputGrad_perInput.shape)
                     else:
                         newInput = newInput.reshape(1, sequence_length, input_size, 1)
                         inputGrad_perInput = self.Grad.explain(
@@ -220,4 +223,4 @@ class Saliency_TF(Saliency):
 
             for c in range(input_size):
                 newGrad[c, t] = timeContibution[0, t] * featureContibution[c, 0]
-        return newGrad.reshape(sequence_length, input_size)
+        return np.swapaxes(newGrad,0,1)
