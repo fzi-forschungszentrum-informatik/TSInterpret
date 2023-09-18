@@ -85,32 +85,17 @@ class LossDiscreteState:
 
         for col_replace, a in zip(self.cols_swap, feature_matrix):
             if a == 1:
-                # print(self.distractor.shape)
                 new_case[0][col_replace] = self.distractor[0][col_replace]
 
         replaced_feature_count = np.sum(feature_matrix)
-        # print('replaced_Feature', replaced_feature_count)
 
-        # print('NEW CASE', new_case)
-        # print('self xtest', self.x_test)
-        # print('NEW CASE', new_case.shape)
-        # print('self xtest', self.x_test.shape)
-        # print('DIFF', np.where((self.x_test.reshape(-1)-new_case.reshape(-1)) != 0) )
-
-        input_ = new_case.reshape(1, self.channels, self.window_size)
+        input_ = new_case
         result_org = self.clf(input_)
         result = result_org[0][self.target]
-        # print('RESULT',result)
         feature_loss = self.reg * np.maximum(
             0, replaced_feature_count - self.max_features
         )
-
-        # print('FEATURE LOSS',feature_loss)
         loss_pred = np.square(np.maximum(0, 0.95 - result))
-        # print('losspred ',loss_pred)
-        # if np.argmax(result_org[0]) != self.target:
-        #    loss_pred=np.inf
-
         loss_pred = loss_pred + feature_loss
 
         return loss_pred

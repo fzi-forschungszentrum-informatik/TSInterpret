@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from TSInterpret.InterpretabilityModels.FeatureAttribution import FeatureAttribution
+import numpy as np
 
 
 class Saliency(FeatureAttribution):
@@ -58,8 +59,10 @@ class Saliency(FeatureAttribution):
         i = 0
         if self.mode == "time":
             print("time mode")
-            item = item.reshape(1, item.shape[2], item.shape[1])
-            exp = exp.reshape(exp.shape[-1], -1)
+            item = np.swapaxes(
+                item, -1, -2
+            )  # item.reshape(1, item.shape[2], item.shape[1])
+            exp = np.swapaxes(exp, -1, -2)  # exp.reshape(exp.shape[-1], -1)
         else:
             print("NOT Time mode")
 

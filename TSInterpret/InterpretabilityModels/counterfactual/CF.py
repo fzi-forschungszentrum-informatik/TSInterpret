@@ -178,12 +178,14 @@ class CF(InstanceBase):
             save_fig str: Path to Save the figure.
         """
         if self.mode == "time":
-            item = item.reshape(item.shape[-1], item.shape[-2])
-            exp = exp.reshape(exp.shape[-1], exp.shape[-2])
+            org = item
+            item = np.swapaxes(item, -1, -2).reshape(org.shape[-1], org.shape[-2])
+            exp = np.swapaxes(exp, -1, -2).reshape(org.shape[-1], org.shape[-2])
         else:
             item = item.reshape(item.shape[-2], item.shape[-1])
             exp = exp.reshape(item.shape[-2], item.shape[-1])
-
+            # item = np.swapaxes(item, -2, -1)  # .reshape(item.shape[-1], item.shape[-2])
+            # exp = np.swapaxes(exp, -2, -1)  # exp.reshape(exp.shape[-1], exp.shape[-2])
         # TODO This is new and needs to be testes
         ind = ""
         # print("Item Shape", item.shape[-2])
