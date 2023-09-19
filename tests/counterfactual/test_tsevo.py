@@ -12,7 +12,7 @@ import tensorflow as tf
 def cnn_gunPoint_torch():
     X_train,y_train, X_test, y_test=UCR_UEA_datasets().load_dataset('ElectricDevices')
     sh=X_train.shape
-    X_train=X_train.reshape(sh[0], sh[-1],-1)
+    X_train=np.swapaxes(X_train,1,2)
     train_y=y_train
     test_y=y_test
     enc1=sklearn.preprocessing.OneHotEncoder(sparse=False).fit(train_y.reshape(-1,1))

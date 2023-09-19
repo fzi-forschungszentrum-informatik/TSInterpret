@@ -50,7 +50,6 @@ class TSEvo(CF):
                 print("y was one Hot Encoded")
                 self.y = np.argmax(self.y, axis=1)
             if len(self.x.shape) == 2:
-                print("Reshape Reference Set")
                 self.x.reshape(-1, 1, self.x.shape[-1])
             # print('Reference Set Constructor',self.x.shape)
         else:
@@ -81,9 +80,9 @@ class TSEvo(CF):
         if len(original_x.shape) < 3:
             original_x = np.array([original_x])
         if self.backend == "TF" or self.mode == "time":
-            original_x = original_x.reshape(
-                original_x.shape[0], original_x.shape[2], original_x.shape[1]
-            )
+            original_x = np.swapaxes(original_x,2,1) #original_x.reshape(
+                #original_x.shape[0], original_x.shape[2], original_x.shape[1]
+            #)
         neighborhood = []
         if target_y is not None:
             if not type(target_y) == int:
@@ -95,10 +94,10 @@ class TSEvo(CF):
             reference_set = self.x[np.where(self.y != np.argmax(original_y, axis=1)[0])]
         else:
             reference_set = self.x[np.where(self.y != original_y)]
-
-        reference_set = reference_set.reshape(
-            -1, original_x.shape[1], original_x.shape[2]
-        )
+        if self.backend == "TF" or self.mode == "time":
+            reference_set = np.swapaxes(reference_set,1,2)#.reshape(
+        #    -1, original_x.shape[1], original_x.shape[2]
+        #)
         if len(reference_set.shape) == 2:
             reference_set = reference_set.reshape(-1, 1, reference_set.shape[-1])
 
