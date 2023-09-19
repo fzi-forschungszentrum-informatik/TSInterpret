@@ -104,7 +104,7 @@ class MultiObjectiveCounterfactuals(Problem):
         full=False,
     ):
         if self.mode == "time":
-            individual = np.swapaxes(individual,-1,-2).reshape(
+            individual = np.swapaxes(individual, -1, -2).reshape(
                 1, individual.shape[-1], individual.shape[-2]
             )
         else:
@@ -125,7 +125,9 @@ class MultiObjectiveCounterfactuals(Problem):
 
     def get_prediction_tensorflow(self, individual, full=False):
         individual = np.array(individual.tolist(), dtype=np.float64)
-        output = self.model.predict(np.swapaxes(individual,-1,-2).reshape(1, self.window, -1), verbose=0)
+        output = self.model.predict(
+            np.swapaxes(individual, -1, -2).reshape(1, self.window, -1), verbose=0
+        )
         idx = output.argmax()
 
         if full:
@@ -135,7 +137,7 @@ class MultiObjectiveCounterfactuals(Problem):
     def get_prediction_target_torch(self, individual, full=False, binary=False):
         individual = np.array(individual.tolist(), dtype=np.float64)
         if self.mode == "time":
-            individual = np.swapaxes(individual,-1,-2).reshape(
+            individual = np.swapaxes(individual, -1, -2).reshape(
                 1, individual.shape[-1], individual.shape[-2]
             )
         else:
@@ -151,7 +153,9 @@ class MultiObjectiveCounterfactuals(Problem):
 
     def get_prediction_target_tensorflow(self, individual, full=False):
         individual = np.array(individual.tolist(), dtype=np.float64)
-        output = self.model.predict(np.swapaxes(individual,-1,-2).reshape(1, self.window, -1), verbose=0)
+        output = self.model.predict(
+            np.swapaxes(individual, -1, -2).reshape(1, self.window, -1), verbose=0
+        )
         idx = output.argmax()
         if full:
             return idx, output[0]
