@@ -9,7 +9,7 @@
     <a href="https://codecov.io/gh/fzi-forschungszentrum-informatik/TSInterpret" > 
         <img src="https://codecov.io/gh/fzi-forschungszentrum-informatik/TSInterpret/branch/main/graph/badge.svg?token=1IGZKTLZ4J"/> 
     </a>
-    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dw/tsinterpret">
+    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/tsinterpret">
     <img alt="GitHub" src="https://img.shields.io/github/license/fzi-forschungszentrum-informatik/TSInterpret">
     <a style="border-width:0" href="https://doi.org/10.21105/joss.05220">
   <img src="https://joss.theoj.org/papers/10.21105/joss.05220/status.svg" alt="DOI badge" >
