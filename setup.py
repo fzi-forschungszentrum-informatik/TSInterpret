@@ -4,10 +4,11 @@ import subprocess
 import sys
 
 import setuptools
-#subprocess.check_call([sys.executable, "-m", "pip", "install", "Cython"])
-#try:
+
+# subprocess.check_call([sys.executable, "-m", "pip", "install", "Cython"])
+# try:
 #    from numpy import get_include
-#except ImportError:
+# except ImportError:
 #    subprocess.check_call([sys.executable, "-m", "pip", "install", "numpy ==1.21.6"])
 #    from numpy import get_include
 
@@ -23,17 +24,17 @@ REQUIRES_PYTHON = ">=3.6.0"
 
 # Package requirements.
 base_packages = [
-    #"mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip",
-    #"mlrose>=1.3.0,< 2.0",
+    # "mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip",
+    # "mlrose>=1.3.0,< 2.0",
     "scikit-learn==1.3.0",
     # "scikit-surprise==1.1.1",
     "torch>=1.13.0,<3.0",
     "pandas<=3.0.0",
     "numpy>=1.21.6,< 2.0",
     "tqdm>=4.61.2, < 4.66.0",
-    "h5py==3.7.0", # todo add version
+    "h5py",  # todo add version
     "joblib>=1.0.1,< 2.0",
-    #"lime==0.2.0.1",
+    # "lime==0.2.0.1",
     "Markdown==3.3.4,< 4.0",
     "matplotlib>=3.3.4,< 4.0",
     "partd==1.2.0",
@@ -45,7 +46,6 @@ base_packages = [
     "tslearn>= 0.5.2,< 1.0",
     "seaborn>=0.11.2,< 1.0",
     "scikit_optimize>=0.9.0,< 1.0",
-    
     "torchcam>=0.3.1,< 1.0",
     "tf_explain>=0.3.1,< 1.0",
     "opencv-python==4.6.0.66",
@@ -53,8 +53,8 @@ base_packages = [
     "pyts>=0.12.0,< 1.0",
     "deprecated==1.2.13",
     "pymop",
-    "deap", 
-    "wheel"
+    "deap",
+    "wheel",
 ]
 
 dev_packages = base_packages + [
@@ -65,7 +65,7 @@ dev_packages = base_packages + [
     "pytest>= 6.2.5",
     "pytest-cov>=2.6.1,< 3.0",
     "pyupgrade>=3.2.0,< 4.0",
-    #"mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip"
+    # "mlrose @ https://github.com/gkhayes/mlrose/archive/refs/heads/master.zip"
 ]
 
 docs_packages = [
@@ -78,14 +78,14 @@ docs_packages = [
     "mkdocs-literate-nav>=0.4.1,< 1.0",
     "mkdocs-material>=8.1.11,< 9.0",
     "mkdocstrings[python]>=0.19.0,< 1.0",
-    'pytkdocs[numpy-style]>=0.5.0,< 1.0',
+    "pytkdocs[numpy-style]>=0.5.0,< 1.0",
     "ipython_genutils>=0.1.0,< 1.0",
     "mkdocs-jupyter>=0.20.0,< 1.0",
     "mkdocs-bibtex==2.8.1",
     "nbconvert==6.4.2",
     "numpydoc==1.2",
     "spacy==3.2.2",
-    "jinja2==3.0.3"
+    "jinja2==3.0.3",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -134,5 +134,5 @@ setuptools.setup(
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
     ],
-    ext_modules=[]
+    ext_modules=[],
 )
