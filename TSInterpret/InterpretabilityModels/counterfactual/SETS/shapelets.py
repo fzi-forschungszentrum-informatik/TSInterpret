@@ -87,8 +87,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
         super(ShapeletTransform, self).__init__()
 
     def fit(self, X, y=None):
-        print(X.shape, y.shape)
-
         # range = np.arange
         """A method to fit the shapelet transform to a specified X and y
 
@@ -106,7 +104,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
         """
         X, y = check_X_y(X, y, enforce_univariate=True, coerce_to_numpy=True)
 
-        print(">> shape", X.shape, y.shape)
 
         if (
             type(self) is ContractedShapeletTransform
@@ -163,7 +160,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
             )
 
         case_ids_by_class = {i: np.where(y == i)[0] for i in distinct_class_vals}
-        print(case_ids_by_class)
         # if transform is random/contract then shuffle the data initially
         # when determining which cases to visit
         if (
@@ -239,10 +235,8 @@ class ShapeletTransform(_PanelToTabularTransformer):
                         + ")"
                     )
                     """
-            print("LEM", len(X[series_id][0]))
-            this_series_len = len(X[series_id][0])
 
-            print("SELF", self.shapelets_lengths)
+            this_series_len = len(X[series_id][0])
 
             # check whether all shapelets in range min-max should be extracted,
             # or just a few of them
@@ -252,37 +246,19 @@ class ShapeletTransform(_PanelToTabularTransformer):
                 # However, shapelets cannot be longer than the series, so set to
                 # the minimum of the series length
                 # and max shapelet length (which is inf by default)
-                print("MAX", self.max_shapelet_length)
                 if self.max_shapelet_length == -1:
                     this_shapelet_length_upper_bound = this_series_len
                 else:
                     this_shapelet_length_upper_bound = min(
                         this_series_len, self.max_shapelet_length
                     )
-
-                print(
-                    "SHPLEN",
-                    self.min_shapelet_length,
-                    this_shapelet_length_upper_bound + 1,
-                )
                 self.shapelets_lengths = range(
                     self.min_shapelet_length, this_shapelet_length_upper_bound + 1
                 )
 
             else:
-                print(">>PRINT", self.shapelets_lengths, type(self.shapelets_lengths))
-
                 self.min_shapelet_length = [self.shapelets_lengths][0]
                 self.max_shapelet_length = [self.shapelets_lengths][-1]
-                print(
-                    ">>PRINT2",
-                    this_series_len,
-                    self.shapelets_lengths,
-                    self.min_shapelet_length,
-                    [self.shapelets_lengths][0],
-                    [self.shapelets_lengths][-1],
-                    type(self.max_shapelet_length),
-                )
                 this_shapelet_length_upper_bound = min(
                     this_series_len, self.max_shapelet_length
                 )
@@ -1098,94 +1074,3 @@ class ShapeletPQ:
 
     def get_array(self):
         return self._queue
-
-
-def write_transformed_data_to_arff(transform, labels, file_name):
-    """A simple function to save the transform obtained in arff format
-
-    Parameters
-    ----------
-    transform: array-like
-        The transform obtained for a dataset
-    labels: array-like
-        The labels of the dataset
-    file_name: string
-        The directory to save the transform
-    """
-    # Create directory in case it doesn't exists
-    directory = "/".join(file_name.split("/")[:-1])
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    num_shapelets = transform.shape[1]
-    unique_labels = np.unique(labels).tolist()
-
-    with open(file_name, "w+") as f:
-        # Headers
-        f.write("@Relation Shapelets" + file_name.split("/")[-1].split("_")[0] + "\n\n")
-        for i in range(0, num_shapelets):
-            f.write("@attribute Shapelet_" + str(i) + " numeric\n")
-        f.write("@attribute target {" + ",".join(unique_labels) + "}\n")
-        f.write("\n@data\n")
-        # Patterns
-        for i, j in enumerate(transform):
-            pattern = j.tolist() + [int(float(labels[i]))]
-            f.write(",".join(map(str, pattern)) + "\n")
-    f.close()
-
-
-def write_shapelets_to_csv(shapelets, data, dim_to_use, time, file_name):
-    """A simple function to save the shapelets obtained in csv format
-
-    Parameters
-    ----------
-    shapelets: array-like
-        The shapelets obtained for a dataset
-    data: array-like
-        The original data
-    time: fload
-        The time spent obtaining shapelets
-    file_name: string
-        The directory to save the set of shapelets
-    """
-    data = data.iloc[:, dim_to_use]
-
-    data_aux = [[]] * len(data)
-    for i in range(0, len(data)):
-        data_aux[i] = np.array([np.asarray(x) for x in np.asarray(data.iloc[i, :])])
-    data = data_aux.copy()
-
-    # Create directory in case it doesn't exists
-    directory = "/".join(file_name.split("/")[:-1])
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    with open(file_name, "w+") as f:
-        # Number of shapelets and time extracting
-        f.write(str(len(shapelets)) + "," + str(time) + "\n")
-        for j in shapelets:
-            f.write(
-                str(j.info_gain)
-                + ","
-                + str(j.series_id)
-                + ","
-                + "".join(str(j.dims)).replace(", ", ":")
-                + ","
-                + str(j.start_pos)
-                + ","
-                + str(j.length)
-                + "\n"
-            )
-            for k in range(0, len(dim_to_use)):
-                f.write(
-                    ",".join(
-                        map(
-                            str,
-                            data[j.series_id][
-                                k, j.start_pos : (j.start_pos + j.length)
-                            ],
-                        )
-                    )
-                    + "\n"
-                )
-    f.close()

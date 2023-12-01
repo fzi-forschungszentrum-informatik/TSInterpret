@@ -5,51 +5,23 @@ import random
 import sys
 
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from utils import (
+
+from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
     get_all_shapelet_locations_scaled_threshold,
     get_all_shapelet_locations_scaled_threshold_test,
 )
 
 
-def main():
+def get_class_shapelets(
+    data,
+    ts_length,
+    st_shapelets,
+    shapelets_distances,
+    shapelets_distances_test,
+):
     random.seed(42)
 
-    dataset_name = sys.argv[1]
-    time_contract_in_mins = int(sys.argv[2])
-    max_perc = float(sys.argv[3])
-
-    # name of current run (dataset + parameters combination)
-    run_name = "_".join([dataset_name, str(time_contract_in_mins), str(max_perc)])
-
-    # path of intermediary results directory
-    inter_results = os.path.abspath(os.path.join("results", "util_data", run_name))
-
-    X_train = np.load(
-        os.path.abspath(os.path.join("data", dataset_name, "X_train.npy"))
-    )
-    y_train = np.load(
-        os.path.abspath(os.path.join("data", dataset_name, "y_train.npy"))
-    )
-    X_test = np.load(os.path.abspath(os.path.join("data", dataset_name, "X_test.npy")))
-    y_test = np.load(os.path.abspath(os.path.join("data", dataset_name, "y_test.npy")))
-
-    le = LabelEncoder()
-    y_train = le.fit_transform(y_train)
-    y_test = le.transform(y_test)
-
-    st_shapelets = np.load(
-        os.path.join(inter_results, "shapelets.pkl"), allow_pickle=True
-    )
-    shapelets_distances = np.load(
-        os.path.join(inter_results, "shapelets_distances.pkl"), allow_pickle=True
-    )
-    shapelets_distances_test = np.load(
-        os.path.join(inter_results, "shapelets_distances_test.pkl"), allow_pickle=True
-    )
-
-    # length of time series in dataset
-    ts_length = X_train.shape[2]
+    X_train, y_train, X_test, y_test = data
 
     # the percentage of shapelet occurrences to keep
     occ_threshold = 1e-1
@@ -124,8 +96,6 @@ def main():
         for c in np.unique(y_train):
             all_shapelets_class[c].append(shapelets_class[c])
 
-            print(all_shapelets_class)
-
             ###Get shapelet_locations distributions per exclusive class
 
             for s in shapelets_class[c]:
@@ -146,20 +116,9 @@ def main():
             all_heat_maps[c].append(heat_maps[c])
 
     # save intermediate results
-    np.save(os.path.join(inter_results, "all_heat_maps.npy"), all_heat_maps)
-    print(all_shapelets_class)
-    np.save(os.path.join(inter_results, "all_shapelets_class.npy"), all_shapelets_class)
-    all_shapelet_locations = np.array(all_shapelet_locations, dtype=object)
-    all_shapelet_locations_test = np.array(all_shapelet_locations_test, dtype=object)
-    np.save(
-        os.path.join(inter_results, "all_shapelet_locations.npy"),
-        all_shapelet_locations,
+    return (
+        all_heat_maps,
+        all_shapelets_class,
+        np.array(all_shapelet_locations, dtype=object),
+        np.array(all_shapelet_locations_test, dtype=object),
     )
-    np.save(
-        os.path.join(inter_results, "all_shapelet_locations_trth_test.npy"),
-        all_shapelet_locations_test,
-    )
-
-
-if __name__ == "__main__":
-    main()

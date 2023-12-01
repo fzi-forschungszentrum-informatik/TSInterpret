@@ -213,6 +213,7 @@ def get_shapelet_locations_scaled_threshold(shapelet_distances, ts_length, thres
 
 # Returns the threshold used to select shapelet occurences based on a given percentage
 def get_occurences_threshold(shapelets_distances, ts_length, percentage):
+    print(shapelets_distances, ts_length, percentage)
     # List to hold all distances values
     sds = []
 
@@ -220,6 +221,7 @@ def get_occurences_threshold(shapelets_distances, ts_length, percentage):
     for dim in shapelets_distances:
         for shapelet_distances in dim:
             # Compute the length of the shapelet
+            print(type(ts_length), type(shapelet_distances.shape[1]))
             shapelet_length = ts_length - shapelet_distances.shape[1] + 1
             for instance in shapelet_distances:
                 for distance in instance:
