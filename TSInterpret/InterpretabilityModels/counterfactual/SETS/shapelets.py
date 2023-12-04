@@ -104,7 +104,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
         """
         X, y = check_X_y(X, y, enforce_univariate=True, coerce_to_numpy=True)
 
-
         if (
             type(self) is ContractedShapeletTransform
             and self.time_contract_in_mins <= 0
@@ -224,9 +223,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
                         + ")"
                     )
                 else:
-                    pass
-                    """
-                    
                     print(  # noqa
                         "visiting series: "
                         + str(series_id)
@@ -234,13 +230,13 @@ class ShapeletTransform(_PanelToTabularTransformer):
                         + str(case_idx + 1)
                         + ")"
                     )
-                    """
 
-            this_series_len = len(X[series_id][0])
+            # get timeseries len
+            this_series_len = X[series_id].shape[1]
 
             # check whether all shapelets in range min-max should be extracted,
             # or just a few of them
-            if True:  # self.shapelets_lengths == None:
+            if self.shapelets_lengths == None:
                 # The bound on possible shapelet lengths will differ
                 # series-to-series if using unequal length data.
                 # However, shapelets cannot be longer than the series, so set to
@@ -257,8 +253,8 @@ class ShapeletTransform(_PanelToTabularTransformer):
                 )
 
             else:
-                self.min_shapelet_length = [self.shapelets_lengths][0]
-                self.max_shapelet_length = [self.shapelets_lengths][-1]
+                self.min_shapelet_length = self.shapelets_lengths[0]
+                self.max_shapelet_length = self.shapelets_lengths[-1]
                 this_shapelet_length_upper_bound = min(
                     this_series_len, self.max_shapelet_length
                 )
@@ -411,7 +407,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
                             binary_ig_this_class_count - num_visited_this_class,
                             binary_ig_other_class_count - num_visited_other_class,
                         )
-                        # print("upper: "+str(ig_upper_bound))
                         if ig_upper_bound <= ig_cutoff:
                             candidate_rejected = True
                             break
@@ -701,7 +696,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
         # shapelets and all their potential occurences
         # would only work if all series are of the same size
         for shapelet in self.shapelets:
-            # print(shapelet.length)
             shapelet.distances = np.empty(
                 [_X.shape[0], len(_X[0][0]) - shapelet.length + 1], dtype=np.float64
             )

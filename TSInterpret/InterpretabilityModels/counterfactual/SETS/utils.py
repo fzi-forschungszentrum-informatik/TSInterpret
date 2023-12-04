@@ -84,7 +84,7 @@ def get_indices(transformer):
             dim_indices.append(ind)
         all_indices.append(dim_indices)
 
-    return np.asarray(np.asarray(all_indices))
+    return np.asarray(all_indices, dtype=object)
 
 
 # get the list of shapelet scores of a transformer
@@ -97,7 +97,7 @@ def get_scores(transformer):
             dim_scores.append(shapelet.info_gain)
         all_scores.append(dim_scores)
 
-    return np.asarray(np.asarray(all_scores))
+    return np.asarray(all_scores, dtype=object)
 
 
 # get the distance of shapelets from each other shapelet in the MTS
@@ -213,7 +213,7 @@ def get_shapelet_locations_scaled_threshold(shapelet_distances, ts_length, thres
 
 # Returns the threshold used to select shapelet occurences based on a given percentage
 def get_occurences_threshold(shapelets_distances, ts_length, percentage):
-    print(shapelets_distances, ts_length, percentage)
+    # print(shapelets_distances, ts_length, percentage)
     # List to hold all distances values
     sds = []
 
@@ -221,7 +221,8 @@ def get_occurences_threshold(shapelets_distances, ts_length, percentage):
     for dim in shapelets_distances:
         for shapelet_distances in dim:
             # Compute the length of the shapelet
-            print(type(ts_length), type(shapelet_distances.shape[1]))
+
+            # print(type(ts_length), type(shapelet_distances.shape[1]))
             shapelet_length = ts_length - shapelet_distances.shape[1] + 1
             for instance in shapelet_distances:
                 for distance in instance:
@@ -301,7 +302,7 @@ def get_shapelets_locations_test(idx, all_sls, dim, all_shapelets_class):
                     i_locs.append(loc)
             all_locs[i] = i_locs
     except Exception as ex:
-        print(ex)
+        pass
     return all_locs
 
 

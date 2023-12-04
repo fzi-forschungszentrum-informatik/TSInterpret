@@ -17,7 +17,7 @@ from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
 
 
 def sets_explain(
-    instance_idx, 
+    instance_idx,
     model,
     data,
     ts_length,
@@ -35,16 +35,11 @@ def sets_explain(
     # Sort dimensions by their highest shapelet scores
     shapelets_best_scores = []
     for dim in range(len(st_shapelets)):
-        shapelets_best_scores.append(max(all_shapelets_scores[dim]))
+        print(dim, all_shapelets_scores[dim])
+        shapelets_best_scores.append(np.max(all_shapelets_scores[dim],axis=1))
 
     shapelets_best_scores = np.argsort(shapelets_best_scores)[::-1]
 
-    from sklearn.neural_network import MLPClassifier
-
-    # train black-box model and get predictions
-    model = keras.models.load_model("./best_model.hdf5")
-    
-    print(X_test.shape)
     y_pred = model.predict(np.swapaxes(X_test, 1, 2))
     y_pred = np.argmax(y_pred, axis=1)
 
@@ -56,7 +51,6 @@ def sets_explain(
     for dim in range(X_test.shape[1]):
         shapelets_ranges = {}
         for c in np.unique(y_train):
-            print(c)
             shapelets_ranges[c] = {}
 
         # Get [min,max] of each shapelet occurences
@@ -99,7 +93,6 @@ def sets_explain(
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
 
-        
     orig_c = y_pred[instance_idx]
 
     for target_c in set(np.unique(y_train)) - set([orig_c]):
@@ -107,7 +100,6 @@ def sets_explain(
         # print("from: " + str(orig_c) + " to: " + str(target_c))
 
         # get the original class shapelets and ranges
-        print(all_shapelets_class)
         original_all_shapelets_class = all_shapelets_class[dim][orig_c]
         original_shapelets_ranges = all_shapelets_ranges[c]
 
@@ -122,9 +114,6 @@ def sets_explain(
             X_test,
             y_test,
             y_train,
-            # X_test[y_test == target_c],
-            # y_test[y_test == target_c],
-            # y_train[y_train == target_c],
             instance_idx,
         )
         cf_dims = np.zeros((len(shapelets_best_scores), ts_length))
@@ -132,7 +121,7 @@ def sets_explain(
         # starting the with the most important dimension, start CF generation
         for dim in shapelets_best_scores:
             cf = X_test[instance_idx].copy()
-            print("CF", np.expand_dims(np.swapaxes(cf, 0, 1), axis=0).shape)
+
             cf_pred = model.predict(np.expand_dims(np.swapaxes(cf, 0, 1), axis=0))
             cf_pred = np.argmax(cf_pred)
             if y_pred[instance_idx] == cf_pred:
@@ -185,7 +174,6 @@ def sets_explain(
                     if y_pred[instance_idx] == cf_pred:
                         # print('Introducing new shapelet')
                         h_m = all_target_heat_maps[dim].get(target_shapelet_idx)
-
                         center = (
                             np.argwhere(h_m > 0)[-1][0] - np.argwhere(h_m > 0)[0][0]
                         ) // 2 + np.argwhere(h_m > 0)[0][0]
@@ -231,7 +219,7 @@ def sets_explain(
             # print(y_pred[instance_idx], cf_pred)
             if y_pred[instance_idx] != cf_pred:
                 # print('cf found')
-                return cf, y_pred[instance_idx]
+                return cf, cf_pred
 
             else:
                 # print("Trying dims combinations")
@@ -255,12 +243,8 @@ def sets_explain(
             # if a CF is found, save it and move to next time series instance
             if y_pred[instance_idx] != cf_pred:
                 # print('cf found')
-                return cf, y_pred[instance_idx]
+                return cf, cf_pred
 
             else:
                 print("No Counterfactual could be found this data instance")
-                return None
-
-
-if __name__ == "__main__":
-    main()
+                return None, None

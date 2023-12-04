@@ -34,6 +34,7 @@ def get_class_shapelets(
     ) = get_all_shapelet_locations_scaled_threshold(
         shapelets_distances, ts_length, occ_threshold / 100.0
     )
+
     all_shapelet_locations_test, _ = get_all_shapelet_locations_scaled_threshold_test(
         shapelets_distances_test, ts_length, threshold
     )
@@ -69,13 +70,13 @@ def get_class_shapelets(
                 not_one_class.append(i)
 
         for index in sorted(not_one_class, reverse=True):
-            del st_shapelets[dim][index]
-            del all_shapelet_locations[dim][index]
             try:
+                del st_shapelets[dim][index]
+                del all_shapelet_locations[dim][index]
                 del all_shapelet_locations_test[dim][index]
-            except Exception:
+                del shapelets_classes[index]
+            except:
                 pass
-            del shapelets_classes[index]
 
         # initialize a dictionary that stores lists of class-shapelets
         # for current dimension
@@ -97,25 +98,20 @@ def get_class_shapelets(
             all_shapelets_class[c].append(shapelets_class[c])
 
             ###Get shapelet_locations distributions per exclusive class
-
             for s in shapelets_class[c]:
                 heat_map = np.zeros(ts_length)
                 num_occurences = 0
-
                 for sl in all_shapelet_locations[dim][s]:
                     for idx in range(sl[1], sl[2]):
                         heat_map[idx] += 1
                     num_occurences += 1
 
                 heat_map = heat_map / num_occurences
+
                 heat_maps[c][s] = heat_map
 
             all_heat_maps[c].append(heat_maps[c])
-            all_heat_maps[c].append(heat_maps[c])
-            all_heat_maps[c].append(heat_maps[c])
-            all_heat_maps[c].append(heat_maps[c])
 
-    # save intermediate results
     return (
         all_heat_maps,
         all_shapelets_class,
