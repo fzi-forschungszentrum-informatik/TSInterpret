@@ -45,12 +45,11 @@ def get_class_shapelets(
     all_shapelets_class = {}
     # initialize a dictionary that stores lists of class-shapelets heatmaps
     all_heat_maps = {}
-    for c in np.unique(y_train):
-        all_shapelets_class[c] = []
-        all_heat_maps[c] = []
 
     # get the shapelet classes and their heatmaps at each dimension
     for dim in range(X_test.shape[1]):
+        all_shapelets_class[dim] = []
+        all_heat_maps[dim] = []
         for index in sorted(all_no_occurences[dim], reverse=True):
             del st_shapelets[dim][index]
 
@@ -70,11 +69,12 @@ def get_class_shapelets(
                 not_one_class.append(i)
 
         for index in sorted(not_one_class, reverse=True):
+            # del st_shapelets[dim][index]
+            del all_shapelet_locations[dim][index]
+            del shapelets_classes[index]
             try:
-                del st_shapelets[dim][index]
-                del all_shapelet_locations[dim][index]
                 del all_shapelet_locations_test[dim][index]
-                del shapelets_classes[index]
+
             except:
                 pass
 
@@ -95,8 +95,6 @@ def get_class_shapelets(
                     shapelets_class[c].append(i)
 
         for c in np.unique(y_train):
-            all_shapelets_class[c].append(shapelets_class[c])
-
             ###Get shapelet_locations distributions per exclusive class
             for s in shapelets_class[c]:
                 heat_map = np.zeros(ts_length)
@@ -110,7 +108,8 @@ def get_class_shapelets(
 
                 heat_maps[c][s] = heat_map
 
-            all_heat_maps[c].append(heat_maps[c])
+            all_shapelets_class[dim].append(shapelets_class[c])
+            all_heat_maps[dim].append(heat_maps[c])
 
     return (
         all_heat_maps,

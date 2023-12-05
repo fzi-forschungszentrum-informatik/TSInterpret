@@ -117,8 +117,9 @@ class SETSCF(CF):
         self.indicies = get_indices(self.transformer)
         # Save distances for test
         self.test_x_new = transformer.transform(self.test_x_n)
+        # Get shapelet distances from transformer
         self.test_distances = get_shapelets_distances(transformer)
-        """
+
         (
             self.all_heat_maps,
             self.all_shapelets_class,
@@ -131,11 +132,10 @@ class SETSCF(CF):
             self.train_distances,
             self.test_distances,
         )
-        """
 
     def explain(
         self, ts_instance, x: np.ndarray, orig_class: int = None, target: int = None
-    ) -> Tuple[np.ndarray, int]:
+    ):  # -> Tuple[np.ndarray, int]:
         # x (np.array): The instance to explain. Shape : `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
         # target int: target class. If no target class is given, the class with the secon heighest classification probability is selected.
         """
@@ -146,6 +146,7 @@ class SETSCF(CF):
             ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
 
         """
+        print(self.all_shapelets_class.values())
         exp, label = sets_explain(
             ts_instance,
             self.model,
@@ -158,7 +159,7 @@ class SETSCF(CF):
             self.all_heat_maps,
             self.scores,
         )
-        if exp is not None:
-            org_shape = x.shape
-            exp.reshape(org_shape)
+        # if exp is not None:
+        #    org_shape = x.shape
+        #    exp.reshape(org_shape)
         return exp, label

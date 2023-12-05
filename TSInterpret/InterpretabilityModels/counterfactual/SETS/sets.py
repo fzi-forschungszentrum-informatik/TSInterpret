@@ -35,51 +35,44 @@ def sets_explain(
     # Sort dimensions by their highest shapelet scores
     shapelets_best_scores = []
     for dim in range(len(st_shapelets)):
-        print(dim, all_shapelets_scores[dim])
-        shapelets_best_scores.append(np.max(all_shapelets_scores[dim],axis=1))
+        shapelets_best_scores.append(
+            max(all_shapelets_scores[dim])
+        )
+        shapelets_best_scores[dim] = np.argsort(shapelets_best_scores[dim])[::-1]
 
-    shapelets_best_scores = np.argsort(shapelets_best_scores)[::-1]
+        y_pred = model.predict(np.swapaxes(X_test, 1, 2))
+        y_pred = np.argmax(y_pred, axis=1)
 
-    y_pred = model.predict(np.swapaxes(X_test, 1, 2))
-    y_pred = np.argmax(y_pred, axis=1)
-
-    # value ranges of shapelet-classes (used later for scaling)
-    all_shapelets_ranges = {}
-    for c in np.unique(y_train):
-        all_shapelets_ranges[c] = []
-
-    for dim in range(X_test.shape[1]):
-        shapelets_ranges = {}
+        # value ranges of shapelet-classes (used later for scaling)
+        all_shapelets_ranges = {}
         for c in np.unique(y_train):
-            shapelets_ranges[c] = {}
+            all_shapelets_ranges[c] = []
 
-        # Get [min,max] of each shapelet occurences
-        for label, (all_shapelets_class, shapelets_ranges) in enumerate(
-            zip(list(all_shapelets_class.values()), list(shapelets_ranges.values()))
-        ):
-            for j, sls in enumerate(
-                [all_shapelet_locations[dim][i] for i in all_shapelets_class[dim]]
+            shapelets_ranges = {}
+
+            for label, (all_shapelets_class, shapelets_ranges) in enumerate(
+                zip(list(all_shapelets_class.values()), list(shapelets_ranges.values()))
             ):
-                s_mins = 0
-                s_maxs = 0
-                n_s = 0
+                for j, sls in enumerate(
+                    [all_shapelet_locations[dim][i] for i in all_shapelets_class[dim]]
+                ):
+                    s_mins = 0
+                    s_maxs = 0
+                    n_s = 0
 
-                for sl in sls:
-                    ts = X_train[sl[0]][dim][sl[1] : sl[2]]
+                    for sl in sls:
+                        ts = X_train[sl[0]][dim][sl[1] : sl[2]]
 
-                    s_mins += ts.min()
-                    s_maxs += ts.max()
-                    n_s += 1
+                        s_mins += ts.min()
+                        s_maxs += ts.max()
+                        n_s += 1
 
-                # print(all_shapelets_class[dim][j])
+                    shapelets_ranges[all_shapelets_class[dim][j]] = (
+                        s_mins / n_s,
+                        s_maxs / n_s,
+                    )
 
-                shapelets_ranges[all_shapelets_class[dim][j]] = (
-                    s_mins / n_s,
-                    s_maxs / n_s,
-                )
-
-            for c in np.unique(y_train):
-                all_shapelets_ranges[c] = shapelets_ranges
+            all_shapelets_ranges[c] = shapelets_ranges
 
     # dictionary to store class KNNs
     knns = {}
@@ -93,33 +86,24 @@ def sets_explain(
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
 
-    orig_c = y_pred[instance_idx]
+    orig_c = int(y_pred[instance_idx])
 
     for target_c in set(np.unique(y_train)) - set([orig_c]):
-        # print("instance_idx: " + str(instance_idx))
-        # print("from: " + str(orig_c) + " to: " + str(target_c))
-
-        # get the original class shapelets and ranges
-        original_all_shapelets_class = all_shapelets_class[dim][orig_c]
-        original_shapelets_ranges = all_shapelets_ranges[c]
-
-        # get the target class shapelets and ranges
-        all_target_shapelets_class = all_shapelets_class[dim][target_c]
-        all_target_heat_maps = all_heat_maps[target_c]
         target_knn = knns[target_c]
-        target_shapelets_ranges = all_shapelets_ranges[target_c]
-
-        nn_idx = get_nearest_neighbor(
-            target_knn,
-            X_test,
-            y_test,
-            y_train,
-            instance_idx,
-        )
-        cf_dims = np.zeros((len(shapelets_best_scores), ts_length))
-
         # starting the with the most important dimension, start CF generation
-        for dim in shapelets_best_scores:
+        for dim in range(len(shapelets_best_scores)):
+            nn_idx = get_nearest_neighbor(
+                target_knn,
+                X_test,
+                y_test,
+                y_train,
+                instance_idx,
+            )
+            original_all_shapelets_class = all_shapelets_class[dim][orig_c]
+            all_target_heat_maps = all_heat_maps[dim][target_c]
+
+            cf_dims = np.zeros((len(shapelets_best_scores), ts_length))
+
             cf = X_test[instance_idx].copy()
 
             cf_pred = model.predict(np.expand_dims(np.swapaxes(cf, 0, 1), axis=0))
@@ -166,19 +150,18 @@ def sets_explain(
                             cf[dim][start:end] = target_shapelet
 
                 # Introduce new shapelets from the target class
-                for _, target_shapelet_idx in enumerate(all_target_heat_maps[dim]):
+                for idx, target_shapelet_idx in enumerate(all_target_heat_maps.keys()):
                     cf_pred = model.predict(
                         np.expand_dims(np.swapaxes(cf, 0, 1), axis=0)
                     )
                     cf_pred = np.argmax(cf_pred)
                     if y_pred[instance_idx] == cf_pred:
                         # print('Introducing new shapelet')
-                        h_m = all_target_heat_maps[dim].get(target_shapelet_idx)
+                        h_m = all_target_heat_maps[target_shapelet_idx]
                         center = (
                             np.argwhere(h_m > 0)[-1][0] - np.argwhere(h_m > 0)[0][0]
                         ) // 2 + np.argwhere(h_m > 0)[0][0]
-
-                        target_shapelet = st_shapelets[dim][target_shapelet_idx][0]
+                        target_shapelet = st_shapelets[dim][idx][0]
                         target_shapelet_length = target_shapelet.shape[0]
 
                         start = center - target_shapelet_length // 2
@@ -212,17 +195,12 @@ def sets_explain(
 
             # Save the perturbed dimension
             cf_dims[dim] = cf[dim]
-
             cf_pred = model.predict(np.expand_dims(np.swapaxes(cf, 0, 1), axis=0))
             cf_pred = np.argmax(cf_pred)
-            # if a CF is found, save it and move to next time series instance
-            # print(y_pred[instance_idx], cf_pred)
             if y_pred[instance_idx] != cf_pred:
                 # print('cf found')
                 return cf, cf_pred
-
             else:
-                # print("Trying dims combinations")
                 # Try all combinations of dimensions
                 for L in range(0, len(shapelets_best_scores) + 1):
                     for subset in itertools.combinations(shapelets_best_scores, L):
@@ -230,19 +208,17 @@ def sets_explain(
                             cf = X_test[instance_idx].copy()
                             for dim_ in subset:
                                 cf[dim_] = cf_dims[dim_]
-
                             cf_pred = model.predict(
                                 np.expand_dims(np.swapaxes(cf, 0, 1), axis=0)
                             )
                             cf_pred = np.argmax(cf_pred)
                             if y_pred[instance_idx] != cf_pred:
-                                # print('cf found')
-                                # print('final dims: ', subset)
-                                break
+                                print('cf found')
+                                return cf, cf_pred
 
             # if a CF is found, save it and move to next time series instance
             if y_pred[instance_idx] != cf_pred:
-                # print('cf found')
+                print('cf found')
                 return cf, cf_pred
 
             else:
