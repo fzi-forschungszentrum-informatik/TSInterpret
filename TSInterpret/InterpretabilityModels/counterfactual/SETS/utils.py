@@ -33,58 +33,21 @@ class MultivariateTransformer:
         return X_new
 
 
-# write transformer to file
-def save_transformer(parent_dir, transformer):
-    if not os.path.exists(parent_dir):
-        os.makedirs(parent_dir)
-
-    with open(os.path.join(parent_dir, "shapelets.pkl"), "wb") as f:
-        pickle.dump(get_shapelets(transformer), f)
-    np.save(os.path.join(parent_dir, "indices.npy"), get_indices(transformer))
-    np.save(os.path.join(parent_dir, "scores.npy"), get_scores(transformer))
-
-
-# save shapelets distances only (for test set)
-def save_shapelets_distances(parent_dir, transformer, test=False):
-    if not os.path.exists(parent_dir):
-        os.makedirs(parent_dir)
-
-    if test:
-        with open(os.path.join(parent_dir, "shapelets_distances_test.pkl"), "wb") as f:
-            pickle.dump(get_shapelets_distances(transformer), f)
-    else:
-        with open(os.path.join(parent_dir, "shapelets_distances.pkl"), "wb") as f:
-            pickle.dump(get_shapelets_distances(transformer), f)
-
-
 # get the list of shapelets of a transformer
 def get_shapelets(transformer):
     all_shapelets = []
-
+    print(len(transformer.sts))
     for st in transformer.sts:
+        c = 0
         dim_shapelets = []
         for shapelet in st.shapelets:
+            print(c, shapelet.data)
             dim_shapelets.append(shapelet.data)
+            c += 1
+        print("ELEE", len(dim_shapelets))
         all_shapelets.append(dim_shapelets)
 
     return all_shapelets
-
-
-# get the list of shapelet indices of a transformer
-def get_indices(transformer):
-    all_indices = []
-
-    for st in transformer.sts:
-        dim_indices = []
-        for shapelet in st.shapelets:
-            ind = np.empty(3, dtype=np.uint16)
-            ind[0] = shapelet.series_id
-            ind[1] = shapelet.start_pos
-            ind[2] = shapelet.start_pos + shapelet.length
-            dim_indices.append(ind)
-        all_indices.append(dim_indices)
-
-    return np.asarray(all_indices, dtype=object)
 
 
 # get the list of shapelet scores of a transformer
@@ -103,23 +66,16 @@ def get_scores(transformer):
 # get the distance of shapelets from each other shapelet in the MTS
 def get_shapelets_distances(transformer):
     all_shapelets_distances = []
-
     for st in transformer.sts:
         shapelets_distances = []
+        c = 0
+        print(len(st.shapelets))
         for shapelet in st.shapelets:
+            print(c)
             shapelets_distances.append(shapelet.distances)
-
+            c += 1
         all_shapelets_distances.append(shapelets_distances)
     return all_shapelets_distances
-
-
-# get the distance of shapelets from each other shapelet in the MTS
-def get_shapelets_distances_univariate(st):
-    shapelets_distances = []
-    for shapelet in st.shapelets:
-        shapelets_distances.append(shapelet.distances)
-
-    return [shapelets_distances]
 
 
 # Given the shapelet_locations and shapelet_distances of one single shapelet, removes
@@ -216,13 +172,10 @@ def get_occurences_threshold(shapelets_distances, ts_length, percentage):
     # print(shapelets_distances, ts_length, percentage)
     # List to hold all distances values
     sds = []
-
     # Append the scaled distances
     for dim in shapelets_distances:
         for shapelet_distances in dim:
             # Compute the length of the shapelet
-
-            # print(type(ts_length), type(shapelet_distances.shape[1]))
             shapelet_length = ts_length - shapelet_distances.shape[1] + 1
             for instance in shapelet_distances:
                 for distance in instance:
@@ -262,7 +215,6 @@ def get_all_shapelet_locations_scaled_threshold(
                 no_occurences.append(i)
         all_shapelet_locations.append(dim_shapelet_locations)
         all_no_occurences.append(no_occurences)
-
     return all_shapelet_locations, all_no_occurences, threshold
 
 
@@ -277,10 +229,12 @@ def get_all_shapelet_locations_scaled_threshold_test(
     for dim in shapelets_distances:
         dim_shapelet_locations = []
         no_occurences = []
+        print(dim)
         for i, shapelet in enumerate(dim):
             sls = get_shapelet_locations_scaled_threshold(
                 shapelet, ts_length, threshold
             )
+            print("scaled threshhold", sls[0][0])
             if sls[0][0] != 4294967295:
                 dim_shapelet_locations.append(sls)
             else:
@@ -307,15 +261,15 @@ def get_shapelets_locations_test(idx, all_sls, dim, all_shapelets_class):
 
 
 ##Optimize by fitting outside or returning a list of all nns at once
-def get_nearest_neighbor(knn, X_test, y_test, y_train, idx):
+## Reworked so that only training data is available.
+def get_nearest_neighbor(knn, instance_x, pred_label, x_train, y_train):
     # pred_label = y_pred[idx]
-    pred_label = y_test[idx]
     target_labels = np.argwhere(y_train != pred_label)
 
-    X_test_knn = X_test[idx].reshape(1, X_test.shape[1], X_test.shape[2])
-    X_test_knn = np.swapaxes(X_test_knn, 1, 2)
+    X_train_knn = instance_x.reshape(1, instance_x.shape[0], instance_x.shape[1])
+    X_train_knn = np.swapaxes(X_train_knn, 1, 2)
 
-    _, nn = knn.kneighbors(X_test_knn)
+    _, nn = knn.kneighbors(X_train_knn)
     # print("TARGETLABELS", [t[0] for t in target_labels], [int(nn[0][0])])
     nn_idx = None
     try:

@@ -2,21 +2,18 @@ from typing import Tuple
 
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+from sktime.datatypes._panel._convert import from_3d_numpy_to_nested
 
 from TSInterpret.InterpretabilityModels.counterfactual.CF import CF
-from TSInterpret.InterpretabilityModels.counterfactual.SETS.class_shapelets import (
-    get_class_shapelets,
-)
-from TSInterpret.InterpretabilityModels.counterfactual.SETS.sets import sets_explain
-from TSInterpret.InterpretabilityModels.counterfactual.SETS.shapelets import (
+from TSInterpret.InterpretabilityModels.counterfactual.SETS.ContractedST import (
     ContractedShapeletTransform,
 )
-from TSInterpret.InterpretabilityModels.counterfactual.SETS.sktime_convert import (
-    from_3d_numpy_to_nested,
+from TSInterpret.InterpretabilityModels.counterfactual.SETS.sets import (
+    get_class_shapelets_train,
+    sets_explain,
 )
 from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
     MultivariateTransformer,
-    get_indices,
     get_scores,
     get_shapelets,
     get_shapelets_distances,
@@ -28,7 +25,6 @@ from TSInterpret.Models.TensorflowModel import TensorFlowModel
 
 class SETSCF(CF):
     """Calculates and Visualizes Counterfactuals for Multivariate Time Series in accordance to the paper [1].
-
     References
     ----------
      [1] Bahri, Omar, et al.
@@ -114,27 +110,23 @@ class SETSCF(CF):
         self.train_distances = get_shapelets_distances(self.transformer)
         self.shapelets = get_shapelets(self.transformer)
         self.scores = get_scores(self.transformer)
-        self.indicies = get_indices(self.transformer)
-        # Save distances for test
-        self.test_x_new = transformer.transform(self.test_x_n)
         # Get shapelet distances from transformer
-        self.test_distances = get_shapelets_distances(transformer)
 
         (
+            self.threshhold,
             self.all_heat_maps,
             self.all_shapelets_class,
             self.all_shapelet_locations,
-            self.all_shapelet_locations_test,
-        ) = get_class_shapelets(
+            self.all_shapelet_ranges,
+        ) = get_class_shapelets_train(
             self.trf_data,
             self.ts_len,
             self.shapelets,
             self.train_distances,
-            self.test_distances,
         )
 
     def explain(
-        self, ts_instance, x: np.ndarray, orig_class: int = None, target: int = None
+        self, x: np.ndarray, orig_class: int = None, target: int = None
     ):  # -> Tuple[np.ndarray, int]:
         # x (np.array): The instance to explain. Shape : `mode = time` -> `(1,time, feat)` or `mode = time` -> `(1,feat, time)`
         # target int: target class. If no target class is given, the class with the secon heighest classification probability is selected.
@@ -144,11 +136,43 @@ class SETSCF(CF):
             int: Index of timeseries to generate a counterfactual explanation
         Returns:
             ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
-
         """
-        print(self.all_shapelets_class.values())
+        # print(len(get_shapelets(self.transformer)[0]))
+        # print(len(get_shapelets_distances(self.transformer)[0]))
+
+        # trf_x = from_3d_numpy_to_nested(
+        #    np.expand_dims(x, axis=0)
+        # )  # np.expand_dims(x, axis=0)
+
+        # self.test_distances = get_shapelets_distances(self.transformer)
+        """
+        (
+            self.threshhold,
+            self.all_heat_maps,
+            self.all_shapelets_class,
+            self.all_shapelet_locations,
+            self.all_shapelet_ranges,
+        ) = get_class_shapelets_train(
+            self.trf_data,
+            self.ts_len,
+            self.shapelets,
+            self.train_distances,
+        )
+        """
+        sets_explain(
+            x,
+            self.transformer,
+            self.model,
+            self.data,
+            self.ts_len,
+            self.shapelets,
+            self.threshhold,
+            self.all_shapelets_class,
+            self.all_heat_maps,
+            self.scores,
+        )
+        """
         exp, label = sets_explain(
-            ts_instance,
             self.model,
             self.data,
             self.ts_len,
@@ -159,6 +183,9 @@ class SETSCF(CF):
             self.all_heat_maps,
             self.scores,
         )
+        """
+        exp = None
+        label = None
         # if exp is not None:
         #    org_shape = x.shape
         #    exp.reshape(org_shape)

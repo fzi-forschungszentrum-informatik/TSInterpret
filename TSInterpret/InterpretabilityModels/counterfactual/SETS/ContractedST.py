@@ -17,52 +17,7 @@ from sktime.utils.validation.panel import check_X, check_X_y
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
-# TO-DO: thorough testing (some initial testing completed, but passing the
-# code to David to develop
-#        before everything has been fully verified)
-
-# TO-DO: in case of unequal length time series, we have two options:
-# 1) fix the maximum length for the shapelets to the minimum length time
-# series (of train dataset,
-#      which can also fail if there is a smaller time series in the test set).
-# 2) use another time series distance measure such as DTW to avoid this,
-# since you can compare unequal
-#      time series (we lose the early abandon in the distance measurement).
-#
-# TO-DO: could cythonise important methods, eg the distance and info gain
-# calculations
-#
-# TO-DO: add CI tests, comments, documentation, etc.
-
-
 class ShapeletTransform(_PanelToTabularTransformer):
-    """
-    Parameters
-    ----------
-    min_shapelet_length                 : int, lower bound on candidate
-    shapelet lengths (default = 3)
-    max_shapelet_length                 : int, upper bound on candidate
-    shapelet lengths (default = inf or series length)
-    max_shapelets_to_store_per_class    : int, upper bound on number of
-    shapelets to retain from each distinct class (default = 200)
-    random_state                        : RandomState, int, or none: to
-    control random state objects for deterministic results (default = None)
-    verbose                             : int, level of output printed to
-    the console (for information only) (default = 0)
-    remove_self_similar                 : boolean, remove overlapping
-    "self-similar" shapelets from the final transform (default = True)
-
-    Attributes
-    ----------
-
-    predefined_ig_rejection_level       : float, minimum information gain
-    required to keep a shapelet (default = 0.05)
-    self.shapelets                      : list of Shapelet objects,
-    the stored shapelets after a dataset has been processed
-    """
-
-    _tags = {"univariate-only": True}
-
     def __init__(
         self,
         min_shapelet_length=3,
@@ -87,23 +42,7 @@ class ShapeletTransform(_PanelToTabularTransformer):
         super(ShapeletTransform, self).__init__()
 
     def fit(self, X, y=None):
-        # range = np.arange
-        """A method to fit the shapelet transform to a specified X and y
-
-        Parameters
-        ----------
-        X: pandas DataFrame
-            The training input samples.
-        y: array-like or list
-            The class values for X
-
-        Returns
-        -------
-        self : FullShapeletTransform
-            This estimator
-        """
         X, y = check_X_y(X, y, enforce_univariate=True, coerce_to_numpy=True)
-
         if (
             type(self) is ContractedShapeletTransform
             and self.time_contract_in_mins <= 0
@@ -111,11 +50,6 @@ class ShapeletTransform(_PanelToTabularTransformer):
             raise ValueError("Error: time limit cannot be equal to or less than 0")
 
         X_lens = np.repeat(X.shape[-1], X.shape[0])
-        # note, assumes all dimensions of a case are the same
-        # length. A shapelet would not be well defined if indices do not match!
-        # may need to pad with nans here for uneq length,
-        # look at later
-
         num_ins = len(y)
         distinct_class_vals = class_distribution(np.asarray(y).reshape(-1, 1))[0][0]
 
