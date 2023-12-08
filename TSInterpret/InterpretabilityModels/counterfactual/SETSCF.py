@@ -29,7 +29,7 @@ class SETSCF(CF):
 
     References
     ----------
-     [1] Bahri, Omar, et al.
+    [1] Bahri, Omar, et al.
     "Shapelet-based Temporal Association Rule Mining for Multivariate Time Series Classification". SIGKDD 2022 Workshop on Mining and Learning from Time Series (MiLeTS)"
     [2] ostrom, Aaron and Bagnall, Anthony},
     "Binary shapelet transform for multiclass time series". Bostrom, Aaron and Bagnall, Anthony
@@ -46,7 +46,6 @@ class SETSCF(CF):
         max_shapelet_len,
         num_candidates_to_sample_per_case=20,
         time_contract_in_mins_per_dim=10,
-        initial_num_shapelets_per_case=10,
         predefined_ig_rejection_level=0.001,
         max_shapelets_to_store_per_class=30,
         random_state=42,
@@ -72,11 +71,12 @@ class SETSCF(CF):
         """
         super().__init__(model, mode)
         self.backend = backend
+        self.random_state = random_state
         # Parameters Shapelet Transform
         self.min_shapelet_len = min_shapelet_len
         self.max_shapelet_len = max_shapelet_len
         self.time_contract_in_mins_per_dim = time_contract_in_mins_per_dim
-        self.initial_num_shapelets_per_case = initial_num_shapelets_per_case
+        self.initial_num_shapelets_per_case = num_candidates_to_sample_per_case
         # Prepare Data
         train_x, train_y = data
         self.le = LabelEncoder()
@@ -110,7 +110,8 @@ class SETSCF(CF):
             verbose=silent,
             predefined_ig_rejection_level=0.001,
             max_shapelets_to_store_per_class=30,
-            random_state=42,
+            remove_self_similar=remove_self_similar,
+            random_state=self.random_state,
             remove_self_similar=True,
         )
         # Fit multivaraite transformer
@@ -155,6 +156,7 @@ class SETSCF(CF):
             self.ts_len,
             self.shapelets,
             self.train_distances,
+            self.random_state,
             occlusion_threshhold,
             remove_multiclass_shapelets,
         )
@@ -194,6 +196,7 @@ class SETSCF(CF):
             self.all_shapelets_class,
             self.all_heat_maps,
             self.scores,
+            random_seed=self.random_state,
         )
         if expl is not None:
             org_shape = x.shape

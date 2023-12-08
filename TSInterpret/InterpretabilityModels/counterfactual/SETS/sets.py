@@ -13,7 +13,6 @@ from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
     get_all_shapelet_locations_scaled_threshold,
     get_all_shapelet_locations_scaled_threshold_test,
     get_nearest_neighbor,
-    get_shapelets_distances,
     get_shapelets_locations_test,
 )
 
