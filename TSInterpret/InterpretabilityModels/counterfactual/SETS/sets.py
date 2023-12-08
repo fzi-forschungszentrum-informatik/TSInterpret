@@ -1,5 +1,6 @@
 # Author: Omar Bahri
 
+import copy
 import itertools
 import random
 
@@ -22,26 +23,29 @@ def to_tff(x):
     return np.expand_dims(np.swapaxes(x, 0, 1), axis=0)
 
 
-def get_class_shapelets_train(
+def fit_shapelets(
     data,
     ts_length,
     st_shapelets,
     shapelets_distances,
+    random_seed=42,
+    occlusion_threshhold=1e-1,
+    remove_multiclass_shapelets=True,
 ):
-    random.seed(42)
-    X_train, y_train, _, _ = data
-    occ_threshold = 1e-1
-    # get the shapelets locations in the training and testing sets
+    random.seed(random_seed)
+    X_train, y_train = data
+
+    # make deep copy for reusability
+    fitted_shapelets = copy.deepcopy(st_shapelets)
+
+    # get the shapelets locations threshhold for testing
     (
         all_shapelet_locations,
         all_no_occurences,
         threshold,
     ) = get_all_shapelet_locations_scaled_threshold(
-        shapelets_distances, ts_length, occ_threshold / 100.0
+        shapelets_distances, ts_length, occlusion_threshhold / 100.0
     )
-
-    del shapelets_distances
-
     # initialize a dictionary that stores lists of class-shapelets
     all_shapelets_class = {}
     # initialize a dictionary that stores lists of class-shapelets heatmaps
@@ -54,7 +58,7 @@ def get_class_shapelets_train(
     # get the shapelet classes and their heatmaps at each dimension
     for dim in range(X_train.shape[1]):
         for index in sorted(all_no_occurences[dim], reverse=True):
-            del st_shapelets[dim][index]
+            del fitted_shapelets[dim][index]
 
         # Get shapelets class occurences
         shapelets_classes = []
@@ -64,18 +68,29 @@ def get_class_shapelets_train(
                 shapelet_classes.append(y_train[sl[0]])
             shapelets_classes.append(shapelet_classes)
 
-        not_one_class = []
+        if remove_multiclass_shapelets:
+            not_one_class = []
+            # Find shapelets that happen exclusively under one class
+            for i, shapelet_class in enumerate(shapelets_classes):
+                if len(np.unique(shapelet_class)) > 1:
+                    not_one_class.append(i)
 
-        # Find shapelets that happen exclusively under one class
-        for i, shapelet_class in enumerate(shapelets_classes):
-            if len(np.unique(shapelet_class)) > 1:
-                not_one_class.append(i)
+            for index in sorted(not_one_class, reverse=True):
+                del fitted_shapelets[dim][index]
+                del all_shapelet_locations[dim][index]
+                del shapelets_classes[index]
 
-        for index in sorted(not_one_class, reverse=True):
-            # del st_shapelets[dim][index]
-            # del all_shapelet_locations[dim][index]
-            # del shapelets_classes[index]
-            pass
+        # initialize a dictionary that stores lists of class-shapelets
+        # for current dimension
+        shapelets_class = {}
+        # initialize a dictionary that stores class-shapelets
+        # heatmaps for current dimension
+        heat_maps = {}
+        for c in np.unique(y_train):
+            shapelets_class[c] = []
+            heat_maps[c] = {}
+
+        # keep shapelets that occur in one single class only
         # initialize a dictionary that stores lists of class-shapelets
         # for current dimension
         shapelets_class = {}
@@ -91,8 +106,12 @@ def get_class_shapelets_train(
             for c in np.unique(y_train):
                 if np.all(np.asarray(shapelet_classes) == c):
                     shapelets_class[c].append(i)
+                if len(shapelets_classes) == 0:
+                    print(
+                        "All shapelets belong to more than one class exclusively\n Please consider using different parameters for the Shapelet Transform or the fit function"
+                    )
+                    return
 
-        print(all_shapelets_class, shapelets_class)
         for c in np.unique(y_train):
             all_shapelets_class[c].append(shapelets_class[c])
             ###Get shapelet_locations distributions per exclusive class
@@ -103,40 +122,35 @@ def get_class_shapelets_train(
                     for idx in range(sl[1], sl[2]):
                         heat_map[idx] += 1
                     num_occurences += 1
-
                 heat_map = heat_map / num_occurences
-
                 heat_maps[c][s] = heat_map
-
-            all_shapelets_class[dim].append(shapelets_class[c])
-            all_heat_maps[dim].append(heat_maps[c])
-
+            all_heat_maps[c].append(heat_maps[c])
+    print("Shapelet by index per class and dimension:", all_shapelets_class)
     return (
+        fitted_shapelets,
         threshold,
         all_heat_maps,
         all_shapelets_class,
-        all_shapelet_locations,
     )
-
-
-# Sets explain function
 
 
 def sets_explain(
     instance_x,
+    target,
+    data,
     transformer,
     model,
-    data,
     ts_length,
     st_shapelets,
     threshhold,
     all_shapelets_class,
     all_heat_maps,
     all_shapelets_scores,
+    random_seed=42,
 ):
-    random.seed(42)
+    random.seed(random_seed)
 
-    X_train, y_train, X_test, y_test = data
+    X_train, y_train = data
 
     # get distance for timeseries to explain
     shapelets_distances_test = transformer.transform(
@@ -168,8 +182,9 @@ def sets_explain(
         knns[c].fit(X_train_knn)
 
     orig_c = int(np.argmax(model(to_tff(instance_x))))
-
-    for target_c in set(np.unique(y_train)) - set([orig_c]):
+    if len(target) > 1:
+        target.remove(orig_c)
+    for target_c in target:
         target_knn = knns[target_c]
         # starting the with the most important dimension, start CF generation
         for dim in range(len(shapelets_best_scores)):
@@ -180,8 +195,8 @@ def sets_explain(
             nn_idx = get_nearest_neighbor(
                 target_knn, instance_x, orig_c, X_train, y_train
             )
-            original_all_shapelets_class = all_shapelets_class[dim][orig_c]
-            all_target_heat_maps = all_heat_maps[dim][target_c]
+            original_all_shapelets_class = all_shapelets_class[orig_c][dim]
+            all_target_heat_maps = all_heat_maps[target_c][dim]
 
             cf_dims = np.zeros((len(shapelets_best_scores), ts_length))
 
@@ -189,7 +204,7 @@ def sets_explain(
 
             cf_pred = model.predict(to_tff(cf))
             cf_pred = np.argmax(cf_pred)
-            if orig_c == cf_pred:
+            if target_c != cf_pred:
                 # Get the locations where the original class shapelets occur
                 all_locs = get_shapelets_locations_test(
                     instance_x,
@@ -202,7 +217,7 @@ def sets_explain(
                     for loc in all_locs.get(c_i):
                         cf_pred = model.predict(to_tff(cf))
                         cf_pred = np.argmax(cf_pred)
-                        if orig_c == cf_pred:
+                        if target_c != cf_pred:
                             # print('Removing original shapelet')
                             nn = X_train[nn_idx].reshape(-1)
 
@@ -231,7 +246,7 @@ def sets_explain(
                 for idx, target_shapelet_idx in enumerate(all_target_heat_maps.keys()):
                     cf_pred = model.predict(to_tff(cf))
                     cf_pred = np.argmax(cf_pred)
-                    if orig_c == cf_pred:
+                    if target_c != cf_pred:
                         # print('Introducing new shapelet')
                         h_m = all_target_heat_maps[target_shapelet_idx]
                         center = (
@@ -255,7 +270,6 @@ def sets_explain(
 
                         s_min = target_shapelet.min()
                         s_max = target_shapelet.max()
-                        print(cf.shape, cf[dim], start, end)
                         t_min = cf[dim][start:end].min()
                         t_max = cf[dim][start:end].max()
 
@@ -274,9 +288,9 @@ def sets_explain(
             cf_dims[dim] = cf[dim]
             cf_pred = model.predict(to_tff(cf))
             cf_pred = np.argmax(cf_pred)
-            if orig_c != cf_pred:
+            if target_c == cf_pred:
                 return cf, cf_pred
-            elif orig_c != cf_pred:
+            elif target_c != cf_pred:
                 # Try all combinations of dimensions
                 for L in range(0, len(shapelets_best_scores) + 1):
                     for subset in itertools.combinations(shapelets_best_scores, L):
@@ -286,9 +300,9 @@ def sets_explain(
                                 cf[dim_] = cf_dims[dim_]
                             cf_pred = model.predict(to_tff(cf))
                             cf_pred = np.argmax(cf_pred)
-                            if orig_c != cf_pred:
-                                print("cf found")
-                                return cf, cf_pred
+                            if target_c == cf_pred:
+                                break
+            if target_c == cf_pred:
+                return cf, cf_pred
             else:
-                print("No Counterfactual could be found this data instance")
                 return None, None

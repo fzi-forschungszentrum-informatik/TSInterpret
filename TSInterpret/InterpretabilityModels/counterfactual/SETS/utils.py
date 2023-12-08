@@ -36,15 +36,12 @@ class MultivariateTransformer:
 # get the list of shapelets of a transformer
 def get_shapelets(transformer):
     all_shapelets = []
-    print(len(transformer.sts))
     for st in transformer.sts:
         c = 0
         dim_shapelets = []
         for shapelet in st.shapelets:
-            print(c, shapelet.data)
             dim_shapelets.append(shapelet.data)
             c += 1
-        print("ELEE", len(dim_shapelets))
         all_shapelets.append(dim_shapelets)
 
     return all_shapelets
@@ -53,7 +50,6 @@ def get_shapelets(transformer):
 # get the list of shapelet scores of a transformer
 def get_scores(transformer):
     all_scores = []
-
     for st in transformer.sts:
         dim_scores = []
         for shapelet in st.shapelets:
@@ -68,12 +64,8 @@ def get_shapelets_distances(transformer):
     all_shapelets_distances = []
     for st in transformer.sts:
         shapelets_distances = []
-        c = 0
-        print(len(st.shapelets))
         for shapelet in st.shapelets:
-            print(c)
             shapelets_distances.append(shapelet.distances)
-            c += 1
         all_shapelets_distances.append(shapelets_distances)
     return all_shapelets_distances
 
@@ -191,7 +183,7 @@ def get_occurences_threshold(shapelets_distances, ts_length, percentage):
     return sds[n]
 
 
-# Get the locations of the closest shapelets for each shapelet across the
+# Get the locations of the closest shapelets for each timeseries across the
 # entire dataset based on a chosen percentage
 def get_all_shapelet_locations_scaled_threshold(
     shapelets_distances, ts_length, percentage
@@ -218,7 +210,7 @@ def get_all_shapelet_locations_scaled_threshold(
     return all_shapelet_locations, all_no_occurences, threshold
 
 
-# Get the locations of the closest shapelets for each shapelet across the
+# Get the locations of the closest shapelets for each timeseries across the
 # entire dataset based on the training threshold
 def get_all_shapelet_locations_scaled_threshold_test(
     shapelets_distances, ts_length, threshold
@@ -229,12 +221,10 @@ def get_all_shapelet_locations_scaled_threshold_test(
     for dim in shapelets_distances:
         dim_shapelet_locations = []
         no_occurences = []
-        print(dim)
         for i, shapelet in enumerate(dim):
             sls = get_shapelet_locations_scaled_threshold(
                 shapelet, ts_length, threshold
             )
-            print("scaled threshhold", sls[0][0])
             if sls[0][0] != 4294967295:
                 dim_shapelet_locations.append(sls)
             else:
@@ -276,5 +266,4 @@ def get_nearest_neighbor(knn, instance_x, pred_label, x_train, y_train):
         nn_idx = [t[0] for t in target_labels][int(nn[0][0])]
     except:
         pass
-        # print("NN", nn_idx)
     return nn_idx  # None
