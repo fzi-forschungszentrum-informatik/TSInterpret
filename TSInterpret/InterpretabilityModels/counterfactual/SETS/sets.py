@@ -180,7 +180,7 @@ def sets_explain(
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
 
-    orig_c = int(np.argmax(model(to_tff(instance_x))))
+    orig_c = int(np.argmax(model.predict(to_tff(instance_x))))
     if len(target) > 1:
         target.remove(orig_c)
     for target_c in target:

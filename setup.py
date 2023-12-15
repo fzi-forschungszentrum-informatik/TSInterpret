@@ -55,6 +55,7 @@ base_packages = [
     "pymop",
     "deap",
     "wheel",
+    "sktime"
 ]
 
 dev_packages = base_packages + [

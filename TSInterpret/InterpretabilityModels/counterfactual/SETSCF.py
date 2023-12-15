@@ -112,7 +112,6 @@ class SETSCF(CF):
             max_shapelets_to_store_per_class=30,
             remove_self_similar=remove_self_similar,
             random_state=self.random_state,
-            remove_self_similar=True,
         )
         # Fit multivaraite transformer
         st_transformer = MultivariateTransformer(shapelet_transform)
