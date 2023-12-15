@@ -62,7 +62,7 @@ nav:
         - Ates: ./Notebooks/Ates_torch.ipynb
         - Nun-CF: ./Notebooks/NunCF_torch.ipynb
         - TSEvo: ./Notebooks/TSEvo_torch.ipynb
-        - SETS: ./SETS_tensorflow.ipynb
+        - SETS: ./Notebooks/SETS_tensorflow.ipynb
     - Feature Attribution Methods:
       - Leftist: ./Notebooks/Leftist_torch.ipynb
       - Saliency: ./Notebooks/TSR_torch.ipynb
