@@ -237,6 +237,7 @@ class CF(InstanceBase):
 
         ax.grid(color="#2A3459")
         plt.xlabel("Time", fontweight="bold", fontsize="large")
+
         if ind != "":
             plt.ylabel(f"Feature {ind[0][0]}", fontweight="bold", fontsize="large")
         else:
