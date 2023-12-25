@@ -199,6 +199,7 @@ def sets_explain(
     if len(target) > 1:
         target.remove(orig_c)
     for target_c in target:
+        print('Target C', target_c)
         target_knn = knns[target_c]
         # starting the with the most important dimension, start CF generation
         for dim in range(len(shapelets_best_scores)):
@@ -206,11 +207,12 @@ def sets_explain(
             all_target_heat_maps = all_heat_maps[target_c]
             target_knn = knns[target_c]
             print('instance_x', instance_x.shape)
-            print('X_train', X_train)
+            print('X_train', X_train.shape)
 
             nn_idx = get_nearest_neighbor(
                 target_knn, instance_x, orig_c, X_train, y_train,mode
             )
+            print(nn_idx)
             original_all_shapelets_class = all_shapelets_class[orig_c][dim]
             all_target_heat_maps = all_heat_maps[target_c][dim]
 
@@ -220,6 +222,7 @@ def sets_explain(
 
             cf_pred = model.predict(to_tff(cf))
             cf_pred = np.argmax(cf_pred)
+            print('cf_pred', cf_pred)
             if target_c != cf_pred:
                 # Get the locations where the original class shapelets occur
                 all_locs = get_shapelets_locations_test(
