@@ -84,6 +84,8 @@ class SETSCF(CF):
         if le:
             self.le = LabelEncoder()
             self.train_y = self.le.fit_transform(train_y)
+        else:
+            self.train_y=train_y
         if mode == "time":
             # Parse test data into (1, feat, time):
             change = False
