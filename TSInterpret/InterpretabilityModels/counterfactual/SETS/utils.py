@@ -15,10 +15,10 @@ class MultivariateTransformer:
         self.mode=mode
 
     def fit(self, X, y=None):
-        if self.mode == 'time' or len(X.shape)!=2:
-            self.n_dims = X.shape[1]
-        else: 
-            self.n_dims =1
+        #if self.mode == 'time' or len(X.shape)!=2:
+        self.n_dims = X.shape[1]
+        #else: 
+        #    self.n_dims =1
         
         self.sts = [clone(self.st) for _ in range(self.n_dims)]
         print(self.n_dims)

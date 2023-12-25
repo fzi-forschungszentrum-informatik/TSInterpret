@@ -19,6 +19,7 @@ from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
 
 # cast to tf format
 def to_tff(x):
+    #return x 
     return np.expand_dims(np.swapaxes(x, 0, 1), axis=0)
 
 
@@ -33,8 +34,8 @@ def fit_shapelets(
 ):
     random.seed(random_seed)
     X_train, y_train = data
-    print(y_train)
-    print(X_train.shape)
+    #print(y_train)
+    #print(X_train.shape)
 
 
     # make deep copy for reusability
@@ -49,7 +50,7 @@ def fit_shapelets(
         shapelets_distances, ts_length, occlusion_threshhold / 100.0
     )
 
-    print('All No OCC', len(all_no_occurences))
+    #print('All No OCC', len(all_no_occurences))
     # initialize a dictionary that stores lists of class-shapelets
     all_shapelets_class = {}
     # initialize a dictionary that stores lists of class-shapelets heatmaps
@@ -60,7 +61,7 @@ def fit_shapelets(
         all_heat_maps[c] = []
 
     # get the shapelet classes and their heatmaps at each dimension
-    print('SHAPE',X_train.shape[1])
+    #print('SHAPE',X_train.shape[1])
     for dim in range(X_train.shape[1]):
         if len(all_no_occurences)>dim :
             for index in sorted(all_no_occurences[dim], reverse=True):
@@ -157,6 +158,8 @@ def sets_explain(
     random.seed(random_seed)
 
     X_train, y_train = data
+
+    print(instance_x.shape)
 
     # get distance for timeseries to explain
     shapelets_distances_test = transformer.transform(

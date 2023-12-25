@@ -86,20 +86,23 @@ class SETSCF(CF):
             self.train_y = self.le.fit_transform(train_y)
         if mode == "time":
             # Parse test data into (1, feat, time):
-            change = True
+            change = False
             self.train_x = np.swapaxes(train_x, 2, 1)
             self.ts_len = train_x.shape[1]
         elif mode == "feat":
-            change = False
+            change = True
             self.ts_len = train_x.shape[2]
             self.train_x =train_x
         self.train_x_n = from_3d_numpy_to_nested(self.train_x)
         if backend == "PYT":
-            self.predict = PyTorchModel(model, change).predict
+            self.predict = PyTorchModel(model, change)
+            #self.model=PyTorchModel(model, change)
         elif backend == "TF":
-            self.predict = TensorFlowModel(model, change).predict
+            self.predict = TensorFlowModel(model, change)
+            #self.model= TensorFlowModel(model, change)
         elif backend == "SK":
             self.predict = SklearnModel(model, change).predict
+        self.mode=mode
         # Fit Shapelet Transform
         # Required Shape (N,D,L)
         if not silent:
@@ -185,6 +188,8 @@ class SETSCF(CF):
         """
         if self.fitted_shapelets == None:
             print("Please use fit function first!")
+        if self.mode=='time':
+            x=np.swapaxes(x,0,1)
 
         if target == None:
             target = list(np.unique(self.train_y))
@@ -196,7 +201,7 @@ class SETSCF(CF):
             target,
             (self.train_x, self.train_y),
             self.st_transformer,
-            self.model,
+            self.predict,
             self.ts_len,
             self.fitted_shapelets,
             self.threshhold,
