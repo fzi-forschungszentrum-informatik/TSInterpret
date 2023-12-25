@@ -9,16 +9,26 @@ from sklearn.base import clone
 
 # Fit the transformer to all dimensions of the dataset
 class MultivariateTransformer:
-    def __init__(self, st):
+    def __init__(self, st,mode):
         self.st = st
         self.sts = None
+        self.mode=mode
 
     def fit(self, X, y=None):
-        self.n_dims = X.shape[1]
+        if self.mode == 'time' or len(X.shape)!=2:
+            self.n_dims = X.shape[1]
+        else: 
+            self.n_dims =1
+        
         self.sts = [clone(self.st) for _ in range(self.n_dims)]
-
+        print(self.n_dims)
         for i, transformer in enumerate(self.sts):
+            #if self.mode == 'time' or 
+            #if len(X.shape)==2:
+            #    X=X [:,np.newaxis,:]
+            
             transformer.fit(X.iloc[:, i].to_frame(), y)
+
         return self
 
     def transform(self, X, y=None):

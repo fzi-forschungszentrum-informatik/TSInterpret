@@ -33,6 +33,9 @@ def fit_shapelets(
 ):
     random.seed(random_seed)
     X_train, y_train = data
+    print(y_train)
+    print(X_train.shape)
+
 
     # make deep copy for reusability
     fitted_shapelets = copy.deepcopy(st_shapelets)
@@ -45,6 +48,8 @@ def fit_shapelets(
     ) = get_all_shapelet_locations_scaled_threshold(
         shapelets_distances, ts_length, occlusion_threshhold / 100.0
     )
+
+    print('All No OCC', len(all_no_occurences))
     # initialize a dictionary that stores lists of class-shapelets
     all_shapelets_class = {}
     # initialize a dictionary that stores lists of class-shapelets heatmaps
@@ -55,9 +60,11 @@ def fit_shapelets(
         all_heat_maps[c] = []
 
     # get the shapelet classes and their heatmaps at each dimension
+    print('SHAPE',X_train.shape[1])
     for dim in range(X_train.shape[1]):
-        for index in sorted(all_no_occurences[dim], reverse=True):
-            del fitted_shapelets[dim][index]
+        if len(all_no_occurences)>dim :
+            for index in sorted(all_no_occurences[dim], reverse=True):
+                del fitted_shapelets[dim][index]
 
         # Get shapelets class occurences
         shapelets_classes = []
@@ -177,6 +184,7 @@ def sets_explain(
         X_train_knn = X_train[np.argwhere(y_train == c)].reshape(
             np.argwhere(y_train == c).shape[0], X_train.shape[1], X_train.shape[2]
         )
+        print('X_trainKNN ',X_train_knn.shape)
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
 

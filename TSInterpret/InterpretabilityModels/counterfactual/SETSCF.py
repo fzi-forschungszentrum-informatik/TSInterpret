@@ -52,6 +52,7 @@ class SETSCF(CF):
         remove_self_similar=True,
         silent=False,
         fit_shapelets=True,
+        le=True
     ) -> None:
         """
         Arguments:
@@ -68,6 +69,7 @@ class SETSCF(CF):
             remove_self_similar boolean: removes similar shapelets from a timeseries
             initial_num_shapelets_per_case int: Initial number of shapelets per case.
             silent bool: logging.
+            le bool: Use build in Label Encoder.
         """
         super().__init__(model, mode)
         self.backend = backend
@@ -79,8 +81,9 @@ class SETSCF(CF):
         self.initial_num_shapelets_per_case = num_candidates_to_sample_per_case
         # Prepare Data
         train_x, train_y = data
-        self.le = LabelEncoder()
-        self.train_y = self.le.fit_transform(train_y)
+        if le:
+            self.le = LabelEncoder()
+            self.train_y = self.le.fit_transform(train_y)
         if mode == "time":
             # Parse test data into (1, feat, time):
             change = True
@@ -89,6 +92,7 @@ class SETSCF(CF):
         elif mode == "feat":
             change = False
             self.ts_len = train_x.shape[2]
+            self.train_x =train_x
         self.train_x_n = from_3d_numpy_to_nested(self.train_x)
         if backend == "PYT":
             self.predict = PyTorchModel(model, change).predict
@@ -114,7 +118,11 @@ class SETSCF(CF):
             random_state=self.random_state,
         )
         # Fit multivaraite transformer
-        st_transformer = MultivariateTransformer(shapelet_transform)
+        st_transformer = MultivariateTransformer(shapelet_transform,mode)
+        if isinstance(train_y,np.ndarray):
+            if len(train_y.shape)==2:
+                train_y=np.argmax(train_y,axis=1) 
+        
         st_transformer.fit(self.train_x_n, train_y)
         self.train_x_new = st_transformer.transform(self.train_x_n)
         # Get Background Shapelet Distribution for Explainer
