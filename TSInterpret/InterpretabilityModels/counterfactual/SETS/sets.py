@@ -188,10 +188,10 @@ def sets_explain(
         X_train_knn = X_train[np.argwhere(y_train == c)].reshape(
             np.argwhere(y_train == c).shape[0], X_train.shape[1], X_train.shape[2]
         )
-        #print('X_trainKNN ',X_train_knn.shape)
+        print('X_trainKNN ',X_train_knn.shape)
         if mode=='time':
             X_train_knn = np.swapaxes(X_train_knn, 1, 2)
-        #if mode=='feat':
+        #if mode=='feat':inKNN ',X_train_knn.shape)
         #    X_train = np.swapaxes(X_train, 1, 2)
         knns[c].fit(X_train_knn)
 
@@ -205,6 +205,8 @@ def sets_explain(
             original_all_shapelets_class = all_shapelets_class[orig_c]
             all_target_heat_maps = all_heat_maps[target_c]
             target_knn = knns[target_c]
+            print('instance_x', instance_x.shape)
+            print('X_train', X_train)
 
             nn_idx = get_nearest_neighbor(
                 target_knn, instance_x, orig_c, X_train, y_train,mode
