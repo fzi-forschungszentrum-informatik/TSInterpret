@@ -159,7 +159,7 @@ def sets_explain(
 
     X_train, y_train = data
 
-    print(instance_x.shape)
+    #print(instance_x.shape)
 
     # get distance for timeseries to explain
     shapelets_distances_test = transformer.transform(
@@ -187,7 +187,7 @@ def sets_explain(
         X_train_knn = X_train[np.argwhere(y_train == c)].reshape(
             np.argwhere(y_train == c).shape[0], X_train.shape[1], X_train.shape[2]
         )
-        print('X_trainKNN ',X_train_knn.shape)
+        #print('X_trainKNN ',X_train_knn.shape)
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
 
@@ -228,7 +228,7 @@ def sets_explain(
                         cf_pred = model.predict(to_tff(cf))
                         cf_pred = np.argmax(cf_pred)
                         if target_c != cf_pred:
-                            # print('Removing original shapelet')
+                            # #print('Removing original shapelet')
                             nn = X_train[nn_idx].reshape(-1)
 
                             target_shapelet = nn[loc[0] : loc[1]]
@@ -257,7 +257,7 @@ def sets_explain(
                     cf_pred = model.predict(to_tff(cf))
                     cf_pred = np.argmax(cf_pred)
                     if target_c != cf_pred:
-                        # print('Introducing new shapelet')
+                        # #print('Introducing new shapelet')
                         h_m = all_target_heat_maps[target_shapelet_idx]
                         center = (
                             np.argwhere(h_m > 0)[-1][0] - np.argwhere(h_m > 0)[0][0]
