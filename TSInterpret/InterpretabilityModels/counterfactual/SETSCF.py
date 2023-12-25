@@ -189,6 +189,7 @@ class SETSCF(CF):
         if self.fitted_shapelets == None:
             print("Please use fit function first!")
         if self.mode=='time':
+            print('Time Mode')
             x=np.swapaxes(x,0,1)
 
         if target == None:
@@ -209,9 +210,15 @@ class SETSCF(CF):
             self.all_heat_maps,
             self.scores,
             random_seed=self.random_state,
+            mode=self.mode
         )
         if expl is not None:
             org_shape = x.shape
+            print('shape',expl.shape)
+            if self.mode=='time':
+                print('Time Mode')
+                expl=np.swapaxes(expl,-1,-2)
+
             expl.reshape(org_shape)
             print("Counterfactual has been found")
         if expl is None:

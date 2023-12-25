@@ -262,12 +262,13 @@ def get_shapelets_locations_test(idx, all_sls, dim, all_shapelets_class):
 
 ##Optimize by fitting outside or returning a list of all nns at once
 ## Reworked so that only training data is available.
-def get_nearest_neighbor(knn, instance_x, pred_label, x_train, y_train):
+def get_nearest_neighbor(knn, instance_x, pred_label, x_train, y_train,mode):
     # pred_label = y_pred[idx]
     target_labels = np.argwhere(y_train != pred_label)
 
     X_train_knn = instance_x.reshape(1, instance_x.shape[0], instance_x.shape[1])
-    X_train_knn = np.swapaxes(X_train_knn, 1, 2)
+    if mode == 'time':
+        X_train_knn = np.swapaxes(X_train_knn, 1, 2)
 
     _, nn = knn.kneighbors(X_train_knn)
     # print("TARGETLABELS", [t[0] for t in target_labels], [int(nn[0][0])])

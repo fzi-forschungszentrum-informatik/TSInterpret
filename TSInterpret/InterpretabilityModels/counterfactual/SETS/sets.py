@@ -154,6 +154,7 @@ def sets_explain(
     all_heat_maps,
     all_shapelets_scores,
     random_seed=42,
+    mode='time'
 ):
     random.seed(random_seed)
 
@@ -165,7 +166,7 @@ def sets_explain(
     shapelets_distances_test = transformer.transform(
         from_3d_numpy_to_nested(np.expand_dims(instance_x, axis=0))
     )
-
+    #print(shapelets_distances_test)
     all_shapelet_locations_test, _ = get_all_shapelet_locations_scaled_threshold_test(
         [np.expand_dims(shapelets_distances_test, axis=0)],
         instance_x.shape[1],
@@ -188,7 +189,10 @@ def sets_explain(
             np.argwhere(y_train == c).shape[0], X_train.shape[1], X_train.shape[2]
         )
         #print('X_trainKNN ',X_train_knn.shape)
-        X_train_knn = np.swapaxes(X_train_knn, 1, 2)
+        if mode=='time':
+            X_train_knn = np.swapaxes(X_train_knn, 1, 2)
+        #if mode=='feat':
+        #    X_train = np.swapaxes(X_train, 1, 2)
         knns[c].fit(X_train_knn)
 
     orig_c = int(np.argmax(model.predict(to_tff(instance_x))))
@@ -203,7 +207,7 @@ def sets_explain(
             target_knn = knns[target_c]
 
             nn_idx = get_nearest_neighbor(
-                target_knn, instance_x, orig_c, X_train, y_train
+                target_knn, instance_x, orig_c, X_train, y_train,mode
             )
             original_all_shapelets_class = all_shapelets_class[orig_c][dim]
             all_target_heat_maps = all_heat_maps[target_c][dim]
