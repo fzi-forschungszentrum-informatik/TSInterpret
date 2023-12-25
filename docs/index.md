@@ -40,6 +40,16 @@
      <td>   </td>
     <td class="right"> <a href="Notebooks/TSR_torch"><img src="img/Ismail.png" height=300 width=300 /></a> <td>
   </tr>
+  <tr>
+    <td  class="left">SETS [@bahri2022shapelet]</td>
+     <td>   </td>
+    <td  class="left">TSEvo [@hollig2022tsevo]</td>
+  </tr>
+   <tr>
+    <td class="left"> <a href="Notebooks/Sets_tensorflow"><img src="img/SETS.png" height=300 width=300 /></a> </td>
+     <td>   </td>
+    <td class="right"> <a href="Notebooks/TSEvo_torch"><img src="img/TSEVO.png" height=300 width=300 /></a> <td>
+  </tr>
 </table> 
 </center>
 <!--
