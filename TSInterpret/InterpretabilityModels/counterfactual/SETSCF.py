@@ -85,7 +85,7 @@ class SETSCF(CF):
             self.le = LabelEncoder()
             self.train_y = self.le.fit_transform(train_y)
         else:
-            self.train_y=train_y
+            self.train_y=np.argmax(train_y,axis=1)
         if mode == "time":
             # Parse test data into (1, feat, time):
             change = False
@@ -188,6 +188,7 @@ class SETSCF(CF):
             ([np.array], int): Tuple of Counterfactual and Label. Shape of CF : `mode = time` -> `(time, feat)` or `mode = time` -> `(feat, time)`
 
         """
+        print(self.train_y)
         if self.fitted_shapelets == None:
             print("Please use fit function first!")
         if self.mode=='time':

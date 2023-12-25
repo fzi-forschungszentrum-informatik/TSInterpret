@@ -221,6 +221,7 @@ def sets_explain(
             cf = instance_x.copy()
 
             cf_pred = model.predict(to_tff(cf))
+            print('cf_pred prob',cf_pred)
             cf_pred = np.argmax(cf_pred)
             print('cf_pred', cf_pred)
             if target_c != cf_pred:
