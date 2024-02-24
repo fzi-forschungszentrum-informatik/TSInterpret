@@ -168,22 +168,34 @@ class LEFTIST(FeatureAttribution):
                     self.neighbors, idx_label, explanation_size=explanation_size
                 )
             ]
+        #print(idx_label) 
+        #print('Final')
+        #print(explanations)
+        #print(instance)
         explanations = self._shape_explanations(explanations, instance)
 
         return explanations
 
     def _shape_explanations(self, explanations, series):
-        values_per_slice = int(len(series) / len(explanations[0][0]))
+
+        values_per_slice =self.nb_interpretable_feature  #int(len(series) / len(explanations[0][0]))
         heatmaps = []
         i = 0
         for i in range(0, len(explanations)):
+           
             heatmap = np.zeros_like(series).reshape(-1)
+            j=0
             for value in explanations[i][0]:
-                heatmap[i : values_per_slice + i] = (
-                    np.ones_like(values_per_slice) * value
-                )
-                i = values_per_slice + i
+                try:
+                    heatmap[j : values_per_slice + j] = (
+                        np.ones_like(values_per_slice) * value
+                    )
+                except: 
+                    heatmap[j : ] = (
+                        np.ones_like(heatmap[j : ]) * value
+                    )
 
+                j = values_per_slice + j
             heatmaps.append(heatmap)
 
         return heatmaps
