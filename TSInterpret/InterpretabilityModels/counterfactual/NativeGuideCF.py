@@ -41,7 +41,7 @@ class NativeGuideCF(CF):
         data,
         backend="PYT",
         mode="feat",
-        method="NUN-CF",
+        method="NUN_CF",
         distance_measure="dtw",
         n_neighbors=1,
         max_iter=500,
