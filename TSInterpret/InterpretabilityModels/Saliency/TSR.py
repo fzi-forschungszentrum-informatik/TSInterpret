@@ -12,7 +12,7 @@ class TSR:
     """
 
     def __new__(
-        self, model, NumTimeSteps, NumFeatures, method="GRAD", mode="time", device="cpu"
+        self, model, NumTimeSteps, NumFeatures, method="GRAD", mode="time", device="cpu", normalize=True
     ):
         """Initialization
         Arguments:
@@ -30,6 +30,7 @@ class TSR:
                 method=method,
                 mode=mode,
                 device=device,
+                normalize=normalize
             )
 
         elif isinstance(model, tensorflow.keras.Model):

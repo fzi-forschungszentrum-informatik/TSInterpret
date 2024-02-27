@@ -49,6 +49,7 @@ class Saliency_PTY(Sal):
         method: str = "GRAD",
         mode: str = "time",
         tsr: bool = True,
+        normalize:bool=True,
         device: str = "cpu",
     ) -> None:
         """Initialization
@@ -59,9 +60,10 @@ class Saliency_PTY(Sal):
             method str: Saliency Methode to be used
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`
         """
-        super().__init__(model, NumTimeSteps, NumFeatures, method, mode)
+        super().__init__(model, NumTimeSteps, NumFeatures, method, mode,normalize)
         self.method = method
         self.tsr = tsr
+        #self.normalize=normalize
         if method == "GRAD":
             self.Grad = Saliency(model)
         elif method == "IG":
@@ -219,11 +221,15 @@ class Saliency_PTY(Sal):
         else:
             # print('TSR', TSR)
             # TODO attributions does not exist for SVS and Fo
-            rescaledGrad[
-                idx : idx + batch_size, :, :
-            ] = self._givenAttGetRescaledSaliency(attributions)
-            # print('Rescaled', rescaledGrad.shape)
-            return rescaledGrad[0]
+            if self.normalize:
+            
+                rescaledGrad[
+                    idx : idx + batch_size, :, :
+                ] = self._givenAttGetRescaledSaliency(attributions)
+                # print('Rescaled', rescaledGrad.shape)
+                return rescaledGrad[0]
+            else:
+                return attributions.detach().numpy()[0]
 
     def _getTwoStepRescaling(
         self,

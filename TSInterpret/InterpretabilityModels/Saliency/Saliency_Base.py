@@ -27,6 +27,7 @@ class Saliency(FeatureAttribution):
         NumFeatures: int,
         method: str = "GRAD",
         mode: str = "time",
+        normalize:bool=True,
     ) -> None:
         """
         Arguments:
@@ -35,11 +36,13 @@ class Saliency(FeatureAttribution):
             NumFeatures int: number of features.
             method str: Saliency Method to be used.
             mode str: Second dimension 'time'->`(1,time,feat)`  or 'feat'->`(1,feat,time)`.
+            normalize bool: Wheather or not to normalize the results
         """
         super().__init__(model, mode)
         self.NumTimeSteps = NumTimeSteps
         self.NumFeatures = NumFeatures
         self.method = method
+        self.normalize=normalize
 
     def explain(self):
         raise NotImplementedError("Don't use the base CF class directly")
@@ -56,6 +59,7 @@ class Saliency(FeatureAttribution):
             save str: Path to save figure.
         """
         plt.style.use("classic")
+        print(self.normalize)
         i = 0
         if self.mode == "time":
             print("time mode")
@@ -75,8 +79,8 @@ class Saliency(FeatureAttribution):
                 cbar=True,
                 ax=ax011,
                 yticklabels=False,
-                vmin=0,
-                vmax=1,
+                #vmin=0,
+                #vmax=1,
             )
         elif len(item[0]) == 1:
             # if only onedimensional input
@@ -85,15 +89,24 @@ class Saliency(FeatureAttribution):
             )
             # cbar_ax = fig.add_axes([.91, .3, .03, .4])
             axn012 = axn.twinx()
-            sns.heatmap(
-                exp.reshape(1, -1),
-                fmt="g",
-                cmap="viridis",
-                ax=axn,
-                yticklabels=False,
-                vmin=0,
-                vmax=1,
-            )
+            if self.normalize:
+                sns.heatmap(
+                    exp.reshape(1, -1),
+                    fmt="g",
+                    cmap="viridis",
+                    ax=axn,
+                    yticklabels=False,
+                    vmin=0,
+                    vmax=1,
+                )
+            else: 
+                sns.heatmap(
+                    exp.reshape(1, -1),
+                    fmt="g",
+                    cmap="viridis",
+                    ax=axn,
+                    yticklabels=False,
+                )
             sns.lineplot(
                 x=range(0, len(item[0][0].reshape(-1))),
                 y=item[0][0].flatten(),
@@ -114,18 +127,30 @@ class Saliency(FeatureAttribution):
                 # ax012.append(ax011[i].twinx())
                 # ax011[i].set_facecolor("#440154FF")
                 axn012 = axn[i].twinx()
+                if self.normalize: 
 
-                sns.heatmap(
-                    exp[i].reshape(1, -1),
-                    fmt="g",
-                    cmap="viridis",
-                    cbar=i == 0,
-                    cbar_ax=None if i else cbar_ax,
-                    ax=axn[i],
-                    yticklabels=False,
-                    vmin=0,
-                    vmax=1,
-                )
+                    sns.heatmap(
+                        exp[i].reshape(1, -1),
+                        fmt="g",
+                        cmap="viridis",
+                        cbar=i == 0,
+                        cbar_ax=None if i else cbar_ax,
+                        ax=axn[i],
+                        yticklabels=False,
+                        vmin=0,
+                        vmax=1,
+                    )
+                else: 
+                    sns.heatmap(
+                        exp[i].reshape(1, -1),
+                        fmt="g",
+                        cmap="viridis",
+                        cbar=i == 0,
+                        cbar_ax=None if i else cbar_ax,
+                        ax=axn[i],
+                        yticklabels=False,
+                    )
+
                 sns.lineplot(
                     x=range(0, len(channel.reshape(-1))),
                     y=channel.flatten(),
