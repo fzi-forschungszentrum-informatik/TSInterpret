@@ -107,8 +107,11 @@ class Saliency_PTY(Sal):
         idx = 0
         item = np.array(item.tolist())  # , dtype=np.float64)
         input = torch.from_numpy(item)
-
-        input = input.reshape(-1, self.NumTimeSteps, self.NumFeatures).to(self.device)
+        if self.mode=='feat':
+            input = np.swapaxes(input, -1, -2)
+        #if self.mode =='time':
+        #    input = input.reshape(-1, self.NumTimeSteps, self.NumFeatures).to(self.device)
+        
         input = Variable(input, volatile=False, requires_grad=True)
 
         batch_size = input.shape[0]
@@ -125,7 +128,7 @@ class Saliency_PTY(Sal):
         )
         # input = samples.reshape(-1, args.NumTimeSteps, args.NumFeatures).to(device)
         if self.mode == "feat":
-            input = input.reshape(-1, self.NumFeatures, self.NumTimeSteps)
+            input = np.swapaxes(input, -1, -2)
         if "baseline_single" in kwargs.keys():
             baseline_single = kwargs["baseline_single"]
         else:
@@ -222,6 +225,7 @@ class Saliency_PTY(Sal):
             # print('TSR', TSR)
             # TODO attributions does not exist for SVS and Fo
             if self.normalize:
+                print('normalize', self.normalize)
             
                 rescaledGrad[
                     idx : idx + batch_size, :, :
@@ -229,6 +233,7 @@ class Saliency_PTY(Sal):
                 # print('Rescaled', rescaledGrad.shape)
                 return rescaledGrad[0]
             else:
+                print('Returns Plain Grad')
                 return attributions.detach().numpy()[0]
 
     def _getTwoStepRescaling(
