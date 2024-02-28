@@ -225,7 +225,6 @@ class Saliency_PTY(Sal):
             # print('TSR', TSR)
             # TODO attributions does not exist for SVS and Fo
             if self.normalize:
-                print('normalize', self.normalize)
             
                 rescaledGrad[
                     idx : idx + batch_size, :, :
@@ -233,7 +232,6 @@ class Saliency_PTY(Sal):
                 # print('Rescaled', rescaledGrad.shape)
                 return rescaledGrad[0]
             else:
-                print('Returns Plain Grad')
                 return attributions.detach().numpy()[0]
 
     def _getTwoStepRescaling(
