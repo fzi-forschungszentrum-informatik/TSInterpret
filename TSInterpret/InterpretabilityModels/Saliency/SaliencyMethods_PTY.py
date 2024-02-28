@@ -248,8 +248,8 @@ class Saliency_PTY(Sal):
         inputGrad = np.zeros((input_size, 1))
         newGrad = np.zeros((input_size, sequence_length))
 
-        if self.mode == "time":
-            newGrad = np.swapaxes(newGrad, -1, -2)
+        #if self.mode == "time":
+        #    newGrad = np.swapaxes(newGrad, -1, -2)
 
 
         if hasBaseline is None:
@@ -350,8 +350,10 @@ class Saliency_PTY(Sal):
         timeContribution = preprocessing.minmax_scale(timeGrad, axis=1)
 
         meanTime = np.quantile(timeContribution, 0.55)
+
         if input_size>1:
             for t in range(sequence_length):
+                print('TIME CONR',timeContribution[0, t])
                 if timeContribution[0, t] > meanTime:
                     for c in range(input_size):
                         newInput = input.clone()
@@ -410,11 +412,11 @@ class Saliency_PTY(Sal):
 
                 else:
                     featureContribution = np.ones((input_size, 1)) * 0.1
+                
 
-                if self.mode == "time":
-                    newGrad = np.swapaxes(newGrad, -1, -2)
                 for c in range(input_size):
                     newGrad[c, t] = timeContribution[0, t] * featureContribution[c, 0]
+
         else: 
             newGrad=timeContribution
             
