@@ -12,7 +12,7 @@ class TSR:
     """
 
     def __new__(
-        self, model, NumTimeSteps, NumFeatures, method="GRAD", mode="time", device="cpu"
+        self, model, NumTimeSteps, NumFeatures, method="GRAD", mode="time", device="cpu", normalize=True, tsr=True
     ):
         """Initialization
         Arguments:
@@ -30,11 +30,13 @@ class TSR:
                 method=method,
                 mode=mode,
                 device=device,
+                normalize=normalize,
+                tsr=tsr
             )
 
         elif isinstance(model, tensorflow.keras.Model):
             return Saliency_TF(
-                model, NumTimeSteps, NumFeatures, method=method, mode=mode
+                model, NumTimeSteps, NumFeatures, method=method, mode=mode, tsr=tsr
             )
         else:
             raise NotImplementedError(
