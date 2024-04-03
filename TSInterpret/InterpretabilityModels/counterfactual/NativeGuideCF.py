@@ -164,6 +164,7 @@ class NativeGuideCF(CF):
     def _findSubarray(
         self, a, k
     ):  # used to find the maximum contigious subarray of length k in the explanation weight vector
+        
         if len(a.shape) == 2:
             a = a.reshape(-1)
         n = len(a)
@@ -178,6 +179,8 @@ class NativeGuideCF(CF):
             # Store the sub-array elements in the array
             for j in range(i, i + k):
                 temp.append(a[j])
+            
+            
 
             # Push the vector in the container
             vec.append(temp)
@@ -217,6 +220,8 @@ class NativeGuideCF(CF):
 
         if np.any(np.isnan(most_influencial_array)):
             return np.full(individual.shape, None), None
+        if len(training_weights)==1:
+            training_weights=training_weights[0]
 
         starting_point = np.where(training_weights == most_influencial_array[0])[0][0]
 
@@ -240,6 +245,8 @@ class NativeGuideCF(CF):
             most_influencial_array = self._findSubarray(
                 (training_weights), subarray_length
             )
+            if len(training_weights)==1:
+                training_weights=training_weights[0]
             starting_point = np.where(training_weights == most_influencial_array[0])[0][
                 0
             ]
