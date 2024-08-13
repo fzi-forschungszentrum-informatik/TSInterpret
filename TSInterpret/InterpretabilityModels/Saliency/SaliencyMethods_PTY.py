@@ -353,7 +353,6 @@ class Saliency_PTY(Sal):
 
         if input_size>1:
             for t in range(sequence_length):
-                print('TIME CONR',timeContribution[0, t])
                 if timeContribution[0, t] > meanTime:
                     for c in range(input_size):
                         newInput = input.clone()
