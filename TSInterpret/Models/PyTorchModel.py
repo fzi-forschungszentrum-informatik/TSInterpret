@@ -30,7 +30,10 @@ class PyTorchModel(BaseModel):
         else:
             item = torch.from_numpy(item)
         out = self.model(item.float())
-        y_pred = torch.nn.functional.softmax(out).detach().numpy()
+        if out.shape[-1]>1:
+            y_pred = torch.nn.functional.softmax(out).detach().numpy()
+        else: 
+            y_pred=out.detach().numpy()
         return y_pred
 
     def load_model(self, path):
