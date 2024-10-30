@@ -19,7 +19,7 @@ from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
 
 # cast to tf format
 def to_tff(x):
-    return np.expand_dims(np.swapaxes(x, 0, 1), axis=0)
+    return x[np.newaxis,:] #np.expand_dims(np.swapaxes(x, 0, 1), axis=0)
 
 
 def fit_shapelets(
@@ -152,6 +152,7 @@ def sets_explain(
     X_train, y_train = data
 
     # get distance for timeseries to explain
+    print(instance_x.shape)
     shapelets_distances_test = transformer.transform(
         from_3d_numpy_to_nested(np.expand_dims(instance_x, axis=0))
     )
@@ -180,7 +181,15 @@ def sets_explain(
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
 
+    print('BEFOR')
+    print(instance_x.shape)
+    print(to_tff(instance_x).shape)
+    print(model.predict(to_tff(instance_x)))
+    #print(model.predict(instance_x))
     orig_c = int(np.argmax(model.predict(to_tff(instance_x))))
+    print('orig_c', orig_c)
+    #import sys 
+    #sys.exit(1)
     if len(target) > 1:
         target.remove(orig_c)
     for target_c in target:
