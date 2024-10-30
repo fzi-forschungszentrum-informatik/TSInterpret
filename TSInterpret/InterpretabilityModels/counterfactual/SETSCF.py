@@ -81,11 +81,12 @@ class SETSCF(CF):
         train_x, train_y = data
         self.le = LabelEncoder()
         self.train_y = self.le.fit_transform(train_y)
+        self.mode=mode
         if mode == "time":
             # Parse test data into (1, feat, time):
             change = True
             self.train_x = np.swapaxes(train_x, 2, 1)
-            self.ts_len = train_x.shape[-1]
+            self.ts_len = train_x.shape[1]
         elif mode == "feat":
             change = False
             self.train_x = train_x
@@ -183,6 +184,10 @@ class SETSCF(CF):
             target = list(np.unique(self.train_y))
         else:
             target = [target]
+        if len(x.shape) ==2: 
+            pass
+        if self.mode == 'time':
+            x= np.swapaxes(x, -1, -2)
 
         expl, label = sets_explain(
             x,

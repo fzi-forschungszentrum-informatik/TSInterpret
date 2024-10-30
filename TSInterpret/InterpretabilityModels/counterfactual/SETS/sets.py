@@ -282,6 +282,11 @@ def sets_explain(
                             ) / (s_max - s_min) + t_min
 
                         cf[dim][start:end] = target_shapelet
+            print('cf dim',cf[dim])
+
+            print('cf dim',dim)
+
+            print('cf dim',cf_dims[dim])
 
             # Save the perturbed dimension
             cf_dims[dim] = cf[dim]
@@ -297,6 +302,7 @@ def sets_explain(
                             cf = instance_x.copy()
                             for dim_ in subset:
                                 cf[dim_] = cf_dims[dim_]
+                            print(to_tff(cf))
                             cf_pred = model.predict(to_tff(cf))
                             cf_pred = np.argmax(cf_pred)
                             if target_c == cf_pred:
