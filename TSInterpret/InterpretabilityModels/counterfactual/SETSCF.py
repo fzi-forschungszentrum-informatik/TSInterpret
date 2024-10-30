@@ -89,7 +89,6 @@ class SETSCF(CF):
             self.train_x = np.swapaxes(train_x, 2, 1)
             self.ts_len = train_x.shape[1]
         elif mode == "feat":
-            print('feat')
             change = False
             self.train_x = train_x
             self.ts_len = train_x.shape[1]
