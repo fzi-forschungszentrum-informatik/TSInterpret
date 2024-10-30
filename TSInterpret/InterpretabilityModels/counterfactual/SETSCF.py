@@ -94,8 +94,6 @@ class SETSCF(CF):
             self.train_x = train_x
             self.ts_len = train_x.shape[1]
             self.train_x = np.swapaxes(train_x, 2, 1)
-        print(self.ts_len)
-        print('TRAINSHAPE', self.train_x.shape)
         self.train_x_n = from_3d_numpy_to_nested(self.train_x)
         if backend == "PYT":
             self.predict = PyTorchModel(model, change)
@@ -189,15 +187,11 @@ class SETSCF(CF):
             target = list(np.unique(self.train_y))
         else:
             target = [target]
-        print('TARGETS', target)
-        if len(x.shape) ==2: 
-            pass
         if self.mode == 'time':
             x= np.swapaxes(x, -1, -2)
 
         else: 
             x=np.swapaxes(x,-1,-2)
-        print(x.shape)
 
 
         expl, label = sets_explain(
