@@ -32,9 +32,9 @@ def fit_shapelets(
 ):
     random.seed(random_seed)
     X_train, y_train = data
-    print(y_train)
+    #print(y_train)
     #print(X_train.shape)
-    print('tslength', ts_length)
+    #print('tslength', ts_length)
 
     #print(st_shapelets)
     #import sys 
@@ -58,7 +58,7 @@ def fit_shapelets(
     all_heat_maps = {}
 
     for c in np.unique(y_train):
-        print(c)
+        #print(c)
         all_shapelets_class[c] = []
         all_heat_maps[c] = []
 
