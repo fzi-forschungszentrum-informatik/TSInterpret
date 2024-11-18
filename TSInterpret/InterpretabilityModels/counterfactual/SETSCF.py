@@ -190,6 +190,7 @@ class SETSCF(CF):
             target = [target]
         if self.mode == 'time':
             x= np.swapaxes(x, -1, -2)
+        
 
         #else: 
         #    x=np.swapaxes(x,-1,-2)
