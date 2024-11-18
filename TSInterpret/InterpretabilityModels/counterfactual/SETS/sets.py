@@ -19,8 +19,7 @@ from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
 
 # cast to tf format
 def to_tff(x):
-    return np.expand_dims(x, axis=0)
-
+    return  np.expand_dims(np.swapaxes(x, 0, 1), axis=0)
 
 def fit_shapelets(
     data,

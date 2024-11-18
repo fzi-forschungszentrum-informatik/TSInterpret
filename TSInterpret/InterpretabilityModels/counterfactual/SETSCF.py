@@ -85,11 +85,11 @@ class SETSCF(CF):
         self.mode=mode
         if mode == "time":
             # Parse test data into (1, feat, time):
-            change = True
+            change = False
             self.train_x = np.swapaxes(train_x, 2, 1)
             self.ts_len = train_x.shape[1]
         elif mode == "feat":
-            change = False
+            change = True
             self.train_x = train_x
             self.ts_len = train_x.shape[1]
             #self.train_x = np.swapaxes(train_x, 2, 1)
