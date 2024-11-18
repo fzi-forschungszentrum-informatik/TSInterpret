@@ -91,9 +91,11 @@ class SETSCF(CF):
         elif mode == "feat":
             change = True
             self.train_x = train_x
-            self.ts_len = train_x.shape[1]
+            self.ts_len = train_x.shape[2]
             #self.train_x = np.swapaxes(train_x, 2, 1)
+        print(self.train_x.shape)
         self.train_x_n = from_3d_numpy_to_nested(self.train_x)
+        print(self.train_x_n.shape)
         if backend == "PYT":
             self.predict = PyTorchModel(model, change)
         elif backend == "TF":
@@ -189,8 +191,8 @@ class SETSCF(CF):
         if self.mode == 'time':
             x= np.swapaxes(x, -1, -2)
 
-        else: 
-            x=np.swapaxes(x,-1,-2)
+        #else: 
+        #    x=np.swapaxes(x,-1,-2)
 
 
         expl, label = sets_explain(

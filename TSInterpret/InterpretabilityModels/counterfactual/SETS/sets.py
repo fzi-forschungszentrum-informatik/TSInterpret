@@ -32,6 +32,13 @@ def fit_shapelets(
 ):
     random.seed(random_seed)
     X_train, y_train = data
+    #print(X_train.shape)
+    #print('tslength', ts_length)
+
+    #print(st_shapelets)
+    #import sys 
+    #sys.exit(1)
+
 
     # make deep copy for reusability
     fitted_shapelets = copy.deepcopy(st_shapelets)
