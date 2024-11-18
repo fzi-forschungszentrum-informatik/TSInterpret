@@ -187,8 +187,10 @@ def sets_explain(
         )
         X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
+    print(knns)
     #print(model.predict(instance_x))
-    orig_c = int(np.argmax(model.predict(to_tff(instance_x))))
+    orig_c = int(np.argmax(model.predict(to_tff(instance_x)),axis=1)[0])
+    print(orig_c)
     if len(target) > 1:
         target.remove(orig_c)
     for target_c in target:
@@ -210,7 +212,7 @@ def sets_explain(
             cf = instance_x.copy()
 
             cf_pred = model.predict(to_tff(cf))
-            cf_pred = np.argmax(cf_pred)
+            cf_pred = np.argmax(cf_pred,axis=1)[0]
             if target_c != cf_pred:
                 # Get the locations where the original class shapelets occur
                 all_locs = get_shapelets_locations_test(
@@ -223,7 +225,7 @@ def sets_explain(
                 for c_i in all_locs:
                     for loc in all_locs.get(c_i):
                         cf_pred = model.predict(to_tff(cf))
-                        cf_pred = np.argmax(cf_pred)
+                        cf_pred = np.argmax(cf_pred,axis=1)[0]
                         if target_c != cf_pred:
                             # print('Removing original shapelet')
                             nn = X_train[nn_idx].reshape(-1)
@@ -252,7 +254,7 @@ def sets_explain(
                 # Introduce new shapelets from the target class
                 for idx, target_shapelet_idx in enumerate(all_target_heat_maps.keys()):
                     cf_pred = model.predict(to_tff(cf))
-                    cf_pred = np.argmax(cf_pred)
+                    cf_pred = np.argmax(cf_pred,axis=1)[0]
                     if target_c != cf_pred:
                         # print('Introducing new shapelet')
                         h_m = all_target_heat_maps[target_shapelet_idx]
@@ -293,7 +295,7 @@ def sets_explain(
             # Save the perturbed dimension
             cf_dims[dim] = cf[dim]
             cf_pred = model.predict(to_tff(cf))
-            cf_pred = np.argmax(cf_pred)
+            cf_pred = np.argmax(cf_pred,axis=1)[0]
             if target_c == cf_pred:
                 return cf, cf_pred
             elif target_c != cf_pred:
@@ -305,7 +307,7 @@ def sets_explain(
                             for dim_ in subset:
                                 cf[dim_] = cf_dims[dim_]
                             cf_pred = model.predict(to_tff(cf))
-                            cf_pred = np.argmax(cf_pred)
+                            cf_pred = np.argmax(cf_pred,axis=1)[0]
                             if target_c == cf_pred:
                                 break
             if target_c == cf_pred:
