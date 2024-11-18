@@ -92,7 +92,7 @@ class SETSCF(CF):
             change = False
             self.train_x = train_x
             self.ts_len = train_x.shape[1]
-            self.train_x = np.swapaxes(train_x, 2, 1)
+            #self.train_x = np.swapaxes(train_x, 2, 1)
         self.train_x_n = from_3d_numpy_to_nested(self.train_x)
         if backend == "PYT":
             self.predict = PyTorchModel(model, change)
