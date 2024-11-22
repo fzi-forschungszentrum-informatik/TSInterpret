@@ -166,7 +166,7 @@ def sets_explain(
 
     all_shapelet_locations_test, _ = get_all_shapelet_locations_scaled_threshold_test(
         [np.expand_dims(shapelets_distances_test, axis=0)],
-        instance_x.shape[1],
+        ts_length,
         threshhold,
     )
 
@@ -182,10 +182,13 @@ def sets_explain(
     # fit a KNN for each class
     for c in np.unique(y_train):
         knns[c] = KNeighborsTimeSeries(n_neighbors=1)
+        if X_train.shape[1]!= ts_length:
+            X_train=np.swapaxes(X_train,1,2)
         X_train_knn = X_train[np.argwhere(y_train == c)].reshape(
-            np.argwhere(y_train == c).shape[0], X_train.shape[1], X_train.shape[2]
+            np.argwhere(y_train == c).shape[0], ts_length,-1
         )
-        X_train_knn = np.swapaxes(X_train_knn, 1, 2)
+
+        #X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
     print(knns)
     #print(model.predict(instance_x))

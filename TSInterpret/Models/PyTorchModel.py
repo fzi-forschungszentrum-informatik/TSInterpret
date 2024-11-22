@@ -34,6 +34,8 @@ class PyTorchModel(BaseModel):
             y_pred = torch.nn.functional.softmax(out).detach().numpy()
         else: 
             y_pred=out.detach().numpy()
+
+        print('Results from Pytorch Wrapper', y_pred)
         return y_pred
 
     def load_model(self, path):
