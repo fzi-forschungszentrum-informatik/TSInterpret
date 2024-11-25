@@ -339,7 +339,7 @@ def sets_explain(
                             cf_pred = np.argmax(cf_pred,axis=1)[0]
                             if target_c == cf_pred:
                                 break
-            if target_c == cf_pred:
+            if orig_c != cf_pred:
                 return cf, cf_pred
             else:
                 return None, None
