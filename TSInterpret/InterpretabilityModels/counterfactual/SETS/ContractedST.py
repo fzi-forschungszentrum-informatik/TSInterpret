@@ -662,8 +662,8 @@ class ShapeletTransform(_PanelToTabularTransformer):
                     shapelet_distances.append(dist)
 
                     min_dist = min(min_dist, dist)
-
-                    output[i][s] = dist
+                    #TODO THIS WAS CHANGED
+                    output[i][s] = min_dist
 
                 self.shapelets[s].distances[i] = np.asarray(shapelet_distances)
 

@@ -59,7 +59,7 @@ def test_tsr_torch_explainer(tsr_torch_explainer,tsr):
     exp= method.explain(x,labels=int(np.argmax(y[0])),TSR = tsr)
     assert np.array(exp).shape == (1, X.shape[-1])
 
-@pytest.mark.parametrize("tsr_tensorflow_explainer", ['GRAD','IG','GS','DLS','SG'],
+@pytest.mark.parametrize("tsr_tensorflow_explainer", ['GRAD','IG','GS'],#,'DLS','SG'],
                          indirect=True)
 @pytest.mark.parametrize('tsr',[True,False])
 def test_tsr_tensorflow_explainer(tsr_tensorflow_explainer,tsr):

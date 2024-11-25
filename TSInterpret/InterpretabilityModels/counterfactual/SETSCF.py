@@ -52,6 +52,7 @@ class SETSCF(CF):
         remove_self_similar=True,
         silent=False,
         fit_shapelets=True,
+        le=False
     ) -> None:
         """
         Arguments:
@@ -81,20 +82,24 @@ class SETSCF(CF):
         train_x, train_y = data
         self.le = LabelEncoder()
         self.train_y = self.le.fit_transform(train_y)
+        self.mode=mode
         if mode == "time":
             # Parse test data into (1, feat, time):
-            change = True
+            change = False
             self.train_x = np.swapaxes(train_x, 2, 1)
             self.ts_len = train_x.shape[1]
         elif mode == "feat":
-            change = False
-            self.train_x = np.array(train_x)
+            change = True
+            self.train_x = train_x
             self.ts_len = train_x.shape[2]
+            #self.train_x = np.swapaxes(train_x, 2, 1)
+        print(self.train_x.shape)
         self.train_x_n = from_3d_numpy_to_nested(self.train_x)
+        print(self.train_x_n.shape)
         if backend == "PYT":
-            self.predict = PyTorchModel(model, change).predict
+            self.predict = PyTorchModel(model, change)
         elif backend == "TF":
-            self.predict = TensorFlowModel(model, change).predict
+            self.predict = TensorFlowModel(model, change)
         elif backend == "SK":
             self.predict = SklearnModel(model, change).predict
         # Fit Shapelet Transform
@@ -183,13 +188,20 @@ class SETSCF(CF):
             target = list(np.unique(self.train_y))
         else:
             target = [target]
+        if self.mode == 'time':
+            x= np.swapaxes(x, -1, -2)
+        
+
+        #else: 
+        #    x=np.swapaxes(x,-1,-2)
+
 
         expl, label = sets_explain(
             x,
             target,
             (self.train_x, self.train_y),
             self.st_transformer,
-            self.model,
+            self.predict,
             self.ts_len,
             self.fitted_shapelets,
             self.threshhold,
