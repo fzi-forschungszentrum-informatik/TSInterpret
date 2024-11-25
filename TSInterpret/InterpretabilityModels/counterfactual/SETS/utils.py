@@ -191,8 +191,14 @@ def get_occurences_threshold(shapelets_distances, ts_length, percentage):
     # Sort the distances ascendingly
     sds.sort()
 
+    print(sds)
+
     # Number of shapelet occurences to keep (per shapelet)
     n = int(percentage * len(sds))
+    print(percentage)
+
+    print(n)
+
 
     # Return the threshold distance to select the shapelet occurences to keep
     return sds[n]
@@ -244,6 +250,7 @@ def get_all_shapelet_locations_scaled_threshold_test(
     #print('shapelet distances', len(shapelets_distances[0][0]))
     #print('shapelet distances', shapelets_distances[0][0].shape)
     print('threshold', threshold)
+    threshold=3
     all_shapelet_locations = []
     all_no_occurences = []
 

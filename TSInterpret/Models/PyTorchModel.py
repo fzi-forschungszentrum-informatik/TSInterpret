@@ -35,7 +35,7 @@ class PyTorchModel(BaseModel):
         else: 
             y_pred=out.detach().numpy()
 
-        print('Results from Pytorch Wrapper', y_pred)
+        print('Results from Pytorch Wrapper', np.argmax(y_pred,axis=1))
         return y_pred
 
     def load_model(self, path):

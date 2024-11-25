@@ -268,6 +268,8 @@ def sets_explain(
 
                             start = loc[0]
                             end = loc[1]
+                            print('start', start)
+                            print('end', end)
 
                             cf[dim][start:end] = target_shapelet
                             assert np.any(instance_x !=cf ), f"Pertubed instance is identical to the original instance"
@@ -317,7 +319,8 @@ def sets_explain(
 
                         cf[dim][start:end] = target_shapelet
 
-                        assert np.any(instance_x !=cf ), f"Pertubed instance is identical to the original instance"
+                        assert np.any(instance_x !=cf), f"Pertubed instance is identical to the original instance"
+
             # Save the perturbed dimension
             cf_dims[dim] = cf[dim]
             cf_pred = model.predict(to_tff(cf))
