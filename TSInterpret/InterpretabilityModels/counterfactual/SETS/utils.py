@@ -123,19 +123,32 @@ def remove_similar_locations(shapelet_locations, shapelet_distances):
 
 # Given the shapelet_distances matrix of a given shapelet, get the locations of
 # the closest shapelets from the entire dataset
-def get_shapelet_locations_scaled_threshold(shapelet_distances, ts_length, threshold):
+def get_shapelet_locations_scaled_threshold(shapelet_distances, ts_length, threshold, shapelets=None):
     # Compute the length of the shapelet
     shapelet_length = ts_length - shapelet_distances.shape[1] + 1
+
+    #print('thresold', threshold)
+
+    #print('shape',shapelet_distances)
+    #print('shape', shapelet_distances.shape)
 
     # Get the indices of the n closest shapelets to the original shapelet
     s_indices = []
     for i in range(shapelet_distances.shape[0]):
         for j in range(shapelet_distances.shape[1]):
+            # i Iterates Items
+            # j iterates Shapelets
+            #print('i',i)
+            #print('j',j)
             # Compare to the threshold, scaled to shapelet length
+            #shapelet_length = ts_length - len(shapelet_distances[j]) + 1
             if shapelet_distances[i][j] / shapelet_length <= threshold:
+                #j is the number of the shapelet 
                 s_indices.append(np.array([i, j]))
+    #print('s_indices', s_indices)
 
     if len(s_indices) > 0:
+        # Relevant shaplet indicies
         s_indices = np.asarray(s_indices)
 
         # Create an array to store the locations of the closest n shapelets
@@ -144,14 +157,16 @@ def get_shapelet_locations_scaled_threshold(shapelet_distances, ts_length, thres
         )
         # Each shapelet is represented by (sample_index, start, end)
         for i in range(shapelet_locations.shape[0]):
+            #print('iterate shapelet locations i',i)
             shapelet_locations[i] = np.append(
                 s_indices[i], s_indices[i][1] + shapelet_length
             )
-
+        #print('shapelet_locations1',shapelet_locations)
         # Remove overlapping shapelets and keep the closest one to th original shapelet
         shapelet_locations = remove_similar_locations(
             shapelet_locations, shapelet_distances
         )
+        #print('shapelet_locations',shapelet_locations)
 
         return shapelet_locations
 
@@ -188,6 +203,12 @@ def get_occurences_threshold(shapelets_distances, ts_length, percentage):
 def get_all_shapelet_locations_scaled_threshold(
     shapelets_distances, ts_length, percentage
 ):
+    #print('get_all_shapelet_locations_scaled_threshold')
+    #print('shapelet distances', shapelets_distances)
+    #print('shapelet distances', len(shapelets_distances))
+    #print('shapelet distances', len(shapelets_distances[0]))
+    #print('shapelet distances', len(shapelets_distances[0][0]))
+    #print('shapelet distances', shapelets_distances[0][0].shape)
     # Get the threshold to be used for selecting shapelet occurences
     threshold = get_occurences_threshold(shapelets_distances, ts_length, percentage)
 
@@ -207,46 +228,85 @@ def get_all_shapelet_locations_scaled_threshold(
                 no_occurences.append(i)
         all_shapelet_locations.append(dim_shapelet_locations)
         all_no_occurences.append(no_occurences)
+    #print('FINISHED get_all_shapelet_locations_scaled_threshold')
     return all_shapelet_locations, all_no_occurences, threshold
 
 
 # Get the locations of the closest shapelets for each timeseries across the
 # entire dataset based on the training threshold
 def get_all_shapelet_locations_scaled_threshold_test(
-    shapelets_distances, ts_length, threshold
+    shapelets_distances, ts_length, threshold,shapelets =None
 ):
+    #print('get_all_shapelet_locations_scaled_threshold_test')
+    #print('shapelet distances', shapelets_distances)
+    #print('shapelet distances', len(shapelets_distances))
+    #print('shapelet distances', len(shapelets_distances[0]))
+    #print('shapelet distances', len(shapelets_distances[0][0]))
+    #print('shapelet distances', shapelets_distances[0][0].shape)
+    threshold=5
     all_shapelet_locations = []
     all_no_occurences = []
 
     for dim in shapelets_distances:
+        print('dim', dim)
+        # Itreate DIMs
         dim_shapelet_locations = []
         no_occurences = []
+        if type(dim) == int: 
+            dim= shapelets_distances[0]
+        #print('dim2', dim)
         for i, shapelet in enumerate(dim):
+
+            #print('i', i)
+            #print('shapelet ',shapelet)
+            # Iterate the shapelet [0. Num Shapelts]?
+            # Get the shapelet  Locations
             sls = get_shapelet_locations_scaled_threshold(
-                shapelet, ts_length, threshold
+                shapelet, ts_length, threshold,shapelets
             )
             if sls[0][0] != 4294967295:
+                #print('Append',sls)
                 dim_shapelet_locations.append(sls)
             else:
                 no_occurences.append(i)
         all_shapelet_locations.append(dim_shapelet_locations)
         all_no_occurences.append(no_occurences)
-
+    #print('ALL', all_shapelet_locations)
+    #print('All',no_occurences)
+    #print('END get_all_shapelet_locations_scaled_threshold_test')
     return all_shapelet_locations, all_no_occurences
 
 
 def get_shapelets_locations_test(idx, all_sls, dim, all_shapelets_class):
+    # TODO ELIMINATED DIM !
+    if len(np.array(all_shapelets_class).shape):
+        all_shapelets_class=[all_shapelets_class]
+    #print('idx', idx)
+    #print('all_sls', all_sls)
+    #print('dim',dim)
+    #print('all_shapelt_classes', all_shapelets_class)
     all_locs = {}
-    try:
+    #try:
+    #print(len(all_sls[0]))
+    #print(len(all_sls[0][0]))
+    #for j in all_shapelets_class[dim]:
+    #    print('j in all shapelet classes', j)
+    if True:
         for i, s in enumerate([all_sls[dim][j] for j in all_shapelets_class[dim]]):
+    #        print('all_shapelets_class[dim]',all_shapelets_class[dim])
+          
             i_locs = []
             for loc in s:
-                if loc[0] == idx:
+                if True:
+                # TODO not necessary?
+                #if loc[0] == idx:
                     loc = (loc[1], loc[2])
                     i_locs.append(loc)
             all_locs[i] = i_locs
-    except Exception as ex:
-        pass
+    #except Exception as ex:
+    #    pass
+
+    #print('locs', all_locs)
     return all_locs
 
 

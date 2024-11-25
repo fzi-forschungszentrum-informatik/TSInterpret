@@ -13,7 +13,7 @@ from TSInterpret.InterpretabilityModels.counterfactual.SETS.utils import (
     get_all_shapelet_locations_scaled_threshold,
     get_all_shapelet_locations_scaled_threshold_test,
     get_nearest_neighbor,
-    get_shapelets_locations_test,
+    get_shapelets_locations_test,get_shapelets_distances
 )
 
 
@@ -43,6 +43,9 @@ def fit_shapelets(
 
     # make deep copy for reusability
     fitted_shapelets = copy.deepcopy(st_shapelets)
+
+    #print('length', len(shapelets_distances[0]))
+    #print(shapelets_distances)
 
     # get the shapelets locations threshhold for testing
     (
@@ -164,11 +167,24 @@ def sets_explain(
         from_3d_numpy_to_nested(np.expand_dims(instance_x, axis=0))
     )
 
+
+    #print(len(shapelets_distances_test[0]))
+    #print('shapelet_distances_test' , shapelets_distances_test)
+    shapelet_dist=[]
+    for st in transformer.sts:
+        save=[]
+        for shp in st.shapelets:
+            save.append(shp.distances)
+        shapelet_dist.append(save)
+
+    shapelets_distances_test=shapelet_dist
     all_shapelet_locations_test, _ = get_all_shapelet_locations_scaled_threshold_test(
-        [np.expand_dims(shapelets_distances_test, axis=0)],
+        shapelets_distances_test,
         ts_length,
-        threshhold,
+        threshhold
     )
+
+    #print('all_shapeletes_locations',all_shapelet_locations_test)
 
     # Sort dimensions by their highest shapelet scores
     shapelets_best_scores = []
@@ -190,10 +206,10 @@ def sets_explain(
 
         #X_train_knn = np.swapaxes(X_train_knn, 1, 2)
         knns[c].fit(X_train_knn)
-    print(knns)
+    #print(knns)
     #print(model.predict(instance_x))
     orig_c = int(np.argmax(model.predict(to_tff(instance_x)),axis=1)[0])
-    print(orig_c)
+    #print(orig_c)
     if len(target) > 1:
         target.remove(orig_c)
     for target_c in target:
@@ -224,6 +240,7 @@ def sets_explain(
                     dim,
                     original_all_shapelets_class,
                 )
+                #print('all_locs',all_locs)
                 # Replace the original class shapelets with nn values
                 for c_i in all_locs:
                     for loc in all_locs.get(c_i):
@@ -253,13 +270,17 @@ def sets_explain(
                             end = loc[1]
 
                             cf[dim][start:end] = target_shapelet
-
+                            assert np.any(instance_x !=cf ), f"Pertubed instance is identical to the original instance"
+                
+                #import sys 
+                #sys.exit(1)
+                print('Start Introduction new Shapelets ')
                 # Introduce new shapelets from the target class
                 for idx, target_shapelet_idx in enumerate(all_target_heat_maps.keys()):
                     cf_pred = model.predict(to_tff(cf))
                     cf_pred = np.argmax(cf_pred,axis=1)[0]
                     if target_c != cf_pred:
-                        # print('Introducing new shapelet')
+                        print('Introducing new shapelet')
                         h_m = all_target_heat_maps[target_shapelet_idx]
                         center = (
                             np.argwhere(h_m > 0)[-1][0] - np.argwhere(h_m > 0)[0][0]
@@ -295,6 +316,8 @@ def sets_explain(
                             ) / (s_max - s_min) + t_min
 
                         cf[dim][start:end] = target_shapelet
+
+                        assert np.any(instance_x !=cf ), f"Pertubed instance is identical to the original instance"
             # Save the perturbed dimension
             cf_dims[dim] = cf[dim]
             cf_pred = model.predict(to_tff(cf))
