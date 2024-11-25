@@ -243,12 +243,12 @@ def get_all_shapelet_locations_scaled_threshold_test(
     #print('shapelet distances', len(shapelets_distances[0]))
     #print('shapelet distances', len(shapelets_distances[0][0]))
     #print('shapelet distances', shapelets_distances[0][0].shape)
-    threshold=5
+    print('threshold', threshold)
     all_shapelet_locations = []
     all_no_occurences = []
 
     for dim in shapelets_distances:
-        print('dim', dim)
+        #print('dim', dim)
         # Itreate DIMs
         dim_shapelet_locations = []
         no_occurences = []
