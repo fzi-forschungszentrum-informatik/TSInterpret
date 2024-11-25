@@ -249,7 +249,7 @@ def get_all_shapelet_locations_scaled_threshold_test(
     #print('shapelet distances', len(shapelets_distances[0]))
     #print('shapelet distances', len(shapelets_distances[0][0]))
     #print('shapelet distances', shapelets_distances[0][0].shape)
-    print('threshold', threshold)
+    #print('threshold', threshold)
     threshold=3
     all_shapelet_locations = []
     all_no_occurences = []

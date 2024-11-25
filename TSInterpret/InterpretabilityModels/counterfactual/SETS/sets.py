@@ -268,21 +268,21 @@ def sets_explain(
 
                             start = loc[0]
                             end = loc[1]
-                            print('start', start)
-                            print('end', end)
+                            #print('start', start)
+                            #print('end', end)
 
                             cf[dim][start:end] = target_shapelet
                             assert np.any(instance_x !=cf ), f"Pertubed instance is identical to the original instance"
                 
                 #import sys 
                 #sys.exit(1)
-                print('Start Introduction new Shapelets ')
+                #print('Start Introduction new Shapelets ')
                 # Introduce new shapelets from the target class
                 for idx, target_shapelet_idx in enumerate(all_target_heat_maps.keys()):
                     cf_pred = model.predict(to_tff(cf))
                     cf_pred = np.argmax(cf_pred,axis=1)[0]
                     if target_c != cf_pred:
-                        print('Introducing new shapelet')
+                        #print('Introducing new shapelet')
                         h_m = all_target_heat_maps[target_shapelet_idx]
                         center = (
                             np.argwhere(h_m > 0)[-1][0] - np.argwhere(h_m > 0)[0][0]
