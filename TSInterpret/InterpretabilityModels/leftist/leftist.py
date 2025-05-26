@@ -177,25 +177,35 @@ class LEFTIST(FeatureAttribution):
         return explanations
 
     def _shape_explanations(self, explanations, series):
-
-        values_per_slice =self.nb_interpretable_feature  #int(len(series) / len(explanations[0][0]))
+        # `values_per_slice` is the number of times each explanation value should be repeated.
+        # This was self.nb_interpretable_feature in the original commented out line.
+        # The original line `values_per_slice = self.nb_interpretable_feature #int(len(series) / len(explanations[0][0]))`
+        # indicates self.nb_interpretable_feature is the intended value for values_per_slice.
+        values_per_slice = self.nb_interpretable_feature
+        
         heatmaps = []
-        i = 0
-        for i in range(0, len(explanations)):
-           
-            heatmap = np.zeros_like(series).reshape(-1)
-            j=0
-            for value in explanations[i][0]:
-                try:
-                    heatmap[j : values_per_slice + j] = (
-                        np.ones_like(values_per_slice) * value
-                    )
-                except: 
-                    heatmap[j : ] = (
-                        np.ones_like(heatmap[j : ]) * value
-                    )
+        heatmap_total_length = np.prod(series.shape) # Total number of elements in the series
 
-                j = values_per_slice + j
+        for explanation_item in explanations:
+            # explanation_item[0] contains the list of scalar values for the current explanation
+            current_explanation_values = np.asarray(explanation_item[0])
+
+            if current_explanation_values.size == 0:
+                # Handle empty explanation values: create a heatmap of zeros
+                heatmap = np.zeros(heatmap_total_length)
+            else:
+                # Repeat each explanation value `values_per_slice` times
+                repeated_values = np.repeat(current_explanation_values, values_per_slice)
+                
+                # Create the heatmap, initially with zeros
+                heatmap = np.zeros(heatmap_total_length)
+                
+                # Determine how many elements to fill from the repeated_values
+                num_elements_to_fill = min(heatmap_total_length, repeated_values.size)
+                
+                # Fill the heatmap
+                heatmap[:num_elements_to_fill] = repeated_values[:num_elements_to_fill]
+            
             heatmaps.append(heatmap)
 
         return heatmaps
