@@ -348,5 +348,5 @@ def mutate_hyperperameter(ind1, window, channels, num_channels):
     window = window
     channels = channels
     if random.random() < 0.5:
-        window = random.randint(1, np.floor(0.5 * np.array(ind1).shape[-1]))
+        window = random.randint(1, int(np.floor(0.5 * np.array(ind1).shape[-1])))
     return window, channels
